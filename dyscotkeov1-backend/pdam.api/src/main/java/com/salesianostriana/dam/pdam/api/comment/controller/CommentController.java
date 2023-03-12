@@ -9,6 +9,7 @@ import com.salesianostriana.dam.pdam.api.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,16 +37,18 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("@commentService.findById(#id).userWhoComment.id == authentication.principal.id")
     public ViewPostDto edit(@Valid @RequestBody NewCommentDto newCommentDto, @PathVariable Long id, @AuthenticationPrincipal User user){
 
-        Post post = commentService.edit(newCommentDto, id, user);
+        Post post = commentService.edit(newCommentDto, id);
 
         return ViewPostDto.of(post);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id, @AuthenticationPrincipal User user){
-        commentService.delete(id, user);
+    @PreAuthorize("@commentService.findById(#id).userWhoComment.id == authentication.principal.id")
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        commentService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

@@ -19,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -78,8 +79,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) {
+    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException {
         User user = userService.createUser(newUserDto);
+        userService.emailSender(newUserDto.getEmail(), newUserDto.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(GetUserDto.of(user));
     }

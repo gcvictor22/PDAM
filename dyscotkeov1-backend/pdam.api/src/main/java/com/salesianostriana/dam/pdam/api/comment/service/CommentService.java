@@ -41,36 +41,21 @@ public class CommentService {
         return ViewPostDto.of(post);
     }
 
-    public Post edit(NewCommentDto newCommentDto, Long id, User loggedUser) {
+    public Post edit(NewCommentDto newCommentDto, Long id) {
 
-        Comment comment = commentRespository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
-        Post post = postRepository.findById(comment.getCommentedPost().getId()).orElseThrow(() -> new PostNotFoundException(comment.getCommentedPost().getId()));
-
-        if (loggedUser.getId() != comment.getUserWhoComment().getId()){
-            throw new CommentDeniedAccessException();
-        }
-        if (!post.getComments().contains(comment)){
-            throw new CommentNotFoundException(id);
-        }
         commentRespository.findById(id).map(old -> {
             old.setContent(newCommentDto.getContent());
             old.setImgPath(newCommentDto.getImgPath());
             return commentRespository.save(old);
         });
-        return post;
+        return postRepository.findById(commentRespository.findById(id).orElseThrow(() -> new CommentNotFoundException(id)).getCommentedPost().getId()).orElseThrow(() -> new PostNotFoundException(id));
     }
 
-    public void delete(Long id, User loggedUser){
-        Comment comment = commentRespository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
-        Post post = postRepository.findById(comment.getCommentedPost().getId()).orElseThrow(() -> new PostNotFoundException(comment.getCommentedPost().getId()));
+    public void delete(Long id){
+        commentRespository.deleteById(id);
+    }
 
-        if (!loggedUser.getUsername().equalsIgnoreCase(comment.getUserWhoComment().getUsername())){
-            throw new CommentDeniedAccessException();
-        }
-        if (!post.getComments().contains(comment)){
-            throw new CommentBadRequestToDeleteException(id);
-        }
-        comment.removePost();
-        commentRespository.delete(comment);
+    public Comment findById(Long id){
+        return commentRespository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
     }
 }

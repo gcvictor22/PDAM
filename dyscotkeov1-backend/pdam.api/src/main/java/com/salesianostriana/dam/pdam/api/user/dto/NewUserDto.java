@@ -1,6 +1,5 @@
 package com.salesianostriana.dam.pdam.api.user.dto;
 
-import com.salesianostriana.dam.dyscotkeov1.validation.annotation.user.*;
 import com.salesianostriana.dam.pdam.api.validation.annotation.user.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

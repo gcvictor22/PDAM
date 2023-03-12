@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.pdam.api.post.controller;
 
+import com.salesianostriana.dam.pdam.api.exception.notfound.PostNotFoundException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.dto.NewPostDto;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -57,15 +59,17 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ViewPostDto editPost(@PathVariable Long id, @RequestBody NewPostDto newPostDto, @AuthenticationPrincipal User user){
-        Post post = postService.edit(id, newPostDto, user);
+    @PreAuthorize("@postService.findById(#id).userWhoPost.id == authentication.principal.id")
+    public ViewPostDto editPost(@PathVariable Long id, @RequestBody NewPostDto newPostDto){
+        Post postEdited = postService.edit(id, newPostDto);
 
-        return ViewPostDto.of(post);
+        return ViewPostDto.of(postEdited);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        postService.deleteById(id, user);
+    @PreAuthorize("@postService.findById(#id).userWhoPost.id == authentication.principal.id")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        postService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

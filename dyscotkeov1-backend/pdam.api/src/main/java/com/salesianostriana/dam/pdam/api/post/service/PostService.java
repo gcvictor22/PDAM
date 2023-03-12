@@ -62,13 +62,7 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
     }
 
-    public Post edit(Long id, NewPostDto newPostDto, User loggedUser) {
-
-        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
-
-        if (!Objects.equals(loggedUser.getUsername(), post.getUserWhoPost().getUsername())){
-            throw new PostAccessDeniedExeption();
-        }
+    public Post edit(Long id, NewPostDto newPostDto) {
         return postRepository.findById(id)
                 .map(old -> {
                     old.setAffair(newPostDto.getAffair());
@@ -77,14 +71,8 @@ public class PostService {
                 }).orElseThrow(() -> new PostNotFoundException(id));
     }
 
-    public void deleteById(Long id, User loggedUser) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new PostBadRequestToDeleteException(id));
-
-        if (!Objects.equals(loggedUser.getUsername(), post.getUserWhoPost().getUsername())){
-            throw new PostAccessDeniedExeption();
-        }
-
-        postRepository.delete(post);
+    public void deleteById(Long id) {
+        postRepository.deleteById(id);
     }
 
     public GetPostDto likeAPost(Long id, User loggedUser) {
