@@ -32,9 +32,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
             """)
     Optional<User> userWithPostsByUserName (String userName);
 
-    @EntityGraph(value = "user-with-posts", type = EntityGraph.EntityGraphType.LOAD)
-    Optional<User> findDistinctByUserName(String userName);
-
 
     @Query("""
             SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END

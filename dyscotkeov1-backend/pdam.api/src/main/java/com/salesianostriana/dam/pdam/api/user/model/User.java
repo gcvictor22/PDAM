@@ -22,11 +22,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Table(name="user_entity")
 @EntityListeners(AuditingEntityListener.class)
-@NamedEntityGraph
-        (name="user-with-posts",
-                attributeNodes = {
-                        @NamedAttributeNode(value = "publishedPosts")
-                })
 public class User implements UserDetails {
 
     @Id
@@ -51,7 +46,7 @@ public class User implements UserDetails {
     private String email;
     private String imgPath;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "user_who_is_followed_id",
             foreignKey = @ForeignKey(name="FK_FOLLOWS_USER")),
             inverseJoinColumns = @JoinColumn(name = "user_who_follows_id",
@@ -61,15 +56,15 @@ public class User implements UserDetails {
     @Builder.Default
     private List<User> followers = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "followers", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "followers", fetch = FetchType.LAZY)
     @Builder.Default
     private List<User> follows = new ArrayList<>();
 
-    @OneToMany(mappedBy = "userWhoPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userWhoPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Post> publishedPosts = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id",
             foreignKey = @ForeignKey(name="FK_LIKEDPOSTS_USER")),
             inverseJoinColumns = @JoinColumn(name = "post_id",

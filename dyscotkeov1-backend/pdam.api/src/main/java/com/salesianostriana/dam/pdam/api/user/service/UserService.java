@@ -123,7 +123,7 @@ public class UserService {
     }
 
     public User follow(User loggedUser, String userToFollow) {
-        User user = userRepository.findDistinctByUserName(userToFollow).orElseThrow(() -> new UserNotFoundException(userToFollow));
+        User user = userRepository.userWithPostsByUserName(userToFollow).orElseThrow(() -> new UserNotFoundException(userToFollow));
 
         user.giveAFollow(loggedUser, userRepository.checkFollower(loggedUser.getId(), user.getId()));
 
@@ -134,7 +134,7 @@ public class UserService {
     }
 
     public User findByUserName(String userName){
-        return userRepository.findDistinctByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+        return userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
     }
 
     public void deleteById(UUID id) {
@@ -150,7 +150,7 @@ public class UserService {
 
     @Transactional
     public User getProfileByUserName(String userName){
-        User user = userRepository.findDistinctByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+        User user = userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
         postRepository.postComments();
         return user;
     }

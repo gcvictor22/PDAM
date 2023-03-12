@@ -4,6 +4,7 @@ import com.salesianostriana.dam.pdam.api.exception.accesdenied.PostAccessDeniedE
 import com.salesianostriana.dam.pdam.api.exception.badrequest.PostBadRequestToDeleteException;
 import com.salesianostriana.dam.pdam.api.exception.empty.EmptyPostListException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.PostNotFoundException;
+import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.dto.NewPostDto;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public GetPageDto<GetPostDto> findAll(List<SearchCriteria> params, Pageable pageable, User user) {
+    public GetPageDto<GetPostDto> findAll(List<SearchCriteria> params, Pageable pageable, UUID id) {
+        User user = userRepository.userWithPostsById(id).orElseThrow(() -> new UserNotFoundException(id));
+
         if (postRepository.findAll().isEmpty())
             throw new EmptyPostListException();
 
@@ -52,7 +56,8 @@ public class PostService {
         return postRepository.save(newPost);
     }
 
-    public GetPostDto responseCreate(Post newPost, User user){
+    public GetPostDto responseCreate(Post newPost, UUID userId){
+        User user = userRepository.userWithPostsById(userId).orElseThrow(()-> new UserNotFoundException(userId));
         newPost.addUser(user);
         userRepository.save(user);
         return GetPostDto.of(newPost, user);

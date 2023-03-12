@@ -37,7 +37,7 @@ public class PostController {
             @PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User user){
 
         List<SearchCriteria> params = Extractor.extractSearchCriteriaList(search);
-        return postService.findAll(params, pageable, user);
+        return postService.findAll(params, pageable, user.getId());
     }
 
     @GetMapping("/{id}")
@@ -55,7 +55,7 @@ public class PostController {
                 .path("/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
-        return ResponseEntity.created(createdURI).body(postService.responseCreate(created, user));
+        return ResponseEntity.created(createdURI).body(postService.responseCreate(created, user.getId()));
     }
 
     @PutMapping("/{id}")
