@@ -3,7 +3,6 @@ package com.salesianostriana.dam.pdam.api.post.model;
 import com.salesianostriana.dam.pdam.api.comment.model.Comment;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +16,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Post implements Serializable{
 
     @Id

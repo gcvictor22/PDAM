@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +60,7 @@ public class UserService {
                 .fullName(createUser.getFullName())
                 .roles(roles)
                 .createdAt(createUser.getCreatedAt())
+                .enabled(false)
                 .build();
 
         return userRepository.save(user);
@@ -70,23 +70,31 @@ public class UserService {
         return save(createUserRequest, EnumSet.of(UserRole.USER));
     }
 
-    public void emailSender(String toEmail, String userName) throws MessagingException {
+    public void emailSender(String toEmail, User user) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom("dyscotkeo@gmail.com");
         helper.setTo(toEmail);
-        message.setSubject("¡Bienvenido a DiscoTkeo "+userName+"!");
+        message.setSubject("¡Bienvenido a DiscoTkeo "+user.getUsername()+"!");
         message.setContent("<!DOCTYPE html>\n" +
                 "<html lang=\"es\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
                 "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Document</title>\n" +
+                "    <title>Código de verificación</title>\n" +
                 "</head>\n" +
-                "<body>\n" +
-                "    <img src=\"https://document-export.canva.com/ltxVQ/DAFZbRltxVQ/6/thumbnail/0001.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWDTJW6UD%2F20230311%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230311T231101Z&X-Amz-Expires=50165&X-Amz-Signature=aea9dacb8c71a84307d2e9fc344113fcfa210d0d31d0602e657057d76d70f12c&X-Amz-SignedHeaders=host&response-expires=Sun%2C%2012%20Mar%202023%2013%3A07%3A06%20GMT\">\n" +
+                "<body style=\"max-width: 700px;\">\n" +
+                "    <img src=\"https://i.pinimg.com/originals/ba/34/d4/ba34d4023f8263c2085e5d60706e7900.png\"\n" +
+                "        style=\"display: block; margin: auto; max-width: 700px;\">\n" +
+                "    <div style=\"width: 100%; text-align: center;\">\n" +
+                "        <h3>¡Ya casi hemos terminado!</h3>\n" +
+                "        <p>Utiliza el siguiente código para verificar tu cuenta</p>\n" +
+                "    </div>\n" +
+                "    <div style=\"width: 100%; background: #a300ff; text-align: center; color: white; padding: 10px 0;\">\n" +
+                "        <h3 style=\"font-family: Verdana, Geneva, Tahoma, sans-serif;\">"+user.getVerificationToken().getVerificationNumber()+"</h3>\n" +
+                "    </div>\n" +
                 "</body>\n" +
                 "</html>", "text/html");
 
