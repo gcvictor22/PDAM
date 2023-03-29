@@ -12,6 +12,8 @@ import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
+import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
+import com.salesianostriana.dam.pdam.api.verificationtoken.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +42,7 @@ public class UserController {
     private final UserService userService;
     private final FIleService fIleService;
     private final StorageService storageService;
+    private final VerificationTokenService verificationTokenService;
     private final AuthenticationManager authManager;
 
     private final JwtProvider jwtProvider;
@@ -118,7 +121,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException {
         User user = userService.createUser(newUserDto);
-        userService.emailSender(newUserDto.getEmail(), newUserDto.getUsername());
+        verificationTokenService.generateVerificationToken(user);
+        userService.emailSender(newUserDto.getEmail(), user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(GetUserDto.of(user));
     }
@@ -159,6 +163,12 @@ public class UserController {
         User updatedUser =  userService.changeProfile(editProfile, loggedUser);
 
         return GetUserDto.of(updatedUser);
+    }
+
+    @PutMapping("/verification")
+    public GetUserDto accountverification(@RequestBody GetVerificationTokenDto verificationTokenDto){
+        User user = verificationTokenService.activateAccount(verificationTokenDto);
+        return GetUserDto.of(user);
     }
 
     @DeleteMapping("/delete")

@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.user.model;
 
 import com.salesianostriana.dam.pdam.api.post.model.Post;
+import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -75,6 +76,10 @@ public class User implements UserDetails {
     private List<Post> likedPosts = new ArrayList<>();
 
     private boolean verified;
+
+
+    @OneToOne(mappedBy = "userToVerify", cascade = CascadeType.ALL, orphanRemoval = true)
+    private VerificationToken verificationToken;
 
     @Builder.Default
     private boolean accountNonExpired = true;

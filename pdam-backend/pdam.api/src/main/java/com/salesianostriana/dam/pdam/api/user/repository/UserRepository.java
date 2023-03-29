@@ -49,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
             AND NOT EXISTS (SELECT lu FROM u.follows lu WHERE lu.id = :id2)
             """)
     boolean checkFollower(@Param("id1") UUID id1, @Param("id2") UUID id2);
+
+    Optional<User> findByEmail(String email);
 }

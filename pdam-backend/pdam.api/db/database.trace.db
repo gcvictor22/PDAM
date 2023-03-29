@@ -1274,3 +1274,13 @@ Database is already closed (to disable automatic closing at VM shutdown, add ";D
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:114)
 	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-03-23 20:18:14 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USER_ENTITY" not found (this database is empty); SQL statement:
+select * from user_entity [42104-214]
+2023-03-23 20:18:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select * [*]post"
+Syntax error in SQL statement "select * [*]post"; SQL statement:
+select * post [42000-214]
+2023-03-23 20:18:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "POST" not found (this database is empty); SQL statement:
+select * from post [42104-214]
