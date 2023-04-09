@@ -43,6 +43,11 @@ public class PostController {
         return postService.findAll(params, pageable, user.getId());
     }
 
+    @GetMapping("/followsPosts")
+    public GetPageDto<GetPostDto> findAllFollowsPosts(@PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User user){
+        return postService.findAllFollowsPosts(user.getId(), pageable);
+    }
+
     @GetMapping("/{id}")
     public ViewPostDto viewPost(@PathVariable Long id){
         Post post = postService.findById(id);

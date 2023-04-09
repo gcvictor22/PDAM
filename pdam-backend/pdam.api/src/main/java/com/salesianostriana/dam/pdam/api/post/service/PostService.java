@@ -41,9 +41,20 @@ public class PostService {
         PSBuilder psBuilder = new PSBuilder(params);
 
         Specification<Post> spec = psBuilder.build();
-        Page<GetPostDto> pageGetClientDto = postRepository.findAll(spec, pageable).map(p -> GetPostDto.of(p, user));
+        Page<GetPostDto> pageGetPostsDto = postRepository.findAll(spec, pageable).map(p -> GetPostDto.of(p, user));
 
-        return new GetPageDto<>(pageGetClientDto);
+        return new GetPageDto<>(pageGetPostsDto);
+    }
+
+    public GetPageDto<GetPostDto> findAllFollowsPosts(UUID id, Pageable pageable){
+        User user = userRepository.userWithPostsById(id).orElseThrow(() -> new UserNotFoundException(id));
+
+        if (postRepository.findAllFollowsPosts(id, pageable).isEmpty())
+            throw new EmptyPostListException();
+
+        Page<GetPostDto> pageGetPostsDto = postRepository.findAllFollowsPosts(id, pageable).map(p -> GetPostDto.of(p, user));
+
+        return new GetPageDto<>(pageGetPostsDto);
     }
 
     public Post save(NewPostDto newPostDto, User user){

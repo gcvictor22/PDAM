@@ -1,6 +1,11 @@
 package com.salesianostriana.dam.pdam.api.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.dam.pdam.api.city.model.City;
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
+import com.salesianostriana.dam.pdam.api.event.model.Event;
+import com.salesianostriana.dam.pdam.api.party.dto.GetPartyListDto;
+import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import lombok.AllArgsConstructor;
@@ -30,6 +35,11 @@ public class UserProfileDto {
     private List<GetPostDto> likedPosts;
     private boolean followedByUser;
     private boolean verified;
+    private String city;
+    private GetEventDto authEvent;
+    private boolean authorized;
+    private List<Event> events;
+    private List<GetPartyListDto> parties;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDateTime createdAt;
@@ -48,6 +58,11 @@ public class UserProfileDto {
                 .likedPosts(user.getLikedPosts().stream().map(p -> GetPostDto.of(p, user)).toList())
                 .verified(user.isVerified())
                 .followedByUser(user.getFollowers().stream().filter(u -> Objects.equals(u.getId(), loggedUser.getId())).toList().size() > 0)
+                .city(user.getCity().getName())
+                .authEvent(GetEventDto.of(user.getAuthEvent()))
+                .authorized(user.isAuthorized())
+                .events(user.getEvents())
+                .parties(user.getParties().stream().map(GetPartyListDto::of).collect(Collectors.toList()))
                 .build();
     }
 
