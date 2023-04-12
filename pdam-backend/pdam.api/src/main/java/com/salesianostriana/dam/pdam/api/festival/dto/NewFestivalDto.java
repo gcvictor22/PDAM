@@ -1,4 +1,4 @@
-package com.salesianostriana.dam.pdam.api.party.dto;
+package com.salesianostriana.dam.pdam.api.festival.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -12,19 +12,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NewPartyDto {
+public class NewFestivalDto {
 
     private String name;
     private String description;
+    private String location;
+    private Long cityId;
+    private int capacity;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startAt;
+    private LocalDateTime date;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime endsAt;
-    private boolean adult;
+    private int duration;
     private double price;
     private boolean drinkIncluded;
     private int numberOfDrinks;
+    private boolean adult;
 
 }

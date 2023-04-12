@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.discotheque.dto;
 
 import com.salesianostriana.dam.pdam.api.discotheque.model.Discotheque;
+import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.user.dto.UserWhoLikeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class GetDiscothequeDto {
     private List<UserWhoLikeDto> authUsers;
     private int popularity;
 
-    public static GetDiscothequeDto of(Discotheque discotheque){
+    public static GetDiscothequeDto of(Event discotheque){
         return GetDiscothequeDto.builder()
                 .id(discotheque.getId())
                 .name(discotheque.getName())

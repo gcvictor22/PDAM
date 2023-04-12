@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class Festival extends Event {
 
+    private String description;
     private LocalDateTime date;
     private int duration;
     private double price;

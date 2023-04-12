@@ -1,9 +1,8 @@
 package com.salesianostriana.dam.pdam.api.party.controller;
 
+import com.salesianostriana.dam.pdam.api.event.service.EventService;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
-import com.salesianostriana.dam.pdam.api.party.dto.GetNewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
-import com.salesianostriana.dam.pdam.api.party.dto.GetPartyListDto;
 import com.salesianostriana.dam.pdam.api.party.dto.NewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.party.service.PartyService;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +28,10 @@ public class PartyController {
 
     private final PartyService partyService;
     private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping("/")
-    public GetPageDto<GetPartyListDto> findAll(
+    public GetPageDto<GetPartyDto> findAll(
             @RequestParam(value = "s", defaultValue = "") String search,
             @PageableDefault(size = 20, page = 0) Pageable pageable){
 
@@ -40,18 +41,19 @@ public class PartyController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GetNewPartyDto> create(@RequestBody NewPartyDto newPartyDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(partyService.save(newPartyDto));
+    @PreAuthorize("@eventService.authUser(#user)")
+    public ResponseEntity<GetPartyDto> create(@RequestBody NewPartyDto newPartyDto, @AuthenticationPrincipal User user){
+        return ResponseEntity.status(HttpStatus.CREATED).body(partyService.save(newPartyDto, user));
     }
 
     @PostMapping("/buy/{id}")
-    public ResponseEntity<GetNewPartyDto> buy(@PathVariable Long id, @AuthenticationPrincipal User loggedUser){
+    public ResponseEntity<GetPartyDto> buy(@PathVariable Long id, @AuthenticationPrincipal User loggedUser){
 
         User user = userService.getProfile(loggedUser.getId());
         Party party = partyService.buy(id, user);
         partyService.setUpdatedPopularity(party.getDiscotheque());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(GetNewPartyDto.of(party));
+        return ResponseEntity.status(HttpStatus.CREATED).body(GetPartyDto.of(party));
     }
 
 }

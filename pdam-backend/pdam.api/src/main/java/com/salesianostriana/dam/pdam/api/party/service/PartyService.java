@@ -1,6 +1,5 @@
 package com.salesianostriana.dam.pdam.api.party.service;
 
-import com.salesianostriana.dam.pdam.api.discotheque.dto.GetDiscothequeDto;
 import com.salesianostriana.dam.pdam.api.discotheque.model.Discotheque;
 import com.salesianostriana.dam.pdam.api.discotheque.repository.DiscothequeRepository;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
@@ -9,9 +8,7 @@ import com.salesianostriana.dam.pdam.api.exception.empty.EmptyDiscothequeListExc
 import com.salesianostriana.dam.pdam.api.exception.notfound.DiscothequeNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.PartyNotFoundException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
-import com.salesianostriana.dam.pdam.api.party.dto.GetNewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
-import com.salesianostriana.dam.pdam.api.party.dto.GetPartyListDto;
 import com.salesianostriana.dam.pdam.api.party.dto.NewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.party.repository.PartyRepository;
@@ -26,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 
 @Service
@@ -39,7 +35,7 @@ public class PartyService {
     private final EventRepository eventRepository;
 
 
-    public GetPageDto<GetPartyListDto> findAll(List<SearchCriteria> params, Pageable pageable) {
+    public GetPageDto<GetPartyDto> findAll(List<SearchCriteria> params, Pageable pageable) {
 
         if (discothequeRepository.findAll().isEmpty())
             throw new EmptyDiscothequeListException();
@@ -47,18 +43,19 @@ public class PartyService {
         PSBuilder psBuilder = new PSBuilder(params);
 
         Specification<Post> spec = psBuilder.build();
-        Page<GetPartyListDto> getPartyListDto = partyRepository.findAll(spec, pageable).map(GetPartyListDto::of);
+        Page<GetPartyDto> getListDto = partyRepository.findAll(spec, pageable).map(GetPartyDto::of);
 
-        return new GetPageDto<>(getPartyListDto);
+        return new GetPageDto<>(getListDto);
 
     }
 
-    public GetNewPartyDto save(NewPartyDto newPartyDto){
+    public GetPartyDto save(NewPartyDto newPartyDto, User loggedUser){
 
-        Discotheque discotheque = discothequeRepository.findById(newPartyDto.getDiscothequeId()).orElseThrow(() -> new DiscothequeNotFoundException(newPartyDto.getDiscothequeId()));
+        Discotheque discotheque = discothequeRepository.findById(loggedUser.getAuthEvent().getId()).orElseThrow(() -> new DiscothequeNotFoundException(loggedUser.getAuthEvent().getId()));
 
         Party party = Party.builder()
                 .name(newPartyDto.getName())
+                .description(newPartyDto.getDescription())
                 .discotheque(discotheque)
                 .startAt(newPartyDto.getStartAt())
                 .endsAt(newPartyDto.getEndsAt())
@@ -72,7 +69,7 @@ public class PartyService {
         discotheque.getParties().add(party);
         discothequeRepository.save(discotheque);
 
-        return GetNewPartyDto.of(party);
+        return GetPartyDto.of(party);
     }
 
     public Party buy(Long id, User loggedUser) {
