@@ -3,8 +3,6 @@ package com.salesianostriana.dam.pdam.api.comment.service;
 import com.salesianostriana.dam.pdam.api.comment.dto.NewCommentDto;
 import com.salesianostriana.dam.pdam.api.comment.model.Comment;
 import com.salesianostriana.dam.pdam.api.comment.repository.CommentRespository;
-import com.salesianostriana.dam.pdam.api.exception.accesdenied.CommentDeniedAccessException;
-import com.salesianostriana.dam.pdam.api.exception.badrequest.CommentBadRequestToDeleteException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.CommentNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.PostNotFoundException;
 import com.salesianostriana.dam.pdam.api.post.dto.ViewPostDto;

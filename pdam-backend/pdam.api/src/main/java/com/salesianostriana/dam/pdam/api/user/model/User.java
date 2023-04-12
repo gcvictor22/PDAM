@@ -1,5 +1,8 @@
 package com.salesianostriana.dam.pdam.api.user.model;
 
+import com.salesianostriana.dam.pdam.api.city.model.City;
+import com.salesianostriana.dam.pdam.api.event.model.Event;
+import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
 import lombok.*;
@@ -80,6 +83,36 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "userToVerify", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verificationToken;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city", foreignKey = @ForeignKey(name = "FK_USER_CITY"))
+    private City city;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id",
+            foreignKey = @ForeignKey(name="FK_EVENTS_USER")),
+            inverseJoinColumns = @JoinColumn(name = "event_id",
+                    foreignKey = @ForeignKey(name="FK_EVENT_CLIENTS")),
+            name = "attendedevents"
+    )
+    @Builder.Default
+    private List<Event> events = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "authEvent", foreignKey = @ForeignKey(name = "FK_AUTHUSER_EVENT"))
+    private Event authEvent;
+
+    private boolean authorized;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(joinColumns = @JoinColumn(name = "user_id",
+            foreignKey = @ForeignKey(name="FK_PARTIES_USER")),
+            inverseJoinColumns = @JoinColumn(name = "party_id",
+                    foreignKey = @ForeignKey(name="FK_PARTY_CLIENTS")),
+            name = "attendedparties"
+    )
+    @Builder.Default
+    private List<Party> parties = new ArrayList<>();
 
     @Builder.Default
     private boolean accountNonExpired = true;

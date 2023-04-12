@@ -3,6 +3,7 @@ package com.salesianostriana.dam.pdam.api.error;
 import com.salesianostriana.dam.pdam.api.error.model.impl.ApiErrorImpl;
 import com.salesianostriana.dam.pdam.api.error.model.impl.ApiValidationSubError;
 import com.salesianostriana.dam.pdam.api.exception.accesdenied.CommentDeniedAccessException;
+import com.salesianostriana.dam.pdam.api.exception.accesdenied.EventDeniedAccessException;
 import com.salesianostriana.dam.pdam.api.exception.accesdenied.PostAccessDeniedExeption;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.*;
 import com.salesianostriana.dam.pdam.api.exception.file.NotAllowedCountFilesException;
@@ -67,7 +68,8 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
             AccessDeniedException.class,
             JwtTokenException.class,
             PostAccessDeniedExeption.class,
-            CommentDeniedAccessException.class })
+            CommentDeniedAccessException.class,
+            EventDeniedAccessException.class})
     public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
         return buildApiError(ex.getMessage(), request, HttpStatus.FORBIDDEN);
 
