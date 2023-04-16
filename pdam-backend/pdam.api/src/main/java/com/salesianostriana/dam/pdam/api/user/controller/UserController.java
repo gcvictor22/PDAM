@@ -1,11 +1,15 @@
 package com.salesianostriana.dam.pdam.api.user.controller;
 
 import com.salesianostriana.dam.pdam.api.exception.file.NotAllowedCountFilesException;
+import com.salesianostriana.dam.pdam.api.exception.token.RefreshTokenException;
 import com.salesianostriana.dam.pdam.api.files.dto.FileResponse;
 import com.salesianostriana.dam.pdam.api.files.service.FIleService;
 import com.salesianostriana.dam.pdam.api.files.service.StorageService;
 import com.salesianostriana.dam.pdam.api.files.utils.MediaTypeUrlResource;
-import com.salesianostriana.dam.pdam.api.security.jwt.JwtProvider;
+import com.salesianostriana.dam.pdam.api.security.jwt.access.JwtProvider;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRequest;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenService;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
@@ -46,6 +50,7 @@ public class UserController {
     private final AuthenticationManager authManager;
 
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
 
     @GetMapping("/")
@@ -67,7 +72,7 @@ public class UserController {
         return UserProfileDto.of(userService.getProfile(id), user);
     }
 
-    @GetMapping("userName/{userName}")
+    @GetMapping("/userName/{userName}")
     public UserProfileDto viewUserProfile(@PathVariable String userName, @AuthenticationPrincipal User user){
         return UserProfileDto.of(userService.getProfileByUserName(userName), user);
     }
@@ -112,10 +117,14 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generateToken(authentication);
+
         User user = (User) authentication.getPrincipal();
 
+        refreshTokenService.deleteByUser(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(JwtUserResponse.of(user, token));
+                .body(JwtUserResponse.of(user, token, refreshToken.getToken()));
     }
 
     @PostMapping("/register")
@@ -177,6 +186,25 @@ public class UserController {
         userService.deleteById(loggedUser.getId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verify)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtProvider.generateToken(user);
+                    refreshTokenService.deleteByUser(user);
+                    RefreshToken refreshToken2 = refreshTokenService.createRefreshToken(user);
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(JwtUserResponse.of(user, token, refreshToken2.getToken()));
+                })
+                .orElseThrow(() -> new RefreshTokenException("Refresh token not found"));
+
+        //JwtUserResponse.of(user, token, refreshToken.getToken())
     }
 
 }

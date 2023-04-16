@@ -1,4 +1,4 @@
-package com.salesianostriana.dam.pdam.api.security.jwt;
+package com.salesianostriana.dam.pdam.api.security.jwt.access;
 
 import com.salesianostriana.dam.pdam.api.exception.token.JwtTokenException;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -20,7 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Log

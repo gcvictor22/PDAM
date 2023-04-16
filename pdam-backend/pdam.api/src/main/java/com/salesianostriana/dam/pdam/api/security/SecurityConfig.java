@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.pdam.api.security;
 
-import com.salesianostriana.dam.pdam.api.security.jwt.JwtAuthenticationFilter;
+import com.salesianostriana.dam.pdam.api.security.jwt.access.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,8 +74,7 @@ public class SecurityConfig {
                                 .authorizeRequests()
                                 .antMatchers("/user/**").hasRole("USER")
                                 .antMatchers("/post/**").hasRole("USER")
-                                .antMatchers("/file/**").hasRole("USER")
-                                .antMatchers("/discotheque").hasRole("USER")
+                                .antMatchers("/discotheque/**").hasRole("USER")
                                 .antMatchers("/comment/**").hasRole("VERIFIED")
                                 .antMatchers("/party/create").hasRole("AUTH")
                                 .anyRequest().authenticated();
@@ -92,7 +91,8 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().antMatchers("/h2-console/**", "/user/register", "/user/login", "/file/{filename:.+}", "/user/verification"));
+        return (web -> web.ignoring().antMatchers("/h2-console/**", "/user/register", "/user/login",
+                "/file/{filename:.+}", "/user/verification", "/user/refreshtoken"));
     }
 
 
