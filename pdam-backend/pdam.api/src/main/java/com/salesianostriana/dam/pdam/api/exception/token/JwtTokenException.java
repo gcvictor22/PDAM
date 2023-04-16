@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.pdam.api.exception.token;
 
-public class JwtTokenException extends RuntimeException{
+import org.springframework.security.access.AccessDeniedException;
+
+public class JwtTokenException extends AccessDeniedException {
 
     public JwtTokenException(String msg) {
         super(msg);

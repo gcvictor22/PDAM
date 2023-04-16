@@ -40,7 +40,7 @@ public class PartyController {
 
     }
 
-    @PostMapping("/create")
+    @PostMapping("/")
     @PreAuthorize("@eventService.authUser(#user)")
     public ResponseEntity<GetPartyDto> create(@RequestBody NewPartyDto newPartyDto, @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.CREATED).body(partyService.save(newPartyDto, user));

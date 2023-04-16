@@ -44,7 +44,8 @@ public class PostController {
     }
 
     @GetMapping("/followsPosts")
-    public GetPageDto<GetPostDto> findAllFollowsPosts(@PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User user){
+    public GetPageDto<GetPostDto> findAllFollowsPosts(@PageableDefault(size = 20, page = 0) Pageable pageable,
+                                                      @AuthenticationPrincipal User user){
         return postService.findAllFollowsPosts(user.getId(), pageable);
     }
 

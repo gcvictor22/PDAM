@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 public class JwtUserResponse extends GetUserDto{
 
     private String token;
+    private String refreshToken;
 
     public JwtUserResponse(GetUserDto user) {
         id = user.getId();
@@ -25,9 +26,10 @@ public class JwtUserResponse extends GetUserDto{
         verified = user.isVerified();
     }
 
-    public static JwtUserResponse of (User user, String token) {
+    public static JwtUserResponse of (User user, String token, String refreshToken) {
         JwtUserResponse result = new JwtUserResponse(GetUserDto.of(user));
         result.setToken(token);
+        result.setRefreshToken(refreshToken);
 
         return result;
     }
