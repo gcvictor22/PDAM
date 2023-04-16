@@ -57,7 +57,7 @@ public class UserProfileDto {
                 .verified(user.isVerified())
                 .followedByUser(user.getFollowers().stream().filter(u -> Objects.equals(u.getId(), loggedUser.getId())).toList().size() > 0)
                 .city(user.getCity().getName())
-                .authEvent(GetEventDto.of(user.getAuthEvent()))
+                .authEvent(user.getAuthEvent() == null ? null : GetEventDto.of(user.getAuthEvent()))
                 .authorized(user.isAuthorized())
                 .events(user.getEvents())
                 .parties(user.getParties().stream().map(GetPartyDto::of).collect(Collectors.toList()))

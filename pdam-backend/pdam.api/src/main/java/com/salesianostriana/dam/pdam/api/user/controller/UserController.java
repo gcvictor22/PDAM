@@ -16,6 +16,7 @@ import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
+import com.salesianostriana.dam.pdam.api.validation.annotation.user.UniqueUserName;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -165,13 +167,32 @@ public class UserController {
         return GetUserDto.of(updateUser);
     }
 
-    @PutMapping("/edit/profile")
-    public GetUserDto changeProfile(@Valid @RequestBody EditProfileDto editProfile,
-                                    @AuthenticationPrincipal User loggedUser){
+    @PutMapping("/edit/fullName")
+    public GetUserDto changeFullName(@Valid
+            @RequestBody EditFullNameDto editFullNameDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editFullName(editFullNameDto.getFullName(), loggedUser);
+        return GetUserDto.of(user);
+    }
 
-        User updatedUser =  userService.changeProfile(editProfile, loggedUser);
+    @PutMapping("/edit/userName")
+    public GetUserDto changeUserName(@Valid
+            @RequestBody EditUserNameDto editUserNameDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editUserName(editUserNameDto.getUserName(), loggedUser);
+        return GetUserDto.of(user);
+    }
 
-        return GetUserDto.of(updatedUser);
+    @PutMapping("/edit/email")
+    public GetUserDto changeEmail(@Valid
+            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editEmail(editEmailDto.getEmail(), loggedUser);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/edit/phoneNumber")
+    public GetUserDto changePhoneNumber(@Valid
+            @RequestBody EditPhoneNumberDto editPhoneNumberDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editPhoneNumber(editPhoneNumberDto.getPhoneNumber(), loggedUser);
+        return GetUserDto.of(user);
     }
 
     @PutMapping("/verification")
@@ -182,9 +203,7 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser){
-
         userService.deleteById(loggedUser.getId());
-
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

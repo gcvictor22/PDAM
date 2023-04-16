@@ -3,7 +3,6 @@ package com.salesianostriana.dam.pdam.api.user.service;
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
-import com.salesianostriana.dam.pdam.api.user.dto.EditProfileDto;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
@@ -118,18 +117,6 @@ public class UserService {
 
     }
 
-    public User changeProfile(EditProfileDto editProfileDto, User loggedUser) {
-        return userRepository.findById(loggedUser.getId())
-                .map(old -> {
-                    old.setFullName(editProfileDto.getFullName());
-                    old.setUserName(editProfileDto.getUsername());
-                    old.setEmail(editProfileDto.getEmail());
-                    old.setPhoneNumber(editProfileDto.getPhoneNumber());
-                    return userRepository.save(old);
-                })
-                .orElseThrow(() -> new UserNotFoundException(loggedUser.getId()));
-    }
-
     public User follow(User loggedUser, String userToFollow) {
         User user = userRepository.userWithPostsByUserName(userToFollow).orElseThrow(() -> new UserNotFoundException(userToFollow));
 
@@ -182,5 +169,25 @@ public class UserService {
     public void setImg(String imgPath, User user) {
         user.setImgPath(imgPath);
         userRepository.save(user);
+    }
+
+    public User editUserName(String userName, User loggedUser) {
+        loggedUser.setUserName(userName);
+        return userRepository.save(loggedUser);
+    }
+
+    public User editFullName(String fullName, User loggedUser) {
+        loggedUser.setFullName(fullName);
+        return userRepository.save(loggedUser);
+    }
+
+    public User editEmail(String email, User loggedUser) {
+        loggedUser.setEmail(email);
+        return userRepository.save(loggedUser);
+    }
+
+    public User editPhoneNumber(String phoneNumber, User loggedUser) {
+        loggedUser.setPhoneNumber(phoneNumber);
+        return userRepository.save(loggedUser);
     }
 }

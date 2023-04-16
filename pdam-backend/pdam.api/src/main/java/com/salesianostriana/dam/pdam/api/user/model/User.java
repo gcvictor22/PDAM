@@ -182,14 +182,14 @@ public class User implements UserDetails {
             aux1.remove(this.getFollowers().indexOf(loggedUser)+1);
             aux2.remove(loggedUser.getFollows().indexOf(this)+1);
             if (aux1.size()<1){
-                this.setRoles(EnumSet.of(UserRole.USER));
+                this.roles.remove(UserRole.VERIFIED);
                 this.setVerified(false);
             }
         }else {
             aux1.add(loggedUser);
             aux2.add(this);
             if (aux1.size()>=1){
-                this.setRoles(EnumSet.of(UserRole.USER, UserRole.VERIFIED));
+                this.roles.add(UserRole.VERIFIED);
                 this.setVerified(true);
             }
         }
