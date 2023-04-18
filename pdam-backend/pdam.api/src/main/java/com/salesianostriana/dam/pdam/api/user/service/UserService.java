@@ -1,8 +1,11 @@
 package com.salesianostriana.dam.pdam.api.user.service;
 
+import com.salesianostriana.dam.pdam.api.exception.badrequest.VerifiactionTokenBadRequestException;
+import com.salesianostriana.dam.pdam.api.exception.badrequest.VerificationTokenExpirationTimeBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
+import com.salesianostriana.dam.pdam.api.user.dto.ForgotPasswordChangeDto;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
@@ -189,5 +192,58 @@ public class UserService {
     public User editPhoneNumber(String phoneNumber, User loggedUser) {
         loggedUser.setPhoneNumber(phoneNumber);
         return userRepository.save(loggedUser);
+    }
+
+    public void forgotPassword(User user) throws MessagingException {
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom("dyscotkeo@gmail.com");
+        helper.setTo(user.getEmail());
+        message.setSubject("Verifica que eres tu "+user.getUsername());
+        message.setContent("<!DOCTYPE html>\n" +
+                "<html lang=\"es\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Código de verificación</title>\n" +
+                "</head>\n" +
+                "<body style=\"max-width: 700px;\">\n" +
+                "    <div style=\"width: 100%; text-align: center;\">\n" +
+                "        <h3>¡Ya casi hemos terminado!</h3>\n" +
+                "        <p>Utiliza el siguiente código para obtener tu acceso al cambio de contraseña</p>\n" +
+                "    </div>\n" +
+                "    <div style=\"width: 100%; background: #a300ff; text-align: center; color: white; padding: 10px 0;\">\n" +
+                "        <h3 style=\"font-family: Verdana, Geneva, Tahoma, sans-serif;\">"+user.getVerificationToken().getVerificationNumber()+"</h3>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>", "text/html");
+
+        javaMailSender.send(message);
+    }
+
+    public User forgotPasswordValidator(String userName, int verificationNumber) {
+        User user = userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+
+        if (Objects.equals(verificationNumber, user.getVerificationToken().getVerificationNumber())
+                && user.getVerificationToken().getExpirationTime().compareTo(LocalDateTime.now()) > 0){
+            user.setEnabled(true);
+            userRepository.save(user);
+        }else {
+            if (!Objects.equals(verificationNumber, user.getVerificationToken().getVerificationNumber()))
+                throw new VerifiactionTokenBadRequestException(verificationNumber);
+            throw new VerificationTokenExpirationTimeBadRequestException();
+        }
+
+        return user;
+    }
+
+    public User changeForgotPassword(ForgotPasswordChangeDto forgotPasswordChangeDto, String userName) {
+        User user = userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+
+        user.setPassword(passwordEncoder.encode(forgotPasswordChangeDto.getNewPassword()));
+        return userRepository.save(user);
     }
 }

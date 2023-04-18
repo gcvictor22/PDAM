@@ -158,6 +158,23 @@ public class UserController {
         return ResponseEntity.created(URI.create(response.getUri())).body(response);
     }
 
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verify)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtProvider.generateToken(user);
+                    refreshTokenService.deleteByUser(user);
+                    RefreshToken refreshToken2 = refreshTokenService.createRefreshToken(user);
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(JwtUserResponse.of(user, token, refreshToken2.getToken()));
+                })
+                .orElseThrow(() -> new RefreshTokenException("Refresh token not found"));
+    }
+
     @PutMapping("/edit/password")
     public GetUserDto changePassword(@Valid @RequestBody EditPasswordDto editPasswordDto,
                                                        @AuthenticationPrincipal User loggedUser) {
@@ -201,29 +218,29 @@ public class UserController {
         return GetUserDto.of(user);
     }
 
+    @PutMapping("/forgotPassword")
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
+        User user = userService.findByUserName(forgotPasswordDto.getUserName());
+        verificationTokenService.generateVerificationToken(user);
+        userService.forgotPassword(user);
+    }
+
+    @PutMapping("/forgotPassword/{userName}")
+    public GetUserDto forgotPasswordValidator(@PathVariable String userName, @RequestBody ForgotPasswordVerificationDto forgotPasswordVerificationDto){
+        User user = userService.forgotPasswordValidator(userName, forgotPasswordVerificationDto.getVerificationNumber());
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/changeForgotPassword/{userName}")
+    public GetUserDto changeForgotPassword(@Valid @PathVariable String userName, @RequestBody ForgotPasswordChangeDto forgotPasswordChangeDto){
+        User user = userService.changeForgotPassword(forgotPasswordChangeDto, userName);
+        return GetUserDto.of(user);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser){
         userService.deleteById(loggedUser.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
-        String refreshToken = refreshTokenRequest.getRefreshToken();
-
-        return refreshTokenService.findByToken(refreshToken)
-                .map(refreshTokenService::verify)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtProvider.generateToken(user);
-                    refreshTokenService.deleteByUser(user);
-                    RefreshToken refreshToken2 = refreshTokenService.createRefreshToken(user);
-                    return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(JwtUserResponse.of(user, token, refreshToken2.getToken()));
-                })
-                .orElseThrow(() -> new RefreshTokenException("Refresh token not found"));
-
-        //JwtUserResponse.of(user, token, refreshToken.getToken())
     }
 
 }
