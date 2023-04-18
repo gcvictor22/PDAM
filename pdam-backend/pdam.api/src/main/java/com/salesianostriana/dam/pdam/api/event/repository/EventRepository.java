@@ -35,7 +35,7 @@ public interface    EventRepository extends JpaRepository<Event, Long> {
             FROM Event e
             ORDER BY e.popularity DESC
             """)
-    Page<Discotheque> findAll(Specification<Post> spec, Pageable pageable);
+    Page<Event> findAll(Specification<Post> spec, Pageable pageable);
 
     @Query("""
             SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END

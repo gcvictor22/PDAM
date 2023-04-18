@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.pdam.api.festival.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.dam.pdam.api.festival.model.Festival;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,10 @@ public class GetFestivalDto {
     private String name;
     private String description;
     private String location;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime date;
+
     private int duration;
     private int remainingTickets;
     private String city;
