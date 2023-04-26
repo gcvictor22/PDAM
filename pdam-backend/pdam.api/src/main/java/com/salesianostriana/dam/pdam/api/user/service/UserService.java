@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.pdam.api.user.service;
 
+import com.salesianostriana.dam.pdam.api.city.repository.CityRepository;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerifiactionTokenBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerificationTokenExpirationTimeBadRequestException;
+import com.salesianostriana.dam.pdam.api.exception.notfound.CityNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
@@ -16,6 +18,7 @@ import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.EditPasswordDto;
 import com.salesianostriana.dam.pdam.api.user.dto.GetUserDto;
 import com.salesianostriana.dam.pdam.api.user.dto.NewUserDto;
+import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +31,13 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -36,6 +46,7 @@ import java.util.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CityRepository cityRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
     private final JavaMailSender javaMailSender;
@@ -61,6 +72,7 @@ public class UserService {
                 .imgPath("default.png")
                 .fullName(createUser.getFullName())
                 .roles(roles)
+                .city(cityRepository.findById(createUser.getCityId()).orElseThrow(() -> new CityNotFoundException(createUser.getCityId())))
                 .createdAt(createUser.getCreatedAt())
                 .enabled(false)
                 .build();
@@ -186,6 +198,7 @@ public class UserService {
 
     public User editEmail(String email, User loggedUser) {
         loggedUser.setEmail(email);
+        loggedUser.setEnabled(false);
         return userRepository.save(loggedUser);
     }
 
@@ -224,16 +237,16 @@ public class UserService {
         javaMailSender.send(message);
     }
 
-    public User forgotPasswordValidator(String userName, int verificationNumber) {
-        User user = userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
+    public User forgotPasswordValidator(GetVerificationTokenDto getVerificationTokenDto) {
+        User user = userRepository.userWithPostsByUserName(getVerificationTokenDto.getUserName()).orElseThrow(() -> new UserNotFoundException(getVerificationTokenDto.getUserName()));
 
-        if (Objects.equals(verificationNumber, user.getVerificationToken().getVerificationNumber())
+        if (Objects.equals(getVerificationTokenDto.getVerificationNumber(), user.getVerificationToken().getVerificationNumber())
                 && user.getVerificationToken().getExpirationTime().compareTo(LocalDateTime.now()) > 0){
             user.setEnabled(true);
             userRepository.save(user);
         }else {
-            if (!Objects.equals(verificationNumber, user.getVerificationToken().getVerificationNumber()))
-                throw new VerifiactionTokenBadRequestException(verificationNumber);
+            if (!Objects.equals(getVerificationTokenDto.getVerificationNumber(), user.getVerificationToken().getVerificationNumber()))
+                throw new VerifiactionTokenBadRequestException(getVerificationTokenDto.getVerificationNumber());
             throw new VerificationTokenExpirationTimeBadRequestException();
         }
 

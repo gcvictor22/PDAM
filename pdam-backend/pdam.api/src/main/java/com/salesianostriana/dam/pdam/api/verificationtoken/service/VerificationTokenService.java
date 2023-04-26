@@ -24,7 +24,7 @@ public class VerificationTokenService {
     private final UserRepository userRepository;
 
     public User activateAccount(GetVerificationTokenDto verificationTokenDto){
-        User user = userRepository.findByEmail(verificationTokenDto.getEmail()).orElseThrow(() -> new UserNotFoundException(verificationTokenDto.getEmail()));
+        User user = userRepository.userWithPostsByUserName(verificationTokenDto.getUserName()).orElseThrow(() -> new UserNotFoundException(verificationTokenDto.getUserName()));
 
         if (Objects.equals(verificationTokenDto.getVerificationNumber(), user.getVerificationToken().getVerificationNumber())
                 && user.getVerificationToken().getExpirationTime().compareTo(LocalDateTime.now()) > 0){

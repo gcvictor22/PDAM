@@ -36,6 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -200,8 +202,10 @@ public class UserController {
 
     @PutMapping("/edit/email")
     public GetUserDto changeEmail(@Valid
-            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser){
+            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser) throws MessagingException {
         User user = userService.editEmail(editEmailDto.getEmail(), loggedUser);
+        verificationTokenService.generateVerificationToken(user);
+        userService.emailSender(user.getEmail(), loggedUser);
         return GetUserDto.of(user);
     }
 
@@ -213,7 +217,7 @@ public class UserController {
     }
 
     @PutMapping("/verification")
-    public GetUserDto accountverification(@RequestBody GetVerificationTokenDto verificationTokenDto){
+    public GetUserDto accountverification(@Valid @RequestBody GetVerificationTokenDto verificationTokenDto){
         User user = verificationTokenService.activateAccount(verificationTokenDto);
         return GetUserDto.of(user);
     }
@@ -225,14 +229,14 @@ public class UserController {
         userService.forgotPassword(user);
     }
 
-    @PutMapping("/forgotPassword/{userName}")
-    public GetUserDto forgotPasswordValidator(@PathVariable String userName, @RequestBody ForgotPasswordVerificationDto forgotPasswordVerificationDto){
-        User user = userService.forgotPasswordValidator(userName, forgotPasswordVerificationDto.getVerificationNumber());
+    @PutMapping("/forgotPassword/validate")
+    public GetUserDto forgotPasswordValidator(@Valid @RequestBody GetVerificationTokenDto getVerificationTokenDto){
+        User user = userService.forgotPasswordValidator(getVerificationTokenDto);
         return GetUserDto.of(user);
     }
 
-    @PutMapping("/changeForgotPassword/{userName}")
-    public GetUserDto changeForgotPassword(@Valid @PathVariable String userName, @RequestBody ForgotPasswordChangeDto forgotPasswordChangeDto){
+    @PutMapping("/forgotPassword/{userName}")
+    public GetUserDto changeForgotPassword(@PathVariable String userName, @Valid @RequestBody ForgotPasswordChangeDto forgotPasswordChangeDto){
         User user = userService.changeForgotPassword(forgotPasswordChangeDto, userName);
         return GetUserDto.of(user);
     }

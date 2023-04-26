@@ -59,7 +59,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //GlobalContext.ctx = context;
     return MaterialApp(
-      title: 'Authentication Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Discotkeo',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),

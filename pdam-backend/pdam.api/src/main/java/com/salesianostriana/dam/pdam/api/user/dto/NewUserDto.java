@@ -46,6 +46,9 @@ public class NewUserDto {
     @OnlyNumber
     private String phoneNumber;
 
+    @NotEmpty
+    private Long cityId;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
 }

@@ -64,7 +64,7 @@ class JwtAuthenticationService extends AuthenticationService {
     print("get current user");
     String? token = _localStorageService.getFromDisk("user_token");
     if (token != null) {
-      UserResponse response = await _userRepository.me();
+      UserResponse response = await _userRepository.profile();
       return response;
     }
     return null;

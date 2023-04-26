@@ -8,11 +8,14 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: SafeArea(
-          minimum: const EdgeInsets.all(16),
+        body: Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/login-background.png'),
+              fit: BoxFit.cover)),
+      child: SafeArea(
+          top: false,
+          bottom: false,
           child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             builder: (context, state) {
               final authBloc = BlocProvider.of<AuthenticationBloc>(context);
@@ -22,8 +25,7 @@ class LoginPage extends StatelessWidget {
               if (state is AuthenticationFailure ||
                   state is SessionExpiredState) {
                 var msg = (state as AuthenticationFailure).message;
-                return Center(
-                    child: Column(
+                return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -36,7 +38,7 @@ class LoginPage extends StatelessWidget {
                       },
                     )
                   ],
-                ));
+                );
               }
               // return splash screen
               return Center(
@@ -46,7 +48,7 @@ class LoginPage extends StatelessWidget {
               );
             },
           )),
-    );
+    ));
   }
 }
 
@@ -58,7 +60,7 @@ class _AuthForm extends StatelessWidget {
     final authBloc = BlocProvider.of<AuthenticationBloc>(context);
 
     return Container(
-      alignment: Alignment.center,
+      alignment: Alignment.bottomCenter,
       child: BlocProvider<LoginBloc>(
         create: (context) => LoginBloc(authBloc, authService),
         child: _SignInForm(),
@@ -107,65 +109,166 @@ class __SignInFormState extends State<_SignInForm> {
             );
           }
           return Form(
-            key: _key,
-            autovalidateMode: _autoValidate
-                ? AutovalidateMode.always
-                : AutovalidateMode.disabled,
-            child: SingleChildScrollView(
+              key: _key,
+              autovalidateMode: _autoValidate
+                  ? AutovalidateMode.always
+                  : AutovalidateMode.disabled,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Email address',
-                      filled: true,
-                      isDense: true,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SafeArea(
+                    child: Container(
+                      child: Image.asset(
+                        'assets/login-logo.png',
+                      ),
+                      margin: EdgeInsets.only(top: 100),
+                      width: double.infinity,
                     ),
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Email is required.';
-                      }
-                      return null;
-                    },
+                    minimum: EdgeInsets.all(15),
                   ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      filled: true,
-                      isDense: true,
+                  Container(
+                    margin: EdgeInsets.only(top: 100),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
                     ),
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Password is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  //RaisedButton(
-                  ElevatedButton(
-                    //color: Theme.of(context).primaryColor,
-                    //textColor: Colors.white,
-                    //padding: const EdgeInsets.all(16),
-                    //shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
-                    child: Text('LOG IN'),
-                    onPressed:
-                        state is LoginLoading ? () {} : _onLoginButtonPressed,
+                    padding: EdgeInsets.fromLTRB(50, 50, 50, 30),
+                    child: Container(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          TextFormField(
+                            cursorColor: Color.fromRGBO(173, 29, 254, 1),
+                            decoration: InputDecoration(
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                labelText: 'Nombre de usuario',
+                                labelStyle: TextStyle(fontSize: 20),
+                                fillColor:
+                                    const Color.fromRGBO(217, 217, 217, 1),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 15, 10, 15),
+                                filled: true,
+                                isDense: true,
+                                floatingLabelStyle: TextStyle(
+                                    color: Color.fromRGBO(173, 29, 254, 1)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            autocorrect: false,
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Email is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            cursorColor: Color.fromRGBO(173, 29, 254, 1),
+                            decoration: InputDecoration(
+                                border: UnderlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                labelText: 'Contraseña',
+                                labelStyle: TextStyle(fontSize: 20),
+                                fillColor:
+                                    const Color.fromRGBO(217, 217, 217, 1),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 15, 10, 15),
+                                filled: true,
+                                isDense: true,
+                                floatingLabelStyle: TextStyle(
+                                    color: Color.fromRGBO(173, 29, 254, 1)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide.none)),
+                            obscureText: true,
+                            controller: _passwordController,
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Password is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          //RaisedButton(
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromRGBO(173, 29, 254, 1)),
+                              padding: MaterialStateProperty.all<EdgeInsets>(
+                                  EdgeInsets.all(10)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text('Iniciar sesión',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 40)),
+                            onPressed: state is LoginLoading
+                                ? () {}
+                                : _onLoginButtonPressed,
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            width: 50,
+                            height: 40,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "¿Eres nuevo? ",
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                                TextButton(
+                                  onPressed: () => print("Bien por ahora"),
+                                  child: Text(
+                                    "Registrate",
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        decoration: TextDecoration.underline,
+                                        color: Color.fromRGBO(173, 29, 254, 1)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          TextButton(
+                              onPressed: () => print("Bien por ahora"),
+                              child: Text("¿Has olvidado tu contraseña?",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.black)))
+                        ],
+                      ),
+                    ),
                   )
                 ],
-              ),
-            ),
-          );
+              ));
         },
       ),
     );
