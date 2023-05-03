@@ -92,7 +92,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web -> web.ignoring().antMatchers("/h2-console/**", "/user/register", "/user/login",
-                "/file/{filename:.+}", "/user/verification", "/user/refreshtoken"));
+                "/file/{filename:.+}", "/user/verification", "/user/refreshtoken", "/user/forgotPassword/**",
+                "/city/**"));
     }
 
 

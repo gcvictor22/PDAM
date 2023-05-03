@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:injectable/injectable.dart';
 
 import '../config/locator.dart';
-import '../models/user.dart';
+import '../models/user/user.dart';
 import '../rest/rest_client.dart';
 
 @Order(-1)
@@ -15,8 +15,8 @@ class UserRepository {
     _client = getIt<RestAuthenticatedClient>();
   }
 
-  Future<dynamic> me() async {
-    String url = "/me";
+  Future<dynamic> profile() async {
+    String url = "/user/profile";
 
     var jsonResponse = await _client.get(url);
     return UserResponse.fromJson(jsonDecode(jsonResponse));

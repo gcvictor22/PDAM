@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:pdam_app/config/locator.dart';
-import 'package:pdam_app/main.dart';
+import 'package:pdam_app/models/login.dart';
 import 'package:pdam_app/services/localstorage_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http_interceptor/http_interceptor.dart';
@@ -12,7 +10,6 @@ import 'package:http/http.dart' as http;
 
 class ApiConstants {
   static String baseUrl = "http://localhost:8080";
-  //static String baseUrl = "http://10.0.2.2:8080";
 }
 
 class HeadersApiInterceptor implements InterceptorContract {
@@ -169,11 +166,35 @@ class AuthorizationInterceptor implements InterceptorContract {
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
     if (data.statusCode == 401 || data.statusCode == 403) {
-      Future.delayed(Duration(seconds: 1), () {
-        Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
-      });
-    }
+      // Future.delayed(Duration(seconds: 1), () {
+      //   Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
+      // });
+      var refreshToken = _localStorageService.getFromDisk("user_refresh_token");
+      final response = await http.post(
+          Uri.parse(ApiConstants.baseUrl + "/user/refreshtoken"),
+          body: jsonEncode({"refreshToken": refreshToken}),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          });
+      if (response.statusCode == 201) {
+        LoginResponse loginResponse =
+            LoginResponse.fromJson(jsonDecode(response.body));
 
+        await _localStorageService.saveToDisk(
+            "user_token", loginResponse.token);
+        await _localStorageService.saveToDisk(
+            "user_refresh_token", loginResponse.refreshToken);
+
+        var request = data.request;
+        request!.headers["Authorization"] =
+            "Bearer " + _localStorageService.getFromDisk("user_token");
+        var retryResponseStream = await request.toHttpRequest().send();
+        var retryResponse = await http.Response.fromStream(retryResponseStream);
+        var datos = ResponseData.fromHttpResponse(retryResponse);
+        return Future.value(datos);
+      }
+    }
     return Future.value(data);
   }
 }

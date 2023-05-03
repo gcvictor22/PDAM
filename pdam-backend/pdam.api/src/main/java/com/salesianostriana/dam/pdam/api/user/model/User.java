@@ -2,6 +2,7 @@ package com.salesianostriana.dam.pdam.api.user.model;
 
 import com.salesianostriana.dam.pdam.api.city.model.City;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
+import com.salesianostriana.dam.pdam.api.gender.model.Gender;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
@@ -83,6 +84,10 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "userToVerify", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verificationToken;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender", foreignKey = @ForeignKey(name = "FK_USER_GENDER"))
+    private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city", foreignKey = @ForeignKey(name = "FK_USER_CITY"))
@@ -182,14 +187,14 @@ public class User implements UserDetails {
             aux1.remove(this.getFollowers().indexOf(loggedUser)+1);
             aux2.remove(loggedUser.getFollows().indexOf(this)+1);
             if (aux1.size()<1){
-                this.setRoles(EnumSet.of(UserRole.USER));
+                this.roles.remove(UserRole.VERIFIED);
                 this.setVerified(false);
             }
         }else {
             aux1.add(loggedUser);
             aux2.add(this);
             if (aux1.size()>=1){
-                this.setRoles(EnumSet.of(UserRole.USER, UserRole.VERIFIED));
+                this.roles.add(UserRole.VERIFIED);
                 this.setVerified(true);
             }
         }

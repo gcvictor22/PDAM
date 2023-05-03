@@ -16,6 +16,7 @@ import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
+import com.salesianostriana.dam.pdam.api.validation.annotation.user.UniqueUserName;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -156,38 +160,6 @@ public class UserController {
         return ResponseEntity.created(URI.create(response.getUri())).body(response);
     }
 
-    @PutMapping("/edit/password")
-    public GetUserDto changePassword(@Valid @RequestBody EditPasswordDto editPasswordDto,
-                                                       @AuthenticationPrincipal User loggedUser) {
-
-        User updateUser = userService.changePassword(loggedUser, editPasswordDto);
-
-        return GetUserDto.of(updateUser);
-    }
-
-    @PutMapping("/edit/profile")
-    public GetUserDto changeProfile(@Valid @RequestBody EditProfileDto editProfile,
-                                    @AuthenticationPrincipal User loggedUser){
-
-        User updatedUser =  userService.changeProfile(editProfile, loggedUser);
-
-        return GetUserDto.of(updatedUser);
-    }
-
-    @PutMapping("/verification")
-    public GetUserDto accountverification(@RequestBody GetVerificationTokenDto verificationTokenDto){
-        User user = verificationTokenService.activateAccount(verificationTokenDto);
-        return GetUserDto.of(user);
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser){
-
-        userService.deleteById(loggedUser.getId());
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @PostMapping("/refreshtoken")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
@@ -203,8 +175,76 @@ public class UserController {
                             .body(JwtUserResponse.of(user, token, refreshToken2.getToken()));
                 })
                 .orElseThrow(() -> new RefreshTokenException("Refresh token not found"));
+    }
 
-        //JwtUserResponse.of(user, token, refreshToken.getToken())
+    @PutMapping("/edit/password")
+    public GetUserDto changePassword(@Valid @RequestBody EditPasswordDto editPasswordDto,
+                                                       @AuthenticationPrincipal User loggedUser) {
+
+        User updateUser = userService.changePassword(loggedUser, editPasswordDto);
+
+        return GetUserDto.of(updateUser);
+    }
+
+    @PutMapping("/edit/fullName")
+    public GetUserDto changeFullName(@Valid
+            @RequestBody EditFullNameDto editFullNameDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editFullName(editFullNameDto.getFullName(), loggedUser);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/edit/userName")
+    public GetUserDto changeUserName(@Valid
+            @RequestBody EditUserNameDto editUserNameDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editUserName(editUserNameDto.getUserName(), loggedUser);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/edit/email")
+    public GetUserDto changeEmail(@Valid
+            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser) throws MessagingException {
+        User user = userService.editEmail(editEmailDto.getEmail(), loggedUser);
+        verificationTokenService.generateVerificationToken(user);
+        userService.emailSender(user.getEmail(), loggedUser);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/edit/phoneNumber")
+    public GetUserDto changePhoneNumber(@Valid
+            @RequestBody EditPhoneNumberDto editPhoneNumberDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.editPhoneNumber(editPhoneNumberDto.getPhoneNumber(), loggedUser);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/verification")
+    public GetUserDto accountverification(@Valid @RequestBody GetVerificationTokenDto verificationTokenDto){
+        User user = verificationTokenService.activateAccount(verificationTokenDto);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/forgotPassword")
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
+        User user = userService.findByUserName(forgotPasswordDto.getUserName());
+        verificationTokenService.generateVerificationToken(user);
+        userService.forgotPassword(user);
+    }
+
+    @PutMapping("/forgotPassword/validate")
+    public GetUserDto forgotPasswordValidator(@Valid @RequestBody GetVerificationTokenDto getVerificationTokenDto){
+        User user = userService.forgotPasswordValidator(getVerificationTokenDto);
+        return GetUserDto.of(user);
+    }
+
+    @PutMapping("/forgotPassword/{userName}")
+    public GetUserDto changeForgotPassword(@PathVariable String userName, @Valid @RequestBody ForgotPasswordChangeDto forgotPasswordChangeDto){
+        User user = userService.changeForgotPassword(forgotPasswordChangeDto, userName);
+        return GetUserDto.of(user);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser){
+        userService.deleteById(loggedUser.getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

@@ -59,9 +59,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //GlobalContext.ctx = context;
     return MaterialApp(
-      title: 'Authentication Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Discotkeo',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        primarySwatch: MaterialColor(0xFFAD1DFE, {
+          50: Color.fromRGBO(173, 29, 254, 0.1),
+          100: Color.fromRGBO(173, 29, 254, 0.2),
+          200: Color.fromRGBO(173, 29, 254, 0.3),
+          300: Color.fromRGBO(173, 29, 254, 0.4),
+          400: Color.fromRGBO(173, 29, 254, 0.5),
+          500: Color.fromRGBO(173, 29, 254, 0.6),
+          600: Color.fromRGBO(173, 29, 254, 0.7),
+          700: Color.fromRGBO(173, 29, 254, 0.8),
+          800: Color.fromRGBO(173, 29, 254, 0.9),
+          900: Color.fromRGBO(173, 29, 254, 1),
+        }),
       ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {

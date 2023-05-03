@@ -1,10 +1,14 @@
 import 'package:bloc/bloc.dart';
+import 'package:pdam_app/models/city.dart';
 import '../../rest/rest_client.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 import '../authentication/authentication.dart';
-import '../../exceptions/exceptions.dart';
 import '../../services/services.dart';
+
+class GlobalCityProvider {
+  late List<GetCityDto> cities = [];
+}
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationBloc _authenticationBloc;
@@ -12,9 +16,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc(AuthenticationBloc authenticationBloc,
       AuthenticationService authenticationService)
-      : assert(authenticationBloc != null),
-        assert(authenticationService != null),
-        _authenticationBloc = authenticationBloc,
+      : _authenticationBloc = authenticationBloc,
         _authenticationService = authenticationService,
         super(LoginInitial()) {
     on<LoginInWithEmailButtonPressed>(__onLogingInWithEmailButtonPressed);
@@ -28,6 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       final user = await _authenticationService.signInWithEmailAndPassword(
           event.email, event.password);
+      // ignore: unnecessary_null_comparison
       if (user != null) {
         _authenticationBloc.add(UserLoggedIn(user: user));
         emit(LoginSuccess());

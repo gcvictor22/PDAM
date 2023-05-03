@@ -10,8 +10,7 @@ class AuthenticationBloc
   final AuthenticationService _authenticationService;
 
   AuthenticationBloc(AuthenticationService authenticationService)
-      : assert(authenticationService != null),
-        _authenticationService = authenticationService,
+      : _authenticationService = authenticationService,
         super(AuthenticationInitial()) {
     on<AppLoaded>(_onAppLoaded);
     on<UserLoggedIn>(_onUserLoggedIn);

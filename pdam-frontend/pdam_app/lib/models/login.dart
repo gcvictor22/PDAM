@@ -9,6 +9,7 @@ class LoginResponse {
   bool? followedByUser;
   String? createdAt;
   String? token;
+  String? refreshToken;
 
   LoginResponse(
       {this.id,
@@ -20,7 +21,8 @@ class LoginResponse {
       this.verified,
       this.followedByUser,
       this.createdAt,
-      this.token});
+      this.token,
+      this.refreshToken});
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -33,6 +35,7 @@ class LoginResponse {
     followedByUser = json['followedByUser'];
     createdAt = json['createdAt'];
     token = json['token'];
+    refreshToken = json['refreshToken'];
   }
 
   Map<String, dynamic> toJson() {
@@ -47,6 +50,7 @@ class LoginResponse {
     data['followedByUser'] = this.followedByUser;
     data['createdAt'] = this.createdAt;
     data['token'] = this.token;
+    data['refreshToken'] = this.token;
     return data;
   }
 }
