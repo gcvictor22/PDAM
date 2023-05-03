@@ -2,6 +2,7 @@ package com.salesianostriana.dam.pdam.api.user.model;
 
 import com.salesianostriana.dam.pdam.api.city.model.City;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
+import com.salesianostriana.dam.pdam.api.gender.model.Gender;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
@@ -83,6 +84,10 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "userToVerify", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verificationToken;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender", foreignKey = @ForeignKey(name = "FK_USER_GENDER"))
+    private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city", foreignKey = @ForeignKey(name = "FK_USER_CITY"))

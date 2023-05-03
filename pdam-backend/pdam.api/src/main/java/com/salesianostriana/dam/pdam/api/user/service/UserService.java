@@ -4,8 +4,10 @@ import com.salesianostriana.dam.pdam.api.city.repository.CityRepository;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerifiactionTokenBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerificationTokenExpirationTimeBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.CityNotFoundException;
+import com.salesianostriana.dam.pdam.api.exception.notfound.GenderNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
+import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
 import com.salesianostriana.dam.pdam.api.user.dto.ForgotPasswordChangeDto;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -32,12 +34,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -47,6 +43,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final GenderRepository genderRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
     private final JavaMailSender javaMailSender;
@@ -73,6 +70,7 @@ public class UserService {
                 .fullName(createUser.getFullName())
                 .roles(roles)
                 .city(cityRepository.findById(createUser.getCityId()).orElseThrow(() -> new CityNotFoundException(createUser.getCityId())))
+                .gender(genderRepository.findById(createUser.getGenderId()).orElseThrow(() -> new GenderNotFoundException(createUser.getGenderId())))
                 .createdAt(createUser.getCreatedAt())
                 .enabled(false)
                 .build();

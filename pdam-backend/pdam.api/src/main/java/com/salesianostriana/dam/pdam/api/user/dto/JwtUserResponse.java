@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.pdam.api.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JwtUserResponse extends GetUserDto{
 
     private String token;

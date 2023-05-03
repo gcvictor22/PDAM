@@ -14,11 +14,15 @@ dependencies:
   injectable: ^2.1.0
   http_interceptor: ^1.0.1
   shared_preferences: ^2.0.17
+  flutter_form_bloc: ^0.30.1
 
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.5
+  google_nav_bar: ^5.0.6
+  like_button: ^2.0.5
+  blurrycontainer: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +35,4 @@ flutter:
   assets:
     - assets/login-logo.png
     - assets/login-background.png
+    - assets/main-background.png

@@ -1,4 +1,4 @@
-class LoginResponse {
+class GetUserDto {
   String? id;
   String? userName;
   String? fullName;
@@ -8,10 +8,8 @@ class LoginResponse {
   bool? verified;
   bool? followedByUser;
   String? createdAt;
-  String? token;
-  String? refreshToken;
 
-  LoginResponse(
+  GetUserDto(
       {this.id,
       this.userName,
       this.fullName,
@@ -20,11 +18,21 @@ class LoginResponse {
       this.countOfPosts,
       this.verified,
       this.followedByUser,
-      this.createdAt,
-      this.token,
-      this.refreshToken});
+      this.createdAt});
 
-  LoginResponse.fromJson(Map<String, dynamic> json) {
+  GetUserDto.fromRegisterReqest(GetUserDto getUserDto) {
+    this.id = getUserDto.id;
+    this.userName = getUserDto.userName;
+    this.fullName = getUserDto.fullName;
+    this.imgPath = getUserDto.imgPath;
+    this.followers = getUserDto.followers;
+    this.countOfPosts = getUserDto.countOfPosts;
+    this.verified = getUserDto.verified;
+    this.followedByUser = getUserDto.followedByUser;
+    this.createdAt = getUserDto.createdAt;
+  }
+
+  GetUserDto.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userName = json['userName'];
     fullName = json['fullName'];
@@ -34,8 +42,6 @@ class LoginResponse {
     verified = json['verified'];
     followedByUser = json['followedByUser'];
     createdAt = json['createdAt'];
-    token = json['token'];
-    refreshToken = json['refreshToken'];
   }
 
   Map<String, dynamic> toJson() {
@@ -49,27 +55,6 @@ class LoginResponse {
     data['verified'] = this.verified;
     data['followedByUser'] = this.followedByUser;
     data['createdAt'] = this.createdAt;
-    data['token'] = this.token;
-    data['refreshToken'] = this.token;
-    return data;
-  }
-}
-
-class LoginRequest {
-  String? username;
-  String? password;
-
-  LoginRequest({this.username, this.password});
-
-  LoginRequest.fromJson(Map<String, dynamic> json) {
-    username = json['username'];
-    password = json['password'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['username'] = username;
-    data['password'] = password;
     return data;
   }
 }

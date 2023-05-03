@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -34,8 +35,6 @@ public class NewUserDto {
     @NotEmpty(message = "{newUserDto.verifypassword.notempty}")
     private String verifyPassword;
 
-    private String imgPath;
-
     @NotEmpty(message = "{newUserDto.email.notempty}")
     @Email(message = "{newUserDto.email.email}")
     @UniqueEmail(message = "{newUserDto.email.unique}")
@@ -46,8 +45,11 @@ public class NewUserDto {
     @OnlyNumber
     private String phoneNumber;
 
-    @NotEmpty
+    @NotNull
     private Long cityId;
+
+    @NotNull
+    private Long genderId;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
