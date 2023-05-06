@@ -42,7 +42,6 @@ class _EventsPageSFState extends State<EventsPageSF> {
             child: Text("Ha ocurrido un error a la hora de cargar los posts"),
           );
         } else {
-          print(state);
           return Center(
             child: LoadingAnimationWidget.staggeredDotsWave(
                 color: Colors.white, size: 40),
@@ -61,22 +60,19 @@ class PostsList extends StatefulWidget {
   State<PostsList> createState() => _PostsListState();
 }
 
-class _PostsListState extends State<PostsList> {
+class _PostsListState extends State<PostsList>
+    with SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
+  late bool showArrow = false;
+  late int currentTab = 0;
+
+  late TabController _tabController = TabController(length: 2, vsync: this);
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        /*
-        _scrollController.animateTo(widget.state.offset,
-            duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-      */
-      });
-    });
+    _tabController.addListener(_onTabChanged);
   }
 
   @override
@@ -97,6 +93,7 @@ class _PostsListState extends State<PostsList> {
             padding: EdgeInsets.only(top: 50, bottom: 8),
             child: TabBar(
               overlayColor: MaterialStatePropertyAll(Colors.transparent),
+              controller: _tabController,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: 5,
               labelColor: Color.fromRGBO(173, 29, 254, 1),
@@ -104,7 +101,28 @@ class _PostsListState extends State<PostsList> {
               labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               tabs: [
                 Tab(
-                  text: "Siguiendo",
+                  child: GestureDetector(
+                    onTap: () {
+                      if (currentTab == 0) {
+                        scrollToTopTab1();
+                      } else {
+                        _tabController.animateTo(0);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Siguiendo"),
+                        showArrow && currentTab == 0
+                            ? Icon(Icons.arrow_upward)
+                            : SizedBox(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ],
+                    ),
+                  ),
                 ),
                 Tab(
                   text: "Todos",
@@ -114,6 +132,7 @@ class _PostsListState extends State<PostsList> {
           ),
           Expanded(
             child: TabBarView(
+              controller: _tabController,
               children: [
                 SingleChildScrollView(
                   child: Container(
@@ -140,7 +159,7 @@ class _PostsListState extends State<PostsList> {
                                     )
                                   : SizedBox(
                                       height: 0,
-                                    )
+                                    ),
                             ],
                           );
                         },
@@ -219,7 +238,22 @@ class _PostsListState extends State<PostsList> {
     super.dispose();
   }
 
+  void _onTabChanged() {
+    setState(() {
+      currentTab = _tabController.index;
+    });
+  }
+
   void _onScroll() {
+    if (_isTop) {
+      setState(() {
+        showArrow = true;
+      });
+    } else {
+      setState(() {
+        showArrow = false;
+      });
+    }
     if (_isBottom) {
       context.read<PostsBloc>().add(PostsInitialEvent());
     }
@@ -232,8 +266,20 @@ class _PostsListState extends State<PostsList> {
     return currentScroll >= (maxScroll * 0.9);
   }
 
+  bool get _isTop {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.1);
+  }
+
   Future loadlist() async {
     await Future.delayed(Duration(milliseconds: 1750));
     context.read<PostsBloc>().add(PostsRefreshEvent());
+  }
+
+  void scrollToTopTab1() {
+    _scrollController.animateTo(0,
+        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 }

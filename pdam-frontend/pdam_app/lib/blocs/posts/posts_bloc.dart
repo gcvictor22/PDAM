@@ -12,10 +12,11 @@ import '../../services/localstorage_service.dart';
 part 'posts_event.dart';
 part 'posts_state.dart';
 
+List<GetPostDto> fetchedPosts = [];
+
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
   int it = 0;
   var hasReachedMax = false;
-  List<GetPostDto> fetchedPosts = [];
 
   PostsBloc({required this.httpClient}) : super(PostsInitial()) {
     on<PostsInitialEvent>((event, emit) async {
@@ -64,9 +65,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     PostsEvent event,
     Emitter<PostsState> emit,
   ) async {
-    print("aqui");
-    print(it);
-    final response = await _fetchPosts(it - 1);
+    final response = await _fetchPosts(0);
     response.content.isEmpty
         ? hasReachedMax = true
         : {
