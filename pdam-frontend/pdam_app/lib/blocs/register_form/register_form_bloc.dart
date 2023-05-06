@@ -54,7 +54,14 @@ class RegisterFormBloc extends FormBloc<String, String> {
             fullName.value,
             cityId.value,
             genderId.value)
-        .then((value) => {emitSuccess()})
+        .then((value) => {
+              Future.delayed(
+                Duration(seconds: 1),
+              ).then(
+                (value) => emitSuccess(),
+              ),
+            })
+        // ignore: invalid_return_type_for_catch_error
         .catchError((error) => {emitFailure()});
   }
 }

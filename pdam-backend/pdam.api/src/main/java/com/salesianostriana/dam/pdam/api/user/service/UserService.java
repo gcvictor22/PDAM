@@ -9,6 +9,7 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundExceptio
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRepository;
 import com.salesianostriana.dam.pdam.api.user.dto.ForgotPasswordChangeDto;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.model.UserRole;
@@ -43,6 +44,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final GenderRepository genderRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
@@ -66,7 +68,7 @@ public class UserService {
                 .password(passwordEncoder.encode(createUser.getPassword()))
                 .email(createUser.getEmail())
                 .phoneNumber(createUser.getPhoneNumber())
-                .imgPath("default.png")
+                .imgPath("default.jpeg")
                 .fullName(createUser.getFullName())
                 .roles(roles)
                 .city(cityRepository.findById(createUser.getCityId()).orElseThrow(() -> new CityNotFoundException(createUser.getCityId())))
@@ -146,6 +148,8 @@ public class UserService {
     }
 
     public void deleteById(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        refreshTokenRepository.deleteByUser(user);
         userRepository.deleteById(id);
     }
 

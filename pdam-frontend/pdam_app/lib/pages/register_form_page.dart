@@ -6,6 +6,7 @@ import 'package:pdam_app/pages/register_verification_form_page.dart';
 import 'package:pdam_app/services/city_services.dart';
 
 import '../models/models.dart';
+import '../widgets/Loading.dart';
 
 class RegisterFormPage extends StatelessWidget {
   const RegisterFormPage({super.key});
@@ -13,60 +14,51 @@ class RegisterFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => RegisterFormBloc(),
-        child: Builder(builder: (context) {
+      create: (context) => RegisterFormBloc(),
+      child: Builder(
+        builder: (context) {
           final formBloc = context.read<RegisterFormBloc>();
           return Scaffold(
-              appBar: AppBar(
-                title: Text('Registro',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold)),
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                leading: IconButton(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  color: Colors.black,
-                  icon: Icon(Icons.arrow_back_ios),
-                  onPressed: () => Navigator.pop(context),
-                ),
+            appBar: AppBar(
+              title: Text('Registro',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)),
+              backgroundColor: Colors.white,
+              centerTitle: true,
+              leading: IconButton(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                color: Colors.black,
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.pop(context),
               ),
-              body: SafeArea(
-                top: false,
-                minimum: EdgeInsets.only(left: 30, right: 30),
-                child: FormBlocListener<RegisterFormBloc, String, String>(
-                    onSuccess: (context, state) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return RegisterVerfificarionPage(
-                            formBloc.userName.value);
-                      }));
-                    },
-                    onLoading: (context, state) {
-                      const CircularProgressIndicator();
-                    },
-                    onSubmitting: (context, state) {
-                      WillPopScope(
-                        onWillPop: () async => false,
-                        child: Center(
-                          child: Card(
-                            child: Container(
-                              width: 80,
-                              height: 80,
-                              padding: const EdgeInsets.all(12.0),
-                              child: const CircularProgressIndicator(),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    onFailure: (context, state) {
-                      showError(context);
-                    },
-                    child: RegisterFormPageSF(formBloc: formBloc)),
-              ));
-        }));
+            ),
+            body: SafeArea(
+              top: false,
+              minimum: EdgeInsets.only(left: 30, right: 30),
+              child: FormBlocListener<RegisterFormBloc, String, String>(
+                  onSuccess: (context, state) {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      return RegisterVerfificarionPage(formBloc.userName.value);
+                    }));
+                  },
+                  onLoading: (context, state) {
+                    const CircularProgressIndicator();
+                  },
+                  onSubmitting: (context, state) {
+                    LoadingDialog.show(context);
+                  },
+                  onFailure: (context, state) {
+                    showError(context);
+                  },
+                  child: RegisterFormPageSF(formBloc: formBloc)),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -441,7 +433,8 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(173, 29, 254, 1)),
+                  Color.fromRGBO(173, 29, 254, 1),
+                ),
                 padding:
                     MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -465,7 +458,8 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
     BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
       backgroundColor: Colors.transparent,
       content: Container(
         padding: const EdgeInsets.all(8),
@@ -505,5 +499,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
             ))
           ],
         ),
-      )));
+      ),
+    ),
+  );
 }

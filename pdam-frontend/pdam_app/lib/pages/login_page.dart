@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pdam_app/pages/register_form_page.dart';
 import '../blocs/blocs.dart';
 import '../config/locator.dart';
@@ -17,43 +18,44 @@ class LoginPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
-            top: false,
-            bottom: false,
-            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state) {
-                final authBloc = BlocProvider.of<AuthenticationBloc>(context);
-                if (state is AuthenticationNotAuthenticated) {
-                  return _AuthForm();
-                }
-                if (state is AuthenticationFailure ||
-                    state is SessionExpiredState) {
-                  var msg = (state as AuthenticationFailure).message;
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        msg,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      TextButton(
-                        //textColor: Theme.of(context).primaryColor,
-                        child: Text('Retry'),
-                        onPressed: () {
-                          authBloc.add(UserLoggedOut());
-                        },
-                      )
-                    ],
-                  );
-                }
-                // return splash screen
-                return Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
+          top: false,
+          bottom: false,
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+              if (state is AuthenticationNotAuthenticated) {
+                return _AuthForm();
+              }
+              if (state is AuthenticationFailure ||
+                  state is SessionExpiredState) {
+                var msg = (state as AuthenticationFailure).message;
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      msg,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextButton(
+                      //textColor: Theme.of(context).primaryColor,
+                      child: Text('Retry'),
+                      onPressed: () {
+                        authBloc.add(UserLoggedOut());
+                      },
+                    )
+                  ],
                 );
-              },
-            )),
+              }
+              // return splash screen
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -112,7 +114,8 @@ class __SignInFormState extends State<_SignInForm> {
         builder: (context, state) {
           if (state is LoginLoading) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.white, size: 45),
             );
           }
           return SingleChildScrollView(

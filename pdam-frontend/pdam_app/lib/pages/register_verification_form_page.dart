@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/register_form/regirter_verification_form_bloc.dart';
 import 'package:pdam_app/main.dart';
+import 'package:pdam_app/widgets/Loading.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class RegisterVerfificarionPage extends StatelessWidget {
   final String userName;
@@ -30,17 +32,23 @@ class RegisterVerfificarionPage extends StatelessWidget {
                 child: FormBlocListener<RegisterVerificationFormBloc, String,
                         String>(
                     onSuccess: (context, state) {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (_) {
-                          return MyApp();
-                        },
-                      ));
+                      showOk(context);
+                      Future.delayed(Duration(seconds: 4)).then((value) => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) {
+                                  return MyApp();
+                                },
+                              ),
+                            ),
+                          });
                     },
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
                     onSubmitting: (context, state) {
-                      const CircularProgressIndicator();
+                      LoadingDialog.show(context);
                     },
                     onFailure: (context, state) {
                       showError(context);
@@ -78,6 +86,8 @@ class _RegisterVerificationPageSFState
     formBloc.userName.updateValue(userName);
   }
 
+  late bool enable = false;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -108,24 +118,25 @@ class _RegisterVerificationPageSFState
                 SizedBox(
                   height: 20,
                 ),
-                TextFieldBlocBuilder(
-                  textFieldBloc: formBloc.verificationToken,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromRGBO(217, 217, 217, 1)),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Token de verificación',
-                      labelStyle: TextStyle(fontSize: 20),
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                      filled: true,
-                      isDense: true,
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                              color: Color.fromRGBO(173, 29, 254, 1),
-                              width: 1))),
+                PinCodeTextField(
+                  keyboardType: TextInputType.number,
+                  onCompleted: (value) {
+                    setState(() {
+                      enable = true;
+                    });
+                  },
+                  pinTheme: PinTheme(
+                      activeColor: Colors.black,
+                      selectedColor: Color.fromRGBO(173, 29, 254, 1),
+                      inactiveColor: Colors.black),
+                  autoFocus: true,
+                  appContext: context,
+                  length: 6,
+                  onChanged: (value) => setState(
+                    () {
+                      formBloc.verificationToken.updateValue(value);
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: 20,
@@ -135,7 +146,10 @@ class _RegisterVerificationPageSFState
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromRGBO(173, 29, 254, 1)),
+                        enable
+                            ? Color.fromRGBO(173, 29, 254, 1)
+                            : Color.fromRGBO(214, 143, 255, 1),
+                      ),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(10)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -146,9 +160,11 @@ class _RegisterVerificationPageSFState
                     ),
                     child: Text('Terminar',
                         style: TextStyle(color: Colors.white, fontSize: 40)),
-                    onPressed: () {
-                      formBloc.submit();
-                    },
+                    onPressed: enable
+                        ? () {
+                            formBloc.submit();
+                          }
+                        : null,
                   ),
                 )
               ],
@@ -162,7 +178,8 @@ class _RegisterVerificationPageSFState
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
     BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
       backgroundColor: Colors.transparent,
       content: Container(
         padding: const EdgeInsets.all(8),
@@ -202,12 +219,15 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
             ))
           ],
         ),
-      )));
+      ),
+    ),
+  );
 }
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
     BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
       backgroundColor: Colors.transparent,
       content: Container(
         padding: const EdgeInsets.all(8),
@@ -247,5 +267,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
             ))
           ],
         ),
-      )));
+      ),
+    ),
+  );
 }

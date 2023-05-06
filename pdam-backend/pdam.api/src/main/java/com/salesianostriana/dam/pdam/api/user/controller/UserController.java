@@ -96,7 +96,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("userImg/{userName}")
+    @GetMapping("/userImg/{userName}")
     public ResponseEntity<Resource> getUserImg(@PathVariable String userName){
         User user = userService.findByUserName(userName);
 
