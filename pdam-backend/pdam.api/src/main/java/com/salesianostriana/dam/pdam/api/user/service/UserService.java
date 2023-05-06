@@ -134,8 +134,9 @@ public class UserService {
 
     public User follow(User loggedUser, String userToFollow) {
         User user = userRepository.userWithPostsByUserName(userToFollow).orElseThrow(() -> new UserNotFoundException(userToFollow));
+        User userWhoFollows = userRepository.userWithPostsByUserName(loggedUser.getUsername()).orElseThrow(() -> new UserNotFoundException(loggedUser.getUsername()));
 
-        user.giveAFollow(loggedUser, userRepository.checkFollower(loggedUser.getId(), user.getId()));
+        user.giveAFollow(userWhoFollows, userRepository.checkFollower(loggedUser.getId(), user.getId()));
 
         userRepository.save(loggedUser);
         userRepository.save(user);

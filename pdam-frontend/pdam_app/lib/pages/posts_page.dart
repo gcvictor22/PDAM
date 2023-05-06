@@ -63,7 +63,9 @@ class PostsList extends StatefulWidget {
 class _PostsListState extends State<PostsList>
     with SingleTickerProviderStateMixin {
   final _scrollController = ScrollController();
+  final _scrollControllerF = ScrollController();
   late bool showArrow = false;
+  late bool showArrowF = false;
   late int currentTab = 0;
 
   late TabController _tabController = TabController(length: 2, vsync: this);
@@ -72,6 +74,7 @@ class _PostsListState extends State<PostsList>
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _scrollControllerF.addListener(_onScrollF);
     _tabController.addListener(_onTabChanged);
   }
 
@@ -104,7 +107,7 @@ class _PostsListState extends State<PostsList>
                   child: GestureDetector(
                     onTap: () {
                       if (currentTab == 0) {
-                        scrollToTopTab1();
+                        scrollToTopTab2();
                       } else {
                         _tabController.animateTo(0);
                       }
@@ -114,7 +117,7 @@ class _PostsListState extends State<PostsList>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Siguiendo"),
-                        showArrow && currentTab == 0
+                        showArrowF && currentTab == 0
                             ? Icon(Icons.arrow_upward)
                             : SizedBox(
                                 height: 0,
@@ -125,7 +128,28 @@ class _PostsListState extends State<PostsList>
                   ),
                 ),
                 Tab(
-                  text: "Todos",
+                  child: GestureDetector(
+                    onTap: () {
+                      if (currentTab == 1) {
+                        scrollToTopTab1();
+                      } else {
+                        _tabController.animateTo(1);
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Todos"),
+                        showArrow && currentTab == 1
+                            ? Icon(Icons.arrow_upward)
+                            : SizedBox(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ],
+                    ),
+                  ),
                 )
               ],
             ),
@@ -134,6 +158,39 @@ class _PostsListState extends State<PostsList>
             child: TabBarView(
               controller: _tabController,
               children: [
+                SingleChildScrollView(
+                  child: Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height,
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: RefreshWidget(
+                      onRefresh: () => loadlistF(),
+                      scrollController: _scrollControllerF,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        primary: false,
+                        itemCount: widget.state.followedPosts.length,
+                        padding: EdgeInsets.only(top: 20),
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              index >= widget.state.followedPosts.length
+                                  ? const BottomLoader()
+                                  : Post(widget.state.followedPosts[index]),
+                              index == widget.state.followedPosts.length - 1
+                                  ? SizedBox(
+                                      height: 210,
+                                    )
+                                  : SizedBox(
+                                      height: 0,
+                                    ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
                 SingleChildScrollView(
                   child: Container(
                     width: double.infinity,
@@ -167,61 +224,6 @@ class _PostsListState extends State<PostsList>
                     ),
                   ),
                 ),
-                SingleChildScrollView(
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.red,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        Container(
-                          color: Colors.white,
-                          height: 200,
-                          width: double.infinity,
-                          margin: EdgeInsets.only(bottom: 20),
-                        ),
-                        SizedBox(
-                          height: 90,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -234,6 +236,10 @@ class _PostsListState extends State<PostsList>
   void dispose() {
     _scrollController
       ..removeListener(_onScroll)
+      ..dispose();
+
+    _scrollControllerF
+      ..removeListener(_onScrollF)
       ..dispose();
     super.dispose();
   }
@@ -255,7 +261,22 @@ class _PostsListState extends State<PostsList>
       });
     }
     if (_isBottom) {
-      context.read<PostsBloc>().add(PostsInitialEvent());
+      context.read<PostsBloc>().add(PostsScrollEvent());
+    }
+  }
+
+  void _onScrollF() {
+    if (_isTopF) {
+      setState(() {
+        showArrowF = true;
+      });
+    } else {
+      setState(() {
+        showArrowF = false;
+      });
+    }
+    if (_isBottomF) {
+      context.read<PostsBloc>().add(FollowedPostsScrollEvent());
     }
   }
 
@@ -273,6 +294,20 @@ class _PostsListState extends State<PostsList>
     return currentScroll >= (maxScroll * 0.1);
   }
 
+  bool get _isBottomF {
+    if (!_scrollControllerF.hasClients) return false;
+    final maxScroll = _scrollControllerF.position.maxScrollExtent;
+    final currentScroll = _scrollControllerF.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  bool get _isTopF {
+    if (!_scrollControllerF.hasClients) return false;
+    final maxScroll = _scrollControllerF.position.maxScrollExtent;
+    final currentScroll = _scrollControllerF.offset;
+    return currentScroll >= (maxScroll * 0.1);
+  }
+
   Future loadlist() async {
     await Future.delayed(Duration(milliseconds: 1750));
     context.read<PostsBloc>().add(PostsRefreshEvent());
@@ -280,6 +315,16 @@ class _PostsListState extends State<PostsList>
 
   void scrollToTopTab1() {
     _scrollController.animateTo(0,
+        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+  }
+
+  Future loadlistF() async {
+    await Future.delayed(Duration(milliseconds: 1750));
+    context.read<PostsBloc>().add(FollowedPostsRefreshEvent());
+  }
+
+  void scrollToTopTab2() {
+    _scrollControllerF.animateTo(0,
         duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 }

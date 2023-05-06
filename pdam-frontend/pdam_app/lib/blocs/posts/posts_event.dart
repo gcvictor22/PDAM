@@ -9,4 +9,10 @@ abstract class PostsEvent extends Equatable {
 
 class PostsInitialEvent extends PostsEvent {}
 
+class PostsScrollEvent extends PostsEvent {}
+
 class PostsRefreshEvent extends PostsEvent {}
+
+class FollowedPostsScrollEvent extends PostsEvent {}
+
+class FollowedPostsRefreshEvent extends PostsEvent {}

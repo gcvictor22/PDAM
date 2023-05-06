@@ -11,11 +11,12 @@ class PostsInitial extends PostsState {}
 
 class PostsSucces extends PostsState {
   final List<GetPostDto> posts;
+  final List<GetPostDto> followedPosts;
 
-  PostsSucces({required this.posts});
+  PostsSucces({required this.posts, required this.followedPosts});
 
   @override
-  List<Object> get props => [posts];
+  List<Object> get props => [posts, followedPosts];
 }
 
 class PostsLoading extends PostsState {}
