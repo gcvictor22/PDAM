@@ -16,3 +16,9 @@ class PostsRefreshEvent extends PostsEvent {}
 class FollowedPostsScrollEvent extends PostsEvent {}
 
 class FollowedPostsRefreshEvent extends PostsEvent {}
+
+class LikeAPost extends PostsEvent {
+  final int postId;
+
+  LikeAPost(this.postId);
+}

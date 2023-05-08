@@ -48,4 +48,17 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
             ORDER BY p.postDate DESC
             """)
     Page<Post> findAllFollowsPosts(UUID userId, Pageable pageable);
+
+    @Query("""
+            SELECT p
+            FROM Post p
+            WHERE p.userWhoPost.id IN (
+                SELECT f.id
+                FROM User u
+                JOIN u.follows f
+                WHERE u.id = :userId
+            )
+            ORDER BY p.postDate DESC
+            """)
+    List<Post> findAllFollowsPosts(UUID userId);
 }

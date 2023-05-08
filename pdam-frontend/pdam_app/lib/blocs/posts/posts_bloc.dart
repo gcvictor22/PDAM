@@ -1,27 +1,27 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:get_it/get_it.dart';
-import 'package:http/http.dart' as http;
+import 'package:pdam_app/services/post_service.dart';
 
 import '../../models/post/GetPostDto.dart';
 import '../../models/post/GetPostDtoResponse.dart';
-import '../../services/localstorage_service.dart';
 
 part 'posts_event.dart';
 part 'posts_state.dart';
-
-List<GetPostDto> fetchedPosts = [];
-List<GetPostDto> fetchedFollowedPosts = [];
 
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
   int it = 0;
   int itF = 0;
   var hasReachedMax = false;
   var hasReachedMaxF = false;
+  dynamic fetchedPosts;
+  dynamic fetchedFollowedPosts;
+  final PostService _postService;
 
-  PostsBloc({required this.httpClient}) : super(PostsInitial()) {
+  PostsBloc(PostService postService)
+      // ignore: unnecessary_null_comparison
+      : assert(postService != null),
+        _postService = postService,
+        super(PostsInitial()) {
     on<PostsInitialEvent>((event, emit) async {
       await _onPostsFetched(event, emit);
     });
@@ -49,9 +49,13 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         await _onFollowedPostsRefresh(event, emit);
       },
     );
-  }
 
-  final http.Client httpClient;
+    on<LikeAPost>(
+      (event, emit) async {
+        await _likePost(event.postId);
+      },
+    );
+  }
 
   Future<void> _onPostsFetched(
     PostsEvent event,
@@ -61,14 +65,29 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       if (state is PostsInitial) {
         final response = await _fetchPosts(it);
         final responseF = await _fetchFollowedPosts(itF);
-        emit(PostsSucces(
-            posts: response.content, followedPosts: responseF.content));
-        hasReachedMax = response.last;
-        hasReachedMaxF = responseF.last;
-        fetchedPosts = response.content;
-        fetchedFollowedPosts = responseF.content;
-        if (response.last != true) it += 1;
-        if (responseF.last != true) itF += 1;
+
+        if (responseF is GetPostDtoResponse) {
+          hasReachedMaxF = responseF.last;
+          fetchedFollowedPosts = responseF.content;
+          if (responseF.last != true) itF += 1;
+        } else if (responseF is String) {
+          fetchedFollowedPosts = responseF;
+        }
+
+        if (response is GetPostDtoResponse) {
+          hasReachedMax = response.last;
+          fetchedPosts = response.content;
+          if (response.last != true) it += 1;
+        } else {
+          fetchedPosts = "No hay ningún post en esta página...";
+        }
+
+        emit(
+          PostsSucces(
+            posts: fetchedPosts,
+            followedPosts: fetchedFollowedPosts,
+          ),
+        );
       }
     } catch (_) {
       print(_);
@@ -114,14 +133,29 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     Emitter<PostsState> emit,
   ) async {
     final response = await _fetchPosts(0);
-    response.content.isEmpty
-        ? hasReachedMaxF = true
-        : {
-            emit(PostsSucces(
-                posts: response.content, followedPosts: fetchedFollowedPosts)),
-            hasReachedMax = response.last,
-            fetchedPosts = response.content,
-          };
+
+    if (response is GetPostDtoResponse) {
+      response.content.isEmpty
+          ? hasReachedMaxF = true
+          : {
+              emit(
+                PostsSucces(
+                  posts: response.content,
+                  followedPosts: fetchedFollowedPosts,
+                ),
+              ),
+              it = 0,
+              hasReachedMax = response.last,
+              fetchedPosts = response.content,
+            };
+    } else {
+      emit(
+        PostsSucces(
+          posts: fetchedPosts,
+          followedPosts: fetchedFollowedPosts,
+        ),
+      );
+    }
   }
 
   Future<void> _onFollowedPostsRefresh(
@@ -129,67 +163,85 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     Emitter<PostsState> emit,
   ) async {
     final responseF = await _fetchFollowedPosts(0);
-    responseF.content.isEmpty
-        ? hasReachedMaxF = true
-        : {
-            emit(PostsSucces(
-                posts: responseF.content, followedPosts: fetchedFollowedPosts)),
-            hasReachedMaxF = responseF.last,
-            fetchedFollowedPosts = responseF.content,
-          };
-  }
-
-  Future<GetPostDtoResponse> _fetchFollowedPosts(int startIndex) async {
-    late LocalStorageService _localStorageService = LocalStorageService();
-    GetIt.I
-        .getAsync<LocalStorageService>()
-        .then((value) => _localStorageService = value);
-
-    var aux;
-    var token = await _localStorageService.getFromDisk("user_token");
-
-    await httpClient.get(
-        Uri.parse('http://localhost:8080/post/followsPosts?page=$startIndex'),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer " + token,
-          "Charset": "UTF-8"
-        }).then((value) {
-      aux = GetPostDtoResponse.fromJson(
-        jsonDecode(
-          Utf8Decoder().convert(value.body.codeUnits),
+    if (responseF is GetPostDtoResponse) {
+      responseF.content.isEmpty
+          ? hasReachedMaxF = true
+          : {
+              emit(
+                PostsSucces(
+                  posts: responseF.content,
+                  followedPosts: fetchedFollowedPosts,
+                ),
+              ),
+              itF = 0,
+              hasReachedMaxF = responseF.last,
+              fetchedFollowedPosts = responseF.content,
+            };
+    } else {
+      emit(
+        PostsSucces(
+          posts: fetchedPosts,
+          followedPosts: fetchedFollowedPosts,
         ),
       );
-      // ignore: invalid_return_type_for_catch_error
-    }).catchError((e) => print(e));
-    return aux;
+    }
   }
 
-  Future<GetPostDtoResponse> _fetchPosts(int startIndex) async {
-    late LocalStorageService _localStorageService = LocalStorageService();
-    GetIt.I
-        .getAsync<LocalStorageService>()
-        .then((value) => _localStorageService = value);
+  Future<dynamic> _fetchFollowedPosts(int startIndex) async {
+    final response = await _postService.findFollowedPosts(startIndex);
+    return response;
+  }
 
-    var aux;
-    var token = await _localStorageService.getFromDisk("user_token");
+  Future<dynamic> _fetchPosts(int startIndex) async {
+    // late LocalStorageService _localStorageService = LocalStorageService();
+    // GetIt.I
+    //     .getAsync<LocalStorageService>()
+    //     .then((value) => _localStorageService = value);
 
-    await httpClient.get(
-        Uri.parse('http://localhost:8080/post/?page=$startIndex'),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer " + token,
-          "Charset": "UTF-8"
-        }).then((value) {
-      aux = GetPostDtoResponse.fromJson(
-        jsonDecode(
-          Utf8Decoder().convert(value.body.codeUnits),
-        ),
-      );
-      // ignore: invalid_return_type_for_catch_error
-    }).catchError((e) => print(e));
-    return aux;
+    // var aux;
+    // var token = await _localStorageService.getFromDisk("user_token");
+
+    // final response = await httpClient.get(
+    //     Uri.parse('http://localhost:8080/post/?page=$startIndex'),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "Accept": "application/json",
+    //       "Authorization": "Bearer " + token,
+    //       "Charset": "UTF-8"
+    //     });
+
+    // if (response.statusCode == 200) {
+    //   aux = GetPostDtoResponse.fromJson(
+    //     jsonDecode(
+    //       Utf8Decoder().convert(response.body.codeUnits),
+    //     ),
+    //   );
+    // } else if (response.statusCode == 404) {
+    //   aux = BadRequestException.fromJson(jsonDecode(response.body));
+    // }
+    // return aux;
+
+    final response = await _postService.findAll(startIndex);
+    return response;
+  }
+
+  Future<void> _likePost(int postId) async {
+    final aux = await _postService.likePost(postId);
+
+    for (var element in fetchedPosts) {
+      if (element.id == aux.id) {
+        element.likedByUser = aux.likedByUser;
+        element.usersWhoLiked = aux.usersWhoLiked;
+      }
+    }
+
+    if (fetchedFollowedPosts is List<GetPostDto>) {
+      for (var element in fetchedFollowedPosts) {
+        if (element.id == aux.id) {
+          element.likedByUser = aux.likedByUser;
+          element.usersWhoLiked = aux.usersWhoLiked;
+        }
+      }
+    }
   }
 }

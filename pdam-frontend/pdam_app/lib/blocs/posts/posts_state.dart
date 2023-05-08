@@ -10,8 +10,8 @@ abstract class PostsState extends Equatable {
 class PostsInitial extends PostsState {}
 
 class PostsSucces extends PostsState {
-  final List<GetPostDto> posts;
-  final List<GetPostDto> followedPosts;
+  final dynamic posts;
+  final dynamic followedPosts;
 
   PostsSucces({required this.posts, required this.followedPosts});
 

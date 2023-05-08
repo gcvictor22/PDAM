@@ -89,4 +89,4 @@ insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', '8ee56ea7-ce36-595c-bfb4-b5fd87e34b09');
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', 'df442a4d-2ec0-54b6-ab24-019787533d25');
 
-alter sequence hibernate_sequence restart with 65
+alter sequence hibernate_sequence restart with 66

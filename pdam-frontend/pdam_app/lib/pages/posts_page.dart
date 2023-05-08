@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pdam_app/blocs/posts/posts_bloc.dart';
-import 'package:http/http.dart' as http;
+import 'package:pdam_app/config/locator.dart';
+import 'package:pdam_app/models/post/GetPostDto.dart';
+import 'package:pdam_app/services/post_service.dart';
+import 'package:pdam_app/widgets/EmptyListMessage.dart';
 import 'package:pdam_app/widgets/RefreshWidget.dart';
 
 import '../widgets/BottomLoader.dart';
@@ -14,8 +17,10 @@ class PostsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          PostsBloc(httpClient: http.Client())..add(PostsInitialEvent()),
+      create: (context) {
+        final postService = getIt<PostService>();
+        return PostsBloc(postService)..add(PostsInitialEvent());
+      },
       child: EventsPageSF(),
     );
   }
@@ -106,7 +111,9 @@ class _PostsListState extends State<PostsList>
                 Tab(
                   child: GestureDetector(
                     onTap: () {
-                      if (currentTab == 0) {
+                      if (currentTab == 0 &&
+                          widget.state.followedPosts is List<GetPostDto> &&
+                          _scrollControllerF.offset >= 750) {
                         scrollToTopTab2();
                       } else {
                         _tabController.animateTo(0);
@@ -130,7 +137,9 @@ class _PostsListState extends State<PostsList>
                 Tab(
                   child: GestureDetector(
                     onTap: () {
-                      if (currentTab == 1) {
+                      if (currentTab == 1 &&
+                          widget.state.posts is List<GetPostDto> &&
+                          _scrollController.offset >= 750) {
                         scrollToTopTab1();
                       } else {
                         _tabController.animateTo(1);
@@ -158,72 +167,107 @@ class _PostsListState extends State<PostsList>
             child: TabBarView(
               controller: _tabController,
               children: [
-                SingleChildScrollView(
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height,
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: RefreshWidget(
-                      onRefresh: () => loadlistF(),
-                      scrollController: _scrollControllerF,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        itemCount: widget.state.followedPosts.length,
-                        padding: EdgeInsets.only(top: 20),
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              index >= widget.state.followedPosts.length
-                                  ? const BottomLoader()
-                                  : Post(widget.state.followedPosts[index]),
-                              index == widget.state.followedPosts.length - 1
-                                  ? SizedBox(
-                                      height: 210,
-                                    )
-                                  : SizedBox(
-                                      height: 0,
-                                    ),
-                            ],
-                          );
-                        },
+                widget.state.followedPosts is List<GetPostDto>
+                    ? SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height,
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: RefreshWidget(
+                            onRefresh: () => loadlistF(),
+                            scrollController: _scrollControllerF,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: widget.state.followedPosts.length,
+                              padding: EdgeInsets.only(top: 20),
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    index >= widget.state.followedPosts.length
+                                        ? const BottomLoader()
+                                        : Post(
+                                            post: widget
+                                                .state.followedPosts[index],
+                                            context: context,
+                                          ),
+                                    index ==
+                                            widget.state.followedPosts.length -
+                                                1
+                                        ? SizedBox(
+                                            height: 210,
+                                          )
+                                        : SizedBox(
+                                            height: 0,
+                                          ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.only(
+                            top: 200, bottom: 350, left: 40, right: 40),
+                        child: EmptyListMessage(
+                          message: widget.state.followedPosts,
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SingleChildScrollView(
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height,
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: RefreshWidget(
-                      onRefresh: () => loadlist(),
-                      scrollController: _scrollController,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        primary: false,
-                        itemCount: widget.state.posts.length,
-                        padding: EdgeInsets.only(top: 20),
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              index >= widget.state.posts.length
-                                  ? const BottomLoader()
-                                  : Post(widget.state.posts[index]),
-                              index == widget.state.posts.length - 1
-                                  ? SizedBox(
-                                      height: 210,
-                                    )
-                                  : SizedBox(
-                                      height: 0,
-                                    ),
-                            ],
-                          );
-                        },
+                widget.state.posts is List<GetPostDto>
+                    ? SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height,
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: RefreshWidget(
+                            onRefresh: () => loadlist(),
+                            scrollController: _scrollController,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: widget.state.posts.length,
+                              padding: EdgeInsets.only(top: 20),
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    index >= widget.state.posts.length
+                                        ? const BottomLoader()
+                                        : Post(
+                                            post: widget.state.posts[index],
+                                            context: context,
+                                          ),
+                                    index == widget.state.posts.length - 1
+                                        ? SizedBox(
+                                            height: 210,
+                                          )
+                                        : SizedBox(
+                                            height: 0,
+                                          ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.state.posts,
+                            ),
+                            ElevatedButton(
+                              onPressed: () => loadlist(),
+                              child: Text("Recargar"),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -289,9 +333,8 @@ class _PostsListState extends State<PostsList>
 
   bool get _isTop {
     if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.1);
+    return currentScroll >= 750;
   }
 
   bool get _isBottomF {
@@ -303,9 +346,8 @@ class _PostsListState extends State<PostsList>
 
   bool get _isTopF {
     if (!_scrollControllerF.hasClients) return false;
-    final maxScroll = _scrollControllerF.position.maxScrollExtent;
     final currentScroll = _scrollControllerF.offset;
-    return currentScroll >= (maxScroll * 0.1);
+    return currentScroll >= 750;
   }
 
   Future loadlist() async {

@@ -68,8 +68,8 @@ public class Post implements Serializable{
         List<Post> aux1 = user.getLikedPosts();
         List<User> aux2 = this.getUsersWhoLiked();
         if (b){
-            aux1.remove(user.getLikedPosts().indexOf(this)+1);
-            aux2.remove(this.getUsersWhoLiked().indexOf(user)+1);
+            aux1.remove(this);
+            aux2.remove(user);
         }else {
             aux1.add(this);
             aux2.add(user);

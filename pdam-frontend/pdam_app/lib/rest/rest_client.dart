@@ -61,7 +61,7 @@ class RestClient {
     }
   }
 
-  Future<dynamic> post(String url, dynamic body) async {
+  Future<dynamic> post(String url, [dynamic body]) async {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
 
@@ -98,7 +98,7 @@ class RestClient {
       case 403:
         throw UnauthorizedException(utf8.decode(response.bodyBytes));
       case 404:
-        throw NotFoundException(utf8.decode(response.bodyBytes));
+        return NotFoundException(utf8.decode(response.bodyBytes));
       case 500:
       default:
         throw FetchDataException(

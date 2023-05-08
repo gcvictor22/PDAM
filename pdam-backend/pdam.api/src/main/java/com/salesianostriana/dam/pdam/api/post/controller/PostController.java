@@ -2,6 +2,8 @@ package com.salesianostriana.dam.pdam.api.post.controller;
 
 import com.salesianostriana.dam.pdam.api.exception.notfound.PostNotFoundException;
 import com.salesianostriana.dam.pdam.api.files.service.FIleService;
+import com.salesianostriana.dam.pdam.api.files.service.StorageService;
+import com.salesianostriana.dam.pdam.api.files.utils.MediaTypeUrlResource;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.dto.NewPostDto;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import org.springframework.core.io.Resource;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -33,6 +36,7 @@ public class PostController {
 
     private final PostService postService;
     private final FIleService fIleService;
+    private final StorageService storageService;
 
     @GetMapping("/")
     public GetPageDto<GetPostDto> findAll(
@@ -53,6 +57,16 @@ public class PostController {
     public ViewPostDto viewPost(@PathVariable Long id){
         Post post = postService.findById(id);
         return ViewPostDto.of(post);
+    }
+
+    @GetMapping("/file/{filename:.+}")
+    public ResponseEntity<Resource> getPostFiles(@PathVariable String filename){
+        MediaTypeUrlResource resource =
+                (MediaTypeUrlResource) storageService.loadAsResource(filename);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Content-Type", resource.getType())
+                .body(resource);
     }
 
     @PostMapping("/")
