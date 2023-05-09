@@ -13,6 +13,7 @@ import com.salesianostriana.dam.pdam.api.post.service.PostService;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -35,6 +36,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
     private final FIleService fIleService;
     private final StorageService storageService;
 
@@ -54,9 +56,10 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ViewPostDto viewPost(@PathVariable Long id){
+    public ViewPostDto viewPost(@PathVariable Long id, @AuthenticationPrincipal User user){
         Post post = postService.findById(id);
-        return ViewPostDto.of(post);
+        User loggedUser = userService.getProfileByUserName(user.getUsername());
+        return ViewPostDto.of(post, loggedUser);
     }
 
     @GetMapping("/file/{filename:.+}")
@@ -89,10 +92,11 @@ public class PostController {
 
     @PutMapping("/{id}")
     @PreAuthorize("@postService.findById(#id).userWhoPost.id == authentication.principal.id")
-    public ViewPostDto editPost(@PathVariable Long id, @RequestBody NewPostDto newPostDto){
+    public ViewPostDto editPost(@PathVariable Long id, @RequestBody NewPostDto newPostDto, @AuthenticationPrincipal User user){
         Post postEdited = postService.edit(id, newPostDto);
+        User loggedUser = userService.getProfileByUserName(user.getUsername());
 
-        return ViewPostDto.of(postEdited);
+        return ViewPostDto.of(postEdited, loggedUser);
     }
 
     @DeleteMapping("/{id}")

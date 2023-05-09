@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:pdam_app/models/city.dart';
 import 'package:pdam_app/services/services.dart';
 
 class RegisterFormBloc extends FormBloc<String, String> {
@@ -27,7 +28,10 @@ class RegisterFormBloc extends FormBloc<String, String> {
   final cityId = InputFieldBloc<int, Object>(
       initialValue: 1, validators: [FieldBlocValidators.required]);
 
-  RegisterFormBloc() {
+  RegisterFormBloc(CityService cityService)
+      // ignore: unnecessary_null_comparison
+      : assert(cityService != null),
+        _cityService = cityService {
     addFieldBlocs(fieldBlocs: [
       fullName,
       genderId,
@@ -38,6 +42,12 @@ class RegisterFormBloc extends FormBloc<String, String> {
       phoneNumber,
       cityId
     ]);
+  }
+
+  final CityService _cityService;
+
+  Future<List<GetCityDto>> findAllCities() async {
+    return await _cityService.findAll();
   }
 
   @override

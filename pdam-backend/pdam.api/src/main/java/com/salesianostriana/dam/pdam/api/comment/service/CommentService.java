@@ -5,10 +5,12 @@ import com.salesianostriana.dam.pdam.api.comment.model.Comment;
 import com.salesianostriana.dam.pdam.api.comment.repository.CommentRespository;
 import com.salesianostriana.dam.pdam.api.exception.notfound.CommentNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.PostNotFoundException;
+import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.post.dto.ViewPostDto;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ public class CommentService {
 
     private final CommentRespository commentRespository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     public Comment save(NewCommentDto newCommentDto) {
         Comment comment = Comment.builder()
@@ -30,13 +33,15 @@ public class CommentService {
 
     public ViewPostDto responseComment(Comment comment, Long id, User user){
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+        User loggedUser = userRepository.userWithPostsById(user.getId()).orElseThrow(() -> new UserNotFoundException(user.getId()));
+
 
         comment.addPost(post);
         comment.addUser(user);
         postRepository.save(post);
         commentRespository.save(comment);
 
-        return ViewPostDto.of(post);
+        return ViewPostDto.of(post, loggedUser);
     }
 
     public Post edit(NewCommentDto newCommentDto, Long id) {

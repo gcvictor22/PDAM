@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/register_form/regirter_verification_form_bloc.dart';
 import 'package:pdam_app/main.dart';
-import 'package:pdam_app/widgets/Loading.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class RegisterVerfificarionPage extends StatelessWidget {
@@ -33,7 +32,7 @@ class RegisterVerfificarionPage extends StatelessWidget {
                         String>(
                     onSuccess: (context, state) {
                       showOk(context);
-                      Future.delayed(Duration(seconds: 4)).then((value) => {
+                      Future.delayed(Duration(seconds: 3)).then((value) => {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -47,9 +46,7 @@ class RegisterVerfificarionPage extends StatelessWidget {
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
-                    onSubmitting: (context, state) {
-                      LoadingDialog.show(context);
-                    },
+                    onSubmitting: (context, state) {},
                     onFailure: (context, state) {
                       showError(context);
                     },

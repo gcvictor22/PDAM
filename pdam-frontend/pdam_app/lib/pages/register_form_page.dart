@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/register_form/register_form_bloc.dart';
+import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/pages/register_verification_form_page.dart';
 import 'package:pdam_app/services/city_services.dart';
 
@@ -13,8 +14,9 @@ class RegisterFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cityService = getIt<CityService>();
     return BlocProvider(
-      create: (context) => RegisterFormBloc(),
+      create: (context) => RegisterFormBloc(cityService),
       child: Builder(
         builder: (context) {
           final formBloc = context.read<RegisterFormBloc>();
@@ -77,19 +79,13 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
   _RegisterFormPageSFState(this.formBloc);
 
   List<Gender> genders = [];
-
-  late List<GetCityDto> _cities = [new GetCityDto(id: 1, name: "A coruña")];
   late GetCityDto _selectedCity;
-  CityService cityService = CityService();
+  late List<GetCityDto> cities = [GetCityDto(id: 1, name: "A coruña")];
 
   @override
   void initState() {
-    try {
-      cityService.findAll().then((value) => {_cities = value});
-    } catch (e) {
-      print(e);
-    }
-    _selectedCity = _cities[0];
+    _selectedCity = cities[0];
+    formBloc.findAllCities().then((value) => cities = value);
     super.initState();
     genders.add(
         new Gender(id: 63, name: 'Hombre', isSelected: true, icon: Icons.male));
@@ -372,9 +368,12 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
               ),
               CupertinoButton(
                 child: Text(
-                  _selectedCity.name.length > 13
-                      ? _selectedCity.name.substring(0, 13) + "..."
-                      : _selectedCity.name,
+                  // ignore: unnecessary_null_comparison
+                  _selectedCity != null
+                      ? _selectedCity.name.length > 13
+                          ? _selectedCity.name.substring(0, 13) + "..."
+                          : _selectedCity.name
+                      : "",
                   style: TextStyle(
                       fontSize: 20, decoration: TextDecoration.underline),
                 ),
@@ -389,20 +388,21 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
                             height: 300,
                             child: CupertinoPicker(
                               magnification: 1.3,
-                              diameterRatio: 1,
-                              itemExtent: 32,
+                              itemExtent: 40,
                               useMagnifier: true,
                               scrollController: FixedExtentScrollController(
-                                  initialItem: _cities.indexOf(_selectedCity)),
+                                  initialItem: cities.indexOf(_selectedCity)),
                               onSelectedItemChanged: (int index) {
                                 setState(() {
-                                  _selectedCity = _cities[index];
+                                  _selectedCity = cities[index];
                                   formBloc.cityId.updateValue(_selectedCity.id);
                                 });
                               },
-                              children: _cities.map((City) {
-                                return Text(
-                                  City.name,
+                              children: cities.map((city) {
+                                return Center(
+                                  child: Text(
+                                    city.name,
+                                  ),
                                 );
                               }).toList(),
                             ),

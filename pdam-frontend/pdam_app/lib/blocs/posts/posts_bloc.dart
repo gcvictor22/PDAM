@@ -169,8 +169,8 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
           : {
               emit(
                 PostsSucces(
-                  posts: responseF.content,
-                  followedPosts: fetchedFollowedPosts,
+                  posts: fetchedPosts,
+                  followedPosts: responseF.content,
                 ),
               ),
               itF = 0,
@@ -193,34 +193,6 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   }
 
   Future<dynamic> _fetchPosts(int startIndex) async {
-    // late LocalStorageService _localStorageService = LocalStorageService();
-    // GetIt.I
-    //     .getAsync<LocalStorageService>()
-    //     .then((value) => _localStorageService = value);
-
-    // var aux;
-    // var token = await _localStorageService.getFromDisk("user_token");
-
-    // final response = await httpClient.get(
-    //     Uri.parse('http://localhost:8080/post/?page=$startIndex'),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "Accept": "application/json",
-    //       "Authorization": "Bearer " + token,
-    //       "Charset": "UTF-8"
-    //     });
-
-    // if (response.statusCode == 200) {
-    //   aux = GetPostDtoResponse.fromJson(
-    //     jsonDecode(
-    //       Utf8Decoder().convert(response.body.codeUnits),
-    //     ),
-    //   );
-    // } else if (response.statusCode == 404) {
-    //   aux = BadRequestException.fromJson(jsonDecode(response.body));
-    // }
-    // return aux;
-
     final response = await _postService.findAll(startIndex);
     return response;
   }
