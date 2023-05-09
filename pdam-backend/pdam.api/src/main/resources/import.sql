@@ -77,6 +77,17 @@ insert into post (id, affair, content, img_paths, post_date, user_who_post) valu
 insert into post (id, affair, content, img_paths, post_date, user_who_post) values (61, 'Accounting Assistant III', 'acabo de ver un tiktok donde una piba dice q usa su misma ropa interior varios dias cuando esta menstruando pq con las toallitas no se le ensucia la bombacha', 'VACIO', '2023-01-10', '8ee56ea7-ce36-595c-bfb4-b5fd87e34b09');
 insert into post (id, affair, content, img_paths, post_date, user_who_post) values (62, 'Research Associate', 'Hoy se viene un unboxing masivo de todas las mierdas que me he comprado en Japon y cosas chulas que me han enviado mientras estaba fuera 📦📦📦', 'VACIO', '2022-11-01', '1de440c9-6c02-5d77-8586-bc6a7ad216ed');
 
+insert into event (dtype, id, name, city, location, capacity, type, popularity, img_path) values ('Discotheque', 66, 'Dablist', 1, '20.1591959/-100.5064114', 786, 'DISCOTHEQUE', 0, 'default-events.png');
+insert into event (dtype, id, name, city, location, capacity, type, popularity, img_path) values ('Discotheque', 67, 'Browsezoom', 2, '28.0547578/81.614468', 1271, 'DISCOTHEQUE', 0, 'default-events.png');
+insert into event (dtype, id, name, city, location, capacity, type, popularity, img_path) values ('Discotheque', 68, 'Yotz', 3, '12.87678/44.99309', 1184, 'DISCOTHEQUE', 0, 'default-events.png');
+insert into event (dtype, id, name, city, location, capacity, type, popularity, img_path) values ('Discotheque', 69, 'Vidoo', 4, '48.911035/2.16555', 1061, 'DISCOTHEQUE', 0, 'default-events.png');
+insert into event (dtype, id, name, city, location, capacity, type, popularity, img_path) values ('Discotheque', 70, 'Devbug', 5, '41.4575762/-8.5717827', 1140, 'DISCOTHEQUE', 0, 'default-events.png');
+insert into event (dtype, id, name, location, city, capacity, date_time, duration, price, drink_included, number_of_drinks, adult, type, popularity, img_path) values ('Festival', 71, 'Fatz', '-16.4359692/-71.6050339', 6, 10000, '2023-06-13', 3, 112, false, 0, false, 'FESTIVAL', 0, 'default-events.png');
+insert into event (dtype, id, name, location, city, capacity, date_time, duration, price, drink_included, number_of_drinks, adult, type, popularity, img_path) values ('Festival', 72, 'LiveZ', '50.2124156/36.1590565', 7, 14000, '2023-08-01', 3, 21, false, 0, true, 'FESTIVAL', 0, 'default-events.png');
+insert into event (dtype, id, name, location, city, capacity, date_time, duration, price, drink_included, number_of_drinks, adult, type, popularity, img_path) values ('Festival', 73, 'Camimbo', '22.672099/113.250897', 8, 12200, '2023-08-24', 1, 5, true, 4, true, 'FESTIVAL', 0, 'default-events.png');
+insert into event (dtype, id, name, location, city, capacity, date_time, duration, price, drink_included, number_of_drinks, adult, type, popularity, img_path) values ('Festival', 74, 'Ntag', '19.7633057/96.0785104', 9, 11200, '2023-07-01', 5, 76, true, 4, false, 'FESTIVAL', 0, 'default-events.png');
+insert into event (dtype, id, name, location, city, capacity, date_time, duration, price, drink_included, number_of_drinks, adult, type, popularity, img_path) values ('Festival', 75, 'Rhyloo', '41.44056/22.72778', 10, 5000, '2023-07-05', 3, 148, true, 2, false, 'FESTIVAL', 0, 'default-events.png');
+
 insert into likedPosts (user_id, post_id) values ('74002906-c609-5b6b-9acf-177f11e48261', 60);
 insert into likedPosts (user_id, post_id) values ('62a17769-cc2b-5c2a-bc1a-9e76911e999b', 53);
 insert into likedPosts (user_id, post_id) values ('62a17769-cc2b-5c2a-bc1a-9e76911e999b', 58);
@@ -89,4 +100,4 @@ insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', '8ee56ea7-ce36-595c-bfb4-b5fd87e34b09');
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', 'df442a4d-2ec0-54b6-ab24-019787533d25');
 
-alter sequence hibernate_sequence restart with 66
+alter sequence hibernate_sequence restart with 76

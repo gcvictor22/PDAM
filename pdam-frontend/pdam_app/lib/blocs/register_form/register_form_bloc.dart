@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/models/city.dart';
+import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/services/services.dart';
 
 class RegisterFormBloc extends FormBloc<String, String> {
@@ -28,10 +29,12 @@ class RegisterFormBloc extends FormBloc<String, String> {
   final cityId = InputFieldBloc<int, Object>(
       initialValue: 1, validators: [FieldBlocValidators.required]);
 
-  RegisterFormBloc(CityService cityService)
+  RegisterFormBloc(
+      CityService cityService, AuthenticationService authenticationService)
       // ignore: unnecessary_null_comparison
-      : assert(cityService != null),
-        _cityService = cityService {
+      : assert(cityService != null, authenticationService != null),
+        _cityService = cityService,
+        _authenticationService = authenticationService {
     addFieldBlocs(fieldBlocs: [
       fullName,
       genderId,
@@ -45,17 +48,29 @@ class RegisterFormBloc extends FormBloc<String, String> {
   }
 
   final CityService _cityService;
+  final AuthenticationService _authenticationService;
 
   Future<List<GetCityDto>> findAllCities() async {
     return await _cityService.findAll();
   }
 
+  Future<GetUserDto> create(
+      String username,
+      String password,
+      String verifyPassword,
+      String email,
+      String phoneNumber,
+      String fullName,
+      int cityId,
+      int genderId) async {
+    final response = await _authenticationService.register(username, password,
+        verifyPassword, email, phoneNumber, fullName, cityId, genderId);
+    return response;
+  }
+
   @override
-  FutureOr<void> onSubmitting() {
-    late JwtAuthenticationService authService = JwtAuthenticationService();
-    emitLoading();
-    authService
-        .register(
+  FutureOr<void> onSubmitting() async {
+    await create(
             userName.value,
             password.value,
             verifyPassword.value,

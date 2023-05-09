@@ -38,7 +38,7 @@ public class GetFestivalDto {
                 .description(festival.getDescription())
                 .name(festival.getName())
                 .location(festival.getLocation())
-                .date(festival.getDate())
+                .date(festival.getDateTime())
                 .duration(festival.getDuration())
                 .remainingTickets(festival.getCapacity()-festival.getClients().size())
                 .city(festival.getCity().getName())

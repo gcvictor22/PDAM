@@ -77,6 +77,28 @@ class RestClient {
     }
   }
 
+  Future<dynamic> put(String url, [dynamic body]) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+      final response = await _httpClient.put(uri, body: jsonEncode(body));
+      var responseJson = _response(response);
+      return responseJson;
+    } on Exception catch (ex) {
+      throw ex;
+    }
+  }
+
+  Future<dynamic> delete(String url) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+      final response = await _httpClient.delete(uri);
+      var responseJson = _response(response);
+      return responseJson;
+    } on Exception catch (ex) {
+      throw ex;
+    }
+  }
+
   dynamic _response(http.Response response) {
     switch (response.statusCode) {
       case 200:

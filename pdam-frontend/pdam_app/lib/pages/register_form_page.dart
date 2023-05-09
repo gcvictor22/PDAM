@@ -4,6 +4,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/register_form/register_form_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/pages/register_verification_form_page.dart';
+import 'package:pdam_app/services/authentication_service.dart';
 import 'package:pdam_app/services/city_services.dart';
 
 import '../models/models.dart';
@@ -15,8 +16,9 @@ class RegisterFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cityService = getIt<CityService>();
+    final authenticationService = getIt<JwtAuthenticationService>();
     return BlocProvider(
-      create: (context) => RegisterFormBloc(cityService),
+      create: (context) => RegisterFormBloc(cityService, authenticationService),
       child: Builder(
         builder: (context) {
           final formBloc = context.read<RegisterFormBloc>();
@@ -42,9 +44,15 @@ class RegisterFormPage extends StatelessWidget {
               minimum: EdgeInsets.only(left: 30, right: 30),
               child: FormBlocListener<RegisterFormBloc, String, String>(
                   onSuccess: (context, state) {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return RegisterVerfificarionPage(formBloc.userName.value);
-                    }));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return RegisterVerfificarionPage(
+                              formBloc.userName.value);
+                        },
+                      ),
+                    );
                   },
                   onLoading: (context, state) {
                     const CircularProgressIndicator();
@@ -52,7 +60,11 @@ class RegisterFormPage extends StatelessWidget {
                   onSubmitting: (context, state) {
                     LoadingDialog.show(context);
                   },
+                  onSubmissionFailed: (context, state) {
+                    LoadingDialog.hide(context);
+                  },
                   onFailure: (context, state) {
+                    LoadingDialog.hide(context);
                     showError(context);
                   },
                   child: RegisterFormPageSF(formBloc: formBloc)),

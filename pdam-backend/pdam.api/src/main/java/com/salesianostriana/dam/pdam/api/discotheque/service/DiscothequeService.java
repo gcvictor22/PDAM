@@ -11,6 +11,7 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.CityNotFoundExceptio
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
+import com.salesianostriana.dam.pdam.api.search.specifications.dicotheque.DSBuilder;
 import com.salesianostriana.dam.pdam.api.search.specifications.post.PSBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -38,9 +39,9 @@ public class DiscothequeService {
         if (discothequeRepository.findAll().isEmpty())
             throw new EmptyDiscothequeListException();
 
-        PSBuilder psBuilder = new PSBuilder(params);
+        DSBuilder psBuilder = new DSBuilder(params);
 
-        Specification<Post> spec = psBuilder.build();
+        Specification<Discotheque> spec = psBuilder.build();
         Page<GetDiscothequeDto> pageGetDiscothequeDto = discothequeRepository.findAll(spec, pageable).map(GetDiscothequeDto::of);
 
         return new GetPageDto<>(pageGetDiscothequeDto);
@@ -54,6 +55,7 @@ public class DiscothequeService {
                 .location(newDiscothequeDto.getLocation())
                 .capacity(newDiscothequeDto.getCapacity())
                 .type(EnumSet.of(EventType.DISCOTHEQUE))
+                .imgPath("default-events.png")
                 .build();
 
         return GetDiscothequeDto.of(discothequeRepository.save(discotheque));

@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.pdam.api.festival.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -16,7 +17,10 @@ import java.time.LocalDateTime;
 public class Festival extends Event {
 
     private String description;
-    private LocalDateTime date;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime dateTime;
+
     private int duration;
     private double price;
     private boolean drinkIncluded;
