@@ -30,7 +30,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
       initialValue: 1, validators: [FieldBlocValidators.required]);
 
   RegisterFormBloc(
-      CityService cityService, AuthenticationService authenticationService)
+      CityService cityService, JwtAuthenticationService authenticationService)
       // ignore: unnecessary_null_comparison
       : assert(cityService != null, authenticationService != null),
         _cityService = cityService,
@@ -48,7 +48,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
   }
 
   final CityService _cityService;
-  final AuthenticationService _authenticationService;
+  late JwtAuthenticationService _authenticationService;
 
   Future<List<GetCityDto>> findAllCities() async {
     return await _cityService.findAll();
