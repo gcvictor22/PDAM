@@ -78,8 +78,8 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
           hasReachedMax = response.last;
           fetchedPosts = response.content;
           if (response.last != true) it += 1;
-        } else {
-          fetchedPosts = "No hay ningún post en esta página...";
+        } else if (response is String) {
+          fetchedPosts = response;
         }
 
         emit(
@@ -99,33 +99,37 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     PostsEvent event,
     Emitter<PostsState> emit,
   ) async {
-    final response = await _fetchPosts(it);
-    response.content.isEmpty || hasReachedMax
-        ? hasReachedMax = true
-        : {
-            emit(PostsSucces(
-                posts: List.of(fetchedPosts)..addAll(response.content),
-                followedPosts: fetchedFollowedPosts)),
-            hasReachedMax = response.last,
-            if (response.last != true) it += 1
-          };
+    if (hasReachedMax == false) {
+      final response = await _fetchPosts(it);
+      response.content.isEmpty
+          ? hasReachedMax = true
+          : {
+              emit(PostsSucces(
+                  posts: List.of(fetchedPosts)..addAll(response.content),
+                  followedPosts: fetchedFollowedPosts)),
+              hasReachedMax = response.last,
+              if (response.last != true) it += 1
+            };
+    }
   }
 
   Future<void> _onScrollFollowedPosts(
     PostsEvent event,
     Emitter<PostsState> emit,
   ) async {
-    final responseF = await _fetchFollowedPosts(itF);
-    responseF.content.isEmpty || hasReachedMaxF
-        ? hasReachedMaxF = true
-        : {
-            emit(PostsSucces(
-                posts: fetchedPosts,
-                followedPosts: List.of(fetchedFollowedPosts)
-                  ..addAll(responseF.content))),
-            hasReachedMaxF = responseF.last,
-            if (responseF.last != true) itF += 1
-          };
+    if (hasReachedMaxF == false) {
+      final responseF = await _fetchFollowedPosts(itF);
+      responseF.content.isEmpty
+          ? hasReachedMaxF = true
+          : {
+              emit(PostsSucces(
+                  posts: fetchedPosts,
+                  followedPosts: List.of(fetchedFollowedPosts)
+                    ..addAll(responseF.content))),
+              hasReachedMaxF = responseF.last,
+              if (responseF.last != true) itF += 1
+            };
+    }
   }
 
   Future<void> _onPostsRefresh(

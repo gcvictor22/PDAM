@@ -3,7 +3,6 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pdam_app/blocs/posts/posts_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
-import 'package:pdam_app/models/post/GetPostDto.dart';
 import 'package:pdam_app/services/post_service.dart';
 import 'package:pdam_app/widgets/EmptyListMessage.dart';
 import 'package:pdam_app/widgets/RefreshWidget.dart';
@@ -112,7 +111,7 @@ class _PostsListState extends State<PostsList>
                   child: GestureDetector(
                     onTap: () {
                       if (currentTab == 0 &&
-                          widget.state.followedPosts is List<GetPostDto> &&
+                          widget.state.followedPosts is! String &&
                           _scrollControllerF.offset >= 750) {
                         scrollToTopTab2();
                       } else {
@@ -138,7 +137,7 @@ class _PostsListState extends State<PostsList>
                   child: GestureDetector(
                     onTap: () {
                       if (currentTab == 1 &&
-                          widget.state.posts is List<GetPostDto> &&
+                          widget.state.posts is! String &&
                           _scrollController.offset >= 750) {
                         scrollToTopTab1();
                       } else {
@@ -167,7 +166,7 @@ class _PostsListState extends State<PostsList>
             child: TabBarView(
               controller: _tabController,
               children: [
-                widget.state.followedPosts is List<GetPostDto>
+                widget.state.followedPosts is! String
                     ? SingleChildScrollView(
                         child: Container(
                           width: double.infinity,
@@ -212,10 +211,12 @@ class _PostsListState extends State<PostsList>
                         padding: EdgeInsets.only(
                             top: 200, bottom: 350, left: 40, right: 40),
                         child: EmptyListMessage(
-                          message: widget.state.followedPosts,
+                          message: widget.state.followedPosts is String
+                              ? widget.state.followedPosts
+                              : "",
                         ),
                       ),
-                widget.state.posts is List<GetPostDto>
+                widget.state.posts is! String
                     ? SingleChildScrollView(
                         child: Container(
                           width: double.infinity,
@@ -259,7 +260,9 @@ class _PostsListState extends State<PostsList>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              widget.state.posts,
+                              widget.state.posts is String
+                                  ? widget.state.posts
+                                  : "",
                             ),
                             ElevatedButton(
                               onPressed: () => loadlist(),
@@ -328,7 +331,7 @@ class _PostsListState extends State<PostsList>
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= (maxScroll - 500);
   }
 
   bool get _isTop {
@@ -341,7 +344,7 @@ class _PostsListState extends State<PostsList>
     if (!_scrollControllerF.hasClients) return false;
     final maxScroll = _scrollControllerF.position.maxScrollExtent;
     final currentScroll = _scrollControllerF.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    return currentScroll >= (maxScroll - 500);
   }
 
   bool get _isTopF {
