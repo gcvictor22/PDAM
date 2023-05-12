@@ -93,7 +93,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web -> web.ignoring().antMatchers("/h2-console/**", "/user/register", "/user/login",
                 "/user/userImg/{userName}", "/user/verification", "/user/refreshtoken", "/user/forgotPassword/**",
-                "/city/**"));
+                "/city/**", "/event/{id}/img"));
     }
 
 

@@ -2,6 +2,7 @@ import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:pdam_app/pages/events_page.dart';
 import 'package:pdam_app/pages/posts_page.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_event.dart';
@@ -127,10 +128,6 @@ class _HomePageStatesState extends State<HomePageStates> {
       ),
     );
   }
-}
-
-Widget EventsPage() {
-  return Container();
 }
 
 Widget NewPostPage() {

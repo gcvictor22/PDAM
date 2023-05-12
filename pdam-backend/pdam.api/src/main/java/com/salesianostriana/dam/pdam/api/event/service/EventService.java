@@ -1,9 +1,8 @@
 package com.salesianostriana.dam.pdam.api.event.service;
 
-import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventAllDto;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.event.repository.EventRepository;
-import com.salesianostriana.dam.pdam.api.exception.accesdenied.EventDeniedAccessException;
 import com.salesianostriana.dam.pdam.api.exception.empty.EmptyEventListException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.DiscothequeNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.EventNotFoundException;
@@ -22,7 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,14 +30,14 @@ public class EventService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
-    public GetPageDto<GetEventDto> findAll(List<SearchCriteria> params, Pageable pageable) {
+    public GetPageDto<GetEventAllDto> findAll(List<SearchCriteria> params, Pageable pageable) {
         if (eventRepository.findAll().isEmpty())
             throw new EmptyEventListException();
 
         PSBuilder psBuilder = new PSBuilder(params);
 
         Specification<Post> spec = psBuilder.build();
-        Page<GetEventDto> pageGetEventDto = eventRepository.findAll(spec, pageable).map(GetEventDto::of);
+        Page<GetEventAllDto> pageGetEventDto = eventRepository.findAll(spec, pageable).map(GetEventAllDto::of);
 
         return new GetPageDto<>(pageGetEventDto);
     }
@@ -55,7 +53,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public GetEventDto addAuthUsers(Long id, List<String> newAuthUsersDto) {
+    public GetEventAllDto addAuthUsers(Long id, List<String> newAuthUsersDto) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new DiscothequeNotFoundException(id));
 
         List<User> users = authorizeUsers(newAuthUsersDto, event);
@@ -64,7 +62,7 @@ public class EventService {
         });
         event.getAuthUsers().addAll(users);
 
-        return GetEventDto.of(eventRepository.save(event));
+        return GetEventAllDto.of(eventRepository.save(event));
     }
 
     public Event findById(Long id){

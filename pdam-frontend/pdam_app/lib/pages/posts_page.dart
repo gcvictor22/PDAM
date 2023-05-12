@@ -255,20 +255,12 @@ class _PostsListState extends State<PostsList>
                       )
                     : Container(
                         width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              widget.state.posts is String
-                                  ? widget.state.posts
-                                  : "",
-                            ),
-                            ElevatedButton(
-                              onPressed: () => loadlist(),
-                              child: Text("Recargar"),
-                            )
-                          ],
+                        padding: EdgeInsets.only(
+                            top: 200, bottom: 350, left: 40, right: 40),
+                        child: EmptyListMessage(
+                          message: widget.state.posts is String
+                              ? widget.state.posts
+                              : "",
                         ),
                       ),
               ],
@@ -281,6 +273,7 @@ class _PostsListState extends State<PostsList>
 
   @override
   void dispose() {
+    super.dispose();
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
@@ -288,7 +281,6 @@ class _PostsListState extends State<PostsList>
     _scrollControllerF
       ..removeListener(_onScrollF)
       ..dispose();
-    super.dispose();
   }
 
   void _onTabChanged() {

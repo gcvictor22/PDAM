@@ -1,12 +1,22 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:pdam_app/services/post_service.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import '../../models/post/GetPostDto.dart';
 import '../../models/post/GetPostDtoResponse.dart';
 
 part 'posts_event.dart';
 part 'posts_state.dart';
+
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
   int it = 0;
@@ -30,6 +40,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       (event, emit) async {
         await _onScrollPosts(event, emit);
       },
+      transformer: throttleDroppable(throttleDuration),
     );
 
     on<PostsRefreshEvent>(
@@ -42,6 +53,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       (event, emit) async {
         await _onScrollFollowedPosts(event, emit);
       },
+      transformer: throttleDroppable(throttleDuration),
     );
 
     on<FollowedPostsRefreshEvent>(
@@ -148,7 +160,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
                   followedPosts: fetchedFollowedPosts,
                 ),
               ),
-              it = 0,
+              it = 1,
               hasReachedMax = response.last,
               fetchedPosts = response.content,
             };
@@ -177,7 +189,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
                   followedPosts: responseF.content,
                 ),
               ),
-              itF = 0,
+              itF = 1,
               hasReachedMaxF = responseF.last,
               fetchedFollowedPosts = responseF.content,
             };

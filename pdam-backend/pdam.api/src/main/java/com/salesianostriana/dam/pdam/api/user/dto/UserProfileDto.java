@@ -1,7 +1,7 @@
 package com.salesianostriana.dam.pdam.api.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventAllDto;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
@@ -34,7 +34,7 @@ public class UserProfileDto {
     private boolean followedByUser;
     private boolean verified;
     private String city;
-    private GetEventDto authEvent;
+    private GetEventAllDto authEvent;
     private boolean authorized;
     private List<Event> events;
     private List<GetPartyDto> parties;
@@ -57,7 +57,7 @@ public class UserProfileDto {
                 .verified(user.isVerified())
                 .followedByUser(user.getFollowers().stream().filter(u -> Objects.equals(u.getId(), loggedUser.getId())).toList().size() > 0)
                 .city(user.getCity().getName())
-                .authEvent(user.getAuthEvent() == null ? null : GetEventDto.of(user.getAuthEvent()))
+                .authEvent(user.getAuthEvent() == null ? null : GetEventAllDto.of(user.getAuthEvent()))
                 .authorized(user.isAuthorized())
                 .events(user.getEvents())
                 .parties(user.getParties().stream().map(GetPartyDto::of).collect(Collectors.toList()))

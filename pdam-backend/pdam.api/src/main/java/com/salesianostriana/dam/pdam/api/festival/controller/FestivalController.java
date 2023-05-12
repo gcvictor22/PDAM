@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.pdam.api.festival.controller;
 
-import com.salesianostriana.dam.pdam.api.festival.dto.GetFestivalDto;
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
 import com.salesianostriana.dam.pdam.api.festival.dto.NewFestivalDto;
 import com.salesianostriana.dam.pdam.api.festival.service.FestivalService;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
@@ -23,7 +23,7 @@ public class FestivalController {
     private final FestivalService festivalService;
 
     @GetMapping("/")
-    public GetPageDto<GetFestivalDto> findAll(
+    public GetPageDto<GetEventDto> findAll(
             @RequestParam(value = "s", defaultValue = "") String search,
             @PageableDefault(size = 20, page = 0) Pageable pageable) {
 
@@ -32,7 +32,7 @@ public class FestivalController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<GetFestivalDto> create(@RequestBody NewFestivalDto newFestivalDto){
+    public ResponseEntity<GetEventDto> create(@RequestBody NewFestivalDto newFestivalDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(festivalService.save(newFestivalDto));
     }
 }
