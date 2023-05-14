@@ -19,6 +19,8 @@ dependencies:
   http_interceptor: ^1.0.1
   shared_preferences: ^2.0.17
   flutter_form_bloc: ^0.30.1
+  image_picker: ^0.8.7+5
+  path_provider: ^2.0.15
 
   flutter:
     sdk: flutter
@@ -43,3 +45,4 @@ flutter:
     - assets/login-background.png
     - assets/main-background.png
     - assets/404.gif
+    - assets/loader.png

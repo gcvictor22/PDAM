@@ -16,13 +16,13 @@ insert into city (id, name, location) values (15,'Ciudad Real', '38,98651781/-3,
 insert into city (id, name, location) values (16,'Córdoba', '37,87954225/-4,78032455');
 insert into city (id, name, location) values (17,'Cuenca', '40,07653762/-2,13152306');
 insert into city (id, name, location) values (18,'Gipuzkoa', '43,31717158/-1,98191785');
-insert into city (id, name, location) values (10,'Girona', '41,98186075/2,82411899');
+insert into city (id, name, location) values (19,'Girona', '41,98186075/2,82411899');
 insert into city (id, name, location) values (20,'Granada', '37,17641932/-3,60001883');
 insert into city (id, name, location) values (21,'Guadalajara', '40,63435548/-3,16210273');
 insert into city (id, name, location) values (22,'Huelva', '37,26004113/-6,95040588');
 insert into city (id, name, location) values (23,'Huesca', '42,14062739/-0,40842276');
 insert into city (id, name, location) values (24,'Islas Baleares,', '39,57114699/2,65181698');
-insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594');
+insert into city (id, name, location) values (25,'Jaén', '37,7651913/-3,7903594');
 insert into city (id, name, location) values (26,'Las Palmas', '28,099378545/-15,413368411');
 insert into city (id, name, location) values (27,'León', '42,59912097/-5,56707631');
 insert into city (id, name, location) values (28,'Lleida', '41,61527355/0,62061934');

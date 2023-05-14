@@ -5,10 +5,25 @@ import 'package:like_button/like_button.dart';
 import '../blocs/posts/posts_bloc.dart';
 import '../models/post/GetPostDto.dart';
 
-class Post extends StatelessWidget {
+class Post extends StatefulWidget {
   final GetPostDto post;
   final BuildContext context;
-  const Post({super.key, required this.post, required this.context});
+
+  Post({super.key, required this.post, required this.context});
+
+  @override
+  State<Post> createState() => _PostState();
+}
+
+class _PostState extends State<Post> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +39,17 @@ class Post extends StatelessWidget {
         ),
       ),
       width: double.infinity,
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.all(10),
       child: TextButton(
         style: ButtonStyle(
           splashFactory: NoSplash.splashFactory,
           overlayColor: MaterialStatePropertyAll(Colors.transparent),
         ),
-        onPressed: () => print(post.id),
+        onPressed: () => print(widget.post.id),
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () => print(post.userWhoPost.userName),
+              onPressed: () => print(widget.post.userWhoPost.userName),
               style: ButtonStyle(
                 padding: MaterialStatePropertyAll(
                   EdgeInsets.only(top: 5, bottom: 5),
@@ -60,14 +75,15 @@ class Post extends StatelessWidget {
                     ),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.network(
-                      "http://localhost:8080/user/userImg/${post.userWhoPost.userName}",
+                      "http://localhost:8080/user/userImg/${widget.post.userWhoPost.userName}",
                       fit: BoxFit.cover,
                     ),
                   ),
                   Text(
-                    post.userWhoPost.userName.length < 15
-                        ? post.userWhoPost.userName
-                        : post.userWhoPost.userName.substring(0, 12) + "...",
+                    widget.post.userWhoPost.userName.length < 15
+                        ? widget.post.userWhoPost.userName
+                        : widget.post.userWhoPost.userName.substring(0, 12) +
+                            "...",
                     style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -76,7 +92,7 @@ class Post extends StatelessWidget {
                   SizedBox(
                     width: 5,
                   ),
-                  post.userWhoPost.verified
+                  widget.post.userWhoPost.verified
                       ? Icon(
                           Icons.verified,
                           color: Colors.blue,
@@ -86,11 +102,11 @@ class Post extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: widget.post.affair!.isEmpty ? 0 : 20,
             ),
             Container(
               child: Text(
-                post.affair,
+                widget.post.affair != null ? widget.post.affair! : "",
                 textAlign: TextAlign.justify,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -106,7 +122,7 @@ class Post extends StatelessWidget {
             ),
             Container(
               child: Text(
-                post.content,
+                widget.post.content,
                 textAlign: TextAlign.justify,
                 style: TextStyle(
                   fontSize: 17,
@@ -118,15 +134,97 @@ class Post extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
+            widget.post.imgPath.length > 0 && widget.post.imgPath[0] != "VACIO"
+                ? widget.post.imgPath.length > 1
+                    ? Container(
+                        height: (9 * 175) / 16,
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.post.imgPath.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 170,
+                              height: (9 * 170) / 16,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                        "http://localhost:8080/post/file/${widget.post.imgPath[index]}")),
+                              ),
+                              margin: EdgeInsets.only(
+                                  right: widget.post.imgPath.length - 1 != index
+                                      ? 10
+                                      : 0),
+                              child: widget.post.imgPath.length > 2 &&
+                                      index == 1 &&
+                                      isScrolled == false
+                                  ? Align(
+                                      alignment: Alignment.centerRight,
+                                      child: GestureDetector(
+                                        onTap: () =>
+                                            _scrollController.animateTo(
+                                                _scrollController
+                                                    .position.maxScrollExtent,
+                                                duration:
+                                                    Duration(milliseconds: 500),
+                                                curve: Curves.easeInOut),
+                                        child: Container(
+                                          width: 30,
+                                          height: 30,
+                                          margin: EdgeInsets.only(
+                                            right: 5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(15),
+                                            ),
+                                          ),
+                                          child: Icon(Icons.arrow_forward),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: 225,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                "http://localhost:8080/post/file/${widget.post.imgPath[0]}"),
+                          ),
+                        ),
+                      )
+                : SizedBox(),
+            SizedBox(
+              height: widget.post.imgPath.length > 0 &&
+                      widget.post.imgPath[0] != "VACIO"
+                  ? 10
+                  : 0,
+            ),
             Container(
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   LikeButton(
-                    onTap: (isLiked) => like(post, isLiked),
-                    likeCount: post.usersWhoLiked,
-                    isLiked: post.likedByUser,
+                    onTap: (isLiked) => like(widget.post, isLiked),
+                    likeCount: widget.post.usersWhoLiked,
+                    isLiked: widget.post.likedByUser,
                     likeBuilder: (isLiked) {
                       var color = isLiked
                           ? const Color.fromARGB(255, 255, 17, 0)
@@ -158,14 +256,14 @@ class Post extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          "${post.comments}",
+                          "${widget.post.comments}",
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    "${post.postDate.split(" ")[0]}\n${post.postDate.split(" ")[1]}",
+                    "${widget.post.postDate.split(" ")[0]}\n${widget.post.postDate.split(" ")[1]}",
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -181,7 +279,17 @@ class Post extends StatelessWidget {
   }
 
   Future<bool> like(GetPostDto post, bool bool) async {
-    context.read<PostsBloc>().add(LikeAPost(post.id));
+    widget.context.read<PostsBloc>().add(LikeAPost(post.id));
     return !bool;
+  }
+
+  bool get isScrolled {
+    if (!_scrollController.hasClients) return false;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= 1;
+  }
+
+  _onScroll() {
+    setState(() {});
   }
 }

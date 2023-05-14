@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/models/post/GetPostDtoResponse.dart';
+import 'package:pdam_app/models/post/MultiPartFilesRequest.dart';
+import 'package:pdam_app/models/post/NewPostDto.dart';
 
 import '../models/post/GetPostDto.dart';
 import '../rest/rest_client.dart';
@@ -47,5 +51,21 @@ class PostRepository {
 
     var response = await _client.post(url);
     return GetPostDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> create(NewPostDto post) async {
+    String url = "/post/";
+
+    var response = await _client.post(url, post);
+    return GetPostDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> uploadFile(List<XFile> files, int postId) async {
+    String url = "/post/$postId/upload";
+
+    StreamedResponse response = await _client.postMultipart(url, files);
+    var stringResponse = await response.stream.bytesToString();
+
+    return MultiPartFilesRequest.fromJson(jsonDecode(stringResponse));
   }
 }

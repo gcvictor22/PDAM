@@ -9,6 +9,7 @@ import '../blocs/authentication/authentication_event.dart';
 import '../config/locator.dart';
 import '../models/models.dart';
 import '../services/authentication_service.dart';
+import 'new_post_page.dart';
 
 class HomePage extends StatelessWidget {
   final User user;
@@ -89,30 +90,35 @@ class _HomePageStatesState extends State<HomePageStates> {
                 tabs: [
                   GButton(
                     icon: Icons.home,
+                    iconSize: 25,
                     text: "Inicio",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
                   ),
                   GButton(
                     icon: Icons.my_library_music,
+                    iconSize: 25,
                     text: "Eventos",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
                   ),
                   GButton(
                     icon: Icons.add_circle_outline,
+                    iconSize: 25,
                     text: "Postear",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
                   ),
                   GButton(
                     icon: Icons.person_search,
+                    iconSize: 25,
                     text: "Conocer",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
                   ),
                   GButton(
                     icon: Icons.account_circle,
+                    iconSize: 25,
                     text: "Perfil",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
@@ -128,10 +134,6 @@ class _HomePageStatesState extends State<HomePageStates> {
       ),
     );
   }
-}
-
-Widget NewPostPage() {
-  return Container();
 }
 
 Widget SearchPage() {

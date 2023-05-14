@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
@@ -62,6 +63,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Discotkeo',
       theme: ThemeData(
+        cupertinoOverrideTheme: CupertinoThemeData(
+          brightness: Brightness.dark,
+        ),
         primarySwatch: MaterialColor(0xFFAD1DFE, {
           50: Color.fromRGBO(173, 29, 254, 0.1),
           100: Color.fromRGBO(173, 29, 254, 0.2),

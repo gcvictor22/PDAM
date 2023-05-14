@@ -19345,3 +19345,43 @@ insert into event (dtype, id, name, location, city, capacity, date_time, duratio
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1303)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1292)
 	at com.salesianostriana.dam.pdam.api.Dyscotkeov1Application.main(Dyscotkeov1Application.java:10)
+2023-05-12 19:41:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-12 21:42:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-12 22:07:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 17:25:32 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 19:12:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 19:21:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 20:18:17 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 22:02:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 23:56:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-13 23:58:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
+Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
+insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]

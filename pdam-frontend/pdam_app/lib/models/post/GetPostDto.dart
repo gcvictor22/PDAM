@@ -1,6 +1,6 @@
 class GetPostDto {
   late int id;
-  late String affair;
+  late String? affair;
   late String content;
   late List<String> imgPath;
   late UserWhoPost userWhoPost;
@@ -11,7 +11,7 @@ class GetPostDto {
 
   GetPostDto(
       {required this.id,
-      required this.affair,
+      this.affair,
       required this.content,
       required this.imgPath,
       required this.userWhoPost,
