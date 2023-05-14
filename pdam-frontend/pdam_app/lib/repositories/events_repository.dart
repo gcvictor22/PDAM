@@ -40,8 +40,8 @@ class EventRepository {
     return GetEventDtoResponse.fromJson(jsonDecode(response));
   }
 
-  Future<dynamic> findAllEvents(int index) async {
-    String url = "/event/?page=${index}";
+  Future<dynamic> findAllEvents(int index, [String? search]) async {
+    String url = "/event/?page=${index}&s=name:$search";
 
     var response = await _client.get(url);
     if (response is NotFoundException) {

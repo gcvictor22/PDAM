@@ -46,7 +46,7 @@ public class GenericSpecification<T> implements Specification<T> {
                     return criteriaBuilder.like(root.get(searchCriteria.getKey()), newValue + "%");
                 }else {
                     return criteriaBuilder.like(
-                            root.get(searchCriteria.getKey()), "%" + searchCriteria.getValue().toString() + "%"
+                            criteriaBuilder.upper(root.get(searchCriteria.getKey())), "%" + searchCriteria.getValue().toString().toUpperCase() + "%"
                     );
                 }
             } else if (isBooleam(type)) {

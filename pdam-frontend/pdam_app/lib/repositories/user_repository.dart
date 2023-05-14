@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/user/GetUserResponse.dart';
 
 import '../config/locator.dart';
 import '../models/user/user.dart';
@@ -20,5 +21,12 @@ class UserRepository {
 
     var jsonResponse = await _client.get(url);
     return UserResponse.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<dynamic> findAll(String search) async {
+    String url = "/user/?s=userName:$search";
+
+    var jsonResponse = await _client.get(url);
+    return GetUserResponse.fromJson(jsonDecode(jsonResponse));
   }
 }

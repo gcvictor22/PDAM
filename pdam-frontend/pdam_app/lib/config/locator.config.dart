@@ -21,6 +21,7 @@ import 'package:pdam_app/services/authentication_service.dart' as _i11;
 import 'package:pdam_app/services/city_services.dart' as _i9;
 import 'package:pdam_app/services/event_service.dart' as _i10;
 import 'package:pdam_app/services/post_service.dart' as _i12;
+import 'package:pdam_app/services/user_service.dart' as _i13;
 
 extension GetItInjectableX on _i1.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -45,6 +46,7 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i11.JwtAuthenticationService>(
         _i11.JwtAuthenticationService());
     gh.singleton<_i12.PostService>(_i12.PostService());
+    gh.singleton<_i13.UserService>(_i13.UserService());
     return this;
   }
 }

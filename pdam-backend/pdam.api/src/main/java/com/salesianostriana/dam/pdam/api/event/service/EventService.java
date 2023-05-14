@@ -9,6 +9,7 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.EventNotFoundExcepti
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
+import com.salesianostriana.dam.pdam.api.search.specifications.event.ESBuilder;
 import com.salesianostriana.dam.pdam.api.search.specifications.post.PSBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -34,9 +35,9 @@ public class EventService {
         if (eventRepository.findAll().isEmpty())
             throw new EmptyEventListException();
 
-        PSBuilder psBuilder = new PSBuilder(params);
+        ESBuilder esBuilder = new ESBuilder(params);
 
-        Specification<Post> spec = psBuilder.build();
+        Specification<Event> spec = esBuilder.build();
         Page<GetEventAllDto> pageGetEventDto = eventRepository.findAll(spec, pageable).map(GetEventAllDto::of);
 
         return new GetPageDto<>(pageGetEventDto);

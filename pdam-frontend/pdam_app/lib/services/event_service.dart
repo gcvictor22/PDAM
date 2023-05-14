@@ -40,7 +40,7 @@ class EventService {
     throw new Exception("Ha ocurrido un error en el servicio");
   }
 
-  Future<dynamic> findAll(int index) async {
+  Future<dynamic> findAll(int index, [String? search]) async {
     String? token = await _localStorageService.getFromDisk("user_token");
 
     if (token != null) {

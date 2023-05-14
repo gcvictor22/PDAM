@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:pdam_app/pages/events_page.dart';
 import 'package:pdam_app/pages/posts_page.dart';
+import 'package:pdam_app/pages/search_page.dart';
 import '../blocs/authentication/authentication_bloc.dart';
 import '../blocs/authentication/authentication_event.dart';
 import '../config/locator.dart';
@@ -110,9 +111,9 @@ class _HomePageStatesState extends State<HomePageStates> {
                     iconActiveColor: Colors.black,
                   ),
                   GButton(
-                    icon: Icons.person_search,
+                    icon: Icons.search,
                     iconSize: 25,
-                    text: "Conocer",
+                    text: "Buscar",
                     iconColor: Colors.white,
                     iconActiveColor: Colors.black,
                   ),
@@ -134,10 +135,6 @@ class _HomePageStatesState extends State<HomePageStates> {
       ),
     );
   }
-}
-
-Widget SearchPage() {
-  return Container();
 }
 
 Widget ProfilePage(AuthenticationBloc authBloc, User user) {
