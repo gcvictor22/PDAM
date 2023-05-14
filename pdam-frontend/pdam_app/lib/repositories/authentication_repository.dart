@@ -55,7 +55,7 @@ class AuthenticationRepository {
 
   Future<dynamic> registerVerification(
       String userName, String verificationNumber) async {
-    String url = "http://localhost:8080/user/verification";
+    String url = ApiConstants.baseUrl + "/user/verification";
     String body = jsonEncode(
         {"userName": userName, "verificationNumber": verificationNumber});
     Map<String, String> headers = {'Content-Type': 'application/json'};

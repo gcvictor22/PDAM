@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
+import 'package:pdam_app/rest/rest.dart';
 
 import '../blocs/posts/posts_bloc.dart';
 import '../models/post/GetPostDto.dart';
@@ -75,7 +76,8 @@ class _PostState extends State<Post> {
                     ),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.network(
-                      "http://localhost:8080/user/userImg/${widget.post.userWhoPost.userName}",
+                      ApiConstants.baseUrl +
+                          "/user/userImg/${widget.post.userWhoPost.userName}",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -154,8 +156,8 @@ class _PostState extends State<Post> {
                                 ),
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                        "http://localhost:8080/post/file/${widget.post.imgPath[index]}")),
+                                    image: NetworkImage(ApiConstants.baseUrl +
+                                        "/post/file/${widget.post.imgPath[index]}")),
                               ),
                               margin: EdgeInsets.only(
                                   right: widget.post.imgPath.length - 1 != index
@@ -204,8 +206,8 @@ class _PostState extends State<Post> {
                           ),
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "http://localhost:8080/post/file/${widget.post.imgPath[0]}"),
+                            image: NetworkImage(ApiConstants.baseUrl +
+                                "/post/file/${widget.post.imgPath[0]}"),
                           ),
                         ),
                       )

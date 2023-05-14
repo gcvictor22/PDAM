@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../rest/rest_client.dart';
+
 class Event extends StatelessWidget {
   final GetEventDto event;
   const Event({super.key, required this.event});
@@ -89,7 +91,7 @@ class Event extends StatelessWidget {
             Container(
               child: Image.network(
                 fit: BoxFit.cover,
-                "http://localhost:8080/event/${event.id}/img",
+                ApiConstants.baseUrl + "/event/${event.id}/img",
               ),
               clipBehavior: Clip.antiAliasWithSaveLayer,
               decoration: BoxDecoration(
