@@ -10,9 +10,14 @@ import 'package:pdam_app/blocs/new_post_form/new_post_form_bloc.dart';
 import '../config/locator.dart';
 import '../services/post_service.dart';
 
-class NewPostPage extends StatelessWidget {
+class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
 
+  @override
+  State<NewPostPage> createState() => _NewPostPageState();
+}
+
+class _NewPostPageState extends State<NewPostPage> {
   @override
   Widget build(BuildContext context) {
     final _postService = getIt<PostService>();
@@ -22,6 +27,12 @@ class NewPostPage extends StatelessWidget {
         builder: (context) {
           final formBloc = context.read<NewPostFormBloc>();
           return FormBlocListener<NewPostFormBloc, String, String>(
+            onSuccess: (context, state) {
+              showOk(context);
+              formBloc.clear();
+              formBloc.files.clear();
+              setState(() {});
+            },
             child: NewPostPageSF(formBloc: formBloc),
           );
         },
@@ -39,7 +50,6 @@ class NewPostPageSF extends StatefulWidget {
 }
 
 class _NewPostPageSFState extends State<NewPostPageSF> {
-  List<XFile?> _images = [];
   final ImagePicker imagePicker = ImagePicker();
 
   Future getImage(ImageSource source) async {
@@ -48,11 +58,9 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
     if (imagesTemporary.isNotEmpty) {
       if (imagesTemporary.length > 4) {
         for (var i = 0; i < 4; i++) {
-          _images.add(imagesTemporary[i]);
           widget.formBloc.files.add(imagesTemporary[i]);
         }
       } else {
-        _images = imagesTemporary;
         widget.formBloc.files = imagesTemporary;
       }
     }
@@ -64,7 +72,7 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
     XFile? _newImage = await imagePicker.pickImage(source: ImageSource.camera);
 
     if (_newImage != null) {
-      _images.add(_newImage);
+      widget.formBloc.files.add(_newImage);
     }
 
     setState(() {});
@@ -246,18 +254,18 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                       ],
                     ),
                   ),
-                  _images.length > 0
+                  widget.formBloc.files.length > 0
                       ? SizedBox(
                           height: 20,
                         )
                       : SizedBox(),
-                  _images.length > 0
+                  widget.formBloc.files.length > 0
                       ? Container(
                           height: (9 * 175) / 16,
                           width: double.infinity,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: _images.length,
+                            itemCount: widget.formBloc.files.length,
                             itemBuilder: (context, index) {
                               return Container(
                                 width: 170,
@@ -269,14 +277,15 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
                                       image: FileImage(
-                                        File(_images[index]!.path),
+                                        File(widget.formBloc.files[index].path),
                                       )),
                                 ),
                                 child: Align(
                                   alignment: Alignment.topRight,
                                   child: GestureDetector(
                                     onTap: () {
-                                      _images.remove(_images[index]);
+                                      widget.formBloc.files
+                                          .remove(widget.formBloc.files[index]);
                                       setState(() {});
                                     },
                                     child: Container(
@@ -296,8 +305,10 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                                   ),
                                 ),
                                 margin: EdgeInsets.only(
-                                    right:
-                                        _images.length - 1 != index ? 10 : 0),
+                                    right: widget.formBloc.files.length - 1 !=
+                                            index
+                                        ? 10
+                                        : 0),
                               );
                             },
                           ),
@@ -337,4 +348,52 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
       ),
     );
   }
+}
+
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
+    BuildContext context) {
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.transparent,
+      content: Container(
+        padding: const EdgeInsets.all(8),
+        height: 80,
+        decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        child: Row(
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              color: Colors.white,
+              size: 40,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "¡Todo bien!",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                Text(
+                  "Tu post se ha publicado con exito",
+                  style: TextStyle(color: Colors.white, fontSize: 15),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                )
+              ],
+            ))
+          ],
+        ),
+      ),
+    ),
+  );
 }

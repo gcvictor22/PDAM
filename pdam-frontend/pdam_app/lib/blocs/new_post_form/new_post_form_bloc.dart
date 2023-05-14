@@ -28,9 +28,15 @@ class NewPostFormBloc extends FormBloc<String, String> {
       _postService
           .create(NewPostDto(affair: affair.value, content: content.value))
           .then((value) {
-        _postService.uploadFiles(files, value).then((value) {
-          emitSuccess();
-        });
+        switch (files.length) {
+          case 0:
+            emitSuccess();
+            break;
+          default:
+            _postService.uploadFiles(files, value).then((value) {
+              emitSuccess();
+            });
+        }
       });
     } catch (e) {
       throw new Exception("Ha ocurrido un error en el bloc");
