@@ -139,62 +139,87 @@ class _SearchListState extends State<SearchList> {
     return Expanded(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
-        child: widget.state.users is! bool && widget.text.text.length > 0
+        child: widget.text.text.length > 0
             ? Column(
-                // Agrega un widget Column aquí
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                    // Mueve el widget Expanded dentro del Column
                     child: ListView.builder(
                       padding: EdgeInsets.zero,
-                      itemCount: widget.state.users.length,
+                      itemCount: 40,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.only(
-                            bottom:
-                                index == widget.state.users.length - 1 ? 0 : 10,
-                          ),
-                          color: Colors.red,
-                          height: 40,
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(widget.state.users[index].userName),
-                          ),
+                        return Column(
+                          children: [
+                            widget.state.users is! bool
+                                ? index < widget.state.users.length
+                                    ? Container(
+                                        margin: EdgeInsets.only(
+                                          bottom: 10,
+                                        ),
+                                        color: Colors.red,
+                                        height: 40,
+                                        width: double.infinity,
+                                        child: Center(
+                                          child: Text(widget
+                                              .state.users[index].userName),
+                                        ),
+                                      )
+                                    : SizedBox()
+                                : SizedBox(),
+                            widget.state.events is! bool
+                                ? index < widget.state.events.length
+                                    ? Container(
+                                        margin: EdgeInsets.only(
+                                          bottom: 10,
+                                        ),
+                                        color: Colors.red,
+                                        height: 40,
+                                        width: double.infinity,
+                                        child: Center(
+                                          child: Text(
+                                              widget.state.events[index].name),
+                                        ),
+                                      )
+                                    : SizedBox()
+                                : SizedBox(),
+                          ],
                         );
                       },
                     ),
                   ),
                 ],
               )
-            : Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  padding: EdgeInsets.only(top: 200),
-                  child: BlurryContainer(
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "Conoce gente o busca eventos aquí",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 25,
-                          ),
+            : widget.text.text.length == 0
+                ? Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      padding: EdgeInsets.only(top: 200),
+                      child: BlurryContainer(
+                        width: double.infinity,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Conoce gente o busca eventos aquí",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 25,
+                              ),
+                            ),
+                            Image.asset(
+                              "assets/search.gif",
+                              scale: 5,
+                            ),
+                          ],
                         ),
-                        Image.asset(
-                          "assets/search.gif",
-                          scale: 5,
-                        ),
-                      ],
+                        color: Colors.white.withOpacity(0.35),
+                        blur: 8,
+                        elevation: 9,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
-                    color: Colors.white.withOpacity(0.35),
-                    blur: 8,
-                    elevation: 9,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              ),
+                  )
+                : SizedBox(),
       ),
     );
   }

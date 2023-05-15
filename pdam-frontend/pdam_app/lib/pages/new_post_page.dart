@@ -139,7 +139,7 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         TextFieldBlocBuilder(
                           maxLines: null,
