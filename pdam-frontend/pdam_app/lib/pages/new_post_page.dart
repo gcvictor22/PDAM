@@ -109,107 +109,105 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                       ),
                     ),
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: TextFieldBlocBuilder(
-                      textFieldBloc: widget.formBloc.affair,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(217, 217, 217, 1),
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        labelText: '¿Título?',
-                        labelStyle: TextStyle(fontSize: 20),
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                        filled: true,
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          borderSide: BorderSide(
-                              color: Color.fromRGBO(173, 29, 254, 1), width: 1),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: TextFieldBlocBuilder(
-                      maxLines: null,
-                      minLines: 8,
-                      maxLength: 250,
-                      buildCounter: (context,
-                          {required currentLength,
-                          required isFocused,
-                          maxLength}) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Container(
-                              width: 150,
-                              height: 3,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
+                    child: Column(
+                      children: [
+                        TextFieldBlocBuilder(
+                          textFieldBloc: widget.formBloc.affair,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromRGBO(217, 217, 217, 1),
                               ),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  width: (currentLength.ceilToDouble() * 200) /
-                                      250,
-                                  height: 3,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            labelText: '¿Título?',
+                            labelStyle: TextStyle(fontSize: 20),
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                            filled: true,
+                            isDense: true,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(
                                   color: Color.fromRGBO(173, 29, 254, 1),
+                                  width: 1),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        TextFieldBlocBuilder(
+                          maxLines: null,
+                          minLines: 8,
+                          maxLength: 250,
+                          buildCounter: (context,
+                              {required currentLength,
+                              required isFocused,
+                              maxLength}) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  height: 3,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      width:
+                                          (currentLength.ceilToDouble() * 200) /
+                                              250,
+                                      height: 3,
+                                      color: Color.fromRGBO(173, 29, 254, 1),
+                                    ),
+                                  ),
                                 ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text("$currentLength/$maxLength")
+                              ],
+                            );
+                          },
+                          textFieldBloc: widget.formBloc.content,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromRGBO(217, 217, 217, 1),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
                               ),
                             ),
-                            SizedBox(
-                              width: 20,
+                            labelText: '¿Hoy qué se hace?',
+                            alignLabelWithHint: true,
+                            labelStyle: TextStyle(fontSize: 20),
+                            fillColor: Colors.white,
+                            contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                            filled: true,
+                            isDense: true,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(173, 29, 254, 1),
+                                  width: 1),
                             ),
-                            Text("$currentLength/$maxLength")
-                          ],
-                        );
-                      },
-                      textFieldBloc: widget.formBloc.content,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromRGBO(217, 217, 217, 1),
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
                           ),
                         ),
-                        labelText: '¿Hoy qué se hace?',
-                        alignLabelWithHint: true,
-                        labelStyle: TextStyle(fontSize: 20),
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                        filled: true,
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          borderSide: BorderSide(
-                              color: Color.fromRGBO(173, 29, 254, 1), width: 1),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                   SizedBox(

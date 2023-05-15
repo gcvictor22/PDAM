@@ -168,28 +168,31 @@ class _SearchListState extends State<SearchList> {
               )
             : Align(
                 alignment: Alignment.topCenter,
-                child: BlurryContainer(
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Conoce gente o busca eventos aquí",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 25,
+                child: Container(
+                  padding: EdgeInsets.only(top: 200),
+                  child: BlurryContainer(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Conoce gente o busca eventos aquí",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 25,
+                          ),
                         ),
-                      ),
-                      Image.asset(
-                        "assets/search.gif",
-                        scale: 5,
-                      ),
-                    ],
+                        Image.asset(
+                          "assets/search.gif",
+                          scale: 5,
+                        ),
+                      ],
+                    ),
+                    color: Colors.white.withOpacity(0.35),
+                    blur: 8,
+                    elevation: 9,
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  color: Colors.white.withOpacity(0.35),
-                  blur: 8,
-                  elevation: 9,
-                  borderRadius: BorderRadius.circular(5),
                 ),
               ),
       ),

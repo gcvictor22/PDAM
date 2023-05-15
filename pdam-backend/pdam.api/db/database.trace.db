@@ -19385,3 +19385,43 @@ insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594'
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; se esperaba "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"
 Syntax error in SQL statement "insert into city (id, name, location) values (25[*]'Jaén', '37,7651913/-3,7903594')"; expected "[, ::, AT, FORMAT, *, /, %, +, -, ||, NOT, IS, ILIKE, REGEXP, AND, OR, ,, )"; SQL statement:
 insert into city (id, name, location) values (25'Jaén', '37,7651913/-3,7903594') [42001-214]
+2023-05-15 13:12:17 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_1EB953F5-CD82-4DDD-8423-245407A85046-5546-000007FB85211D85.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_1EB953F5-CD82-4DDD-8423-245407A85046-5546-000007FB85211D85.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:13:01 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_32F406B9-F11E-4D23-8672-AE7D1A8632DD-5546-000007FBBE1609C7.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_32F406B9-F11E-4D23-8672-AE7D1A8632DD-5546-000007FBBE1609C7.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:13:34 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_32F406B9-F11E-4D23-8672-AE7D1A8632DD-5546-000007FBBE1609C7_814013.... (334)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_32F406B9-F11E-4D23-8672-AE7D1A8632DD-5546-000007FBBE1609C7_814013.... (334)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:13:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_81875C02-4508-4D0D-997B-CB1606C4DD29-5546-000007FC0A7217EB.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_81875C02-4508-4D0D-997B-CB1606C4DD29-5546-000007FC0A7217EB.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:14:36 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_39E207B0-3586-4C54-B08F-164F335BDDA6-5546-000007FC4BD26CDE.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_39E207B0-3586-4C54-B08F-164F335BDDA6-5546-000007FC4BD26CDE.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:17:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_3C0C84AD-B106-4DC8-A825-565D18A3D22C-5546-000007FD338FA543.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_3C0C84AD-B106-4DC8-A825-565D18A3D22C-5546-000007FD338FA543.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:21:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_4780259F-C3A4-4DAD-8EFC-5DFF02312A57-5546-000007FE83E1C230.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_4780259F-C3A4-4DAD-8EFC-5DFF02312A57-5546-000007FE83E1C230.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:23:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_E6D88D48-5F0A-438C-B665-935FD59C716E-5546-000007FF20A7CF95.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_E6D88D48-5F0A-438C-B665-935FD59C716E-5546-000007FF20A7CF95.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:23:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_B18546B4-85E6-438C-91E0-35CA45669F5D-5546-000007FF5FCDB7C7.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_B18546B4-85E6-438C-91E0-35CA45669F5D-5546-000007FF5FCDB7C7.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-15 13:24:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_F988759F-6ED0-49E8-8F9F-652BA2094119-5546-000007FF93D5B454.jpg, im... (306)"
+Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_F988759F-6ED0-49E8-8F9F-652BA2094119-5546-000007FF93D5B454.jpg, im... (306)"; SQL statement:
+update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]

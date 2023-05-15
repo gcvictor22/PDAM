@@ -93,7 +93,7 @@ class RestClient {
       request.files.add(http.MultipartFile.fromBytes(
         'files',
         bytes,
-        filename: file.name,
+        filename: file.name.substring(1, 10),
       ));
     }
 
