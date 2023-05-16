@@ -148,6 +148,20 @@ class _SearchListState extends State<SearchList> {
                       padding: EdgeInsets.zero,
                       itemCount: 40,
                       itemBuilder: (context, index) {
+                        var end = false;
+
+                        if (widget.state.users is! bool &&
+                            widget.state.events is! bool) {
+                          end = index ==
+                              widget.state.users.length +
+                                  widget.state.events.length -
+                                  1;
+                        } else if (widget.state.events is bool) {
+                          end = index == widget.state.users.length - 1;
+                        } else {
+                          end = index == widget.state.events.length - 1;
+                        }
+
                         return Column(
                           children: [
                             widget.state.users is! bool
@@ -182,6 +196,13 @@ class _SearchListState extends State<SearchList> {
                                       )
                                     : SizedBox()
                                 : SizedBox(),
+                            end == true
+                                ? Container(
+                                    height: 100,
+                                    color: Colors.transparent,
+                                    width: double.infinity,
+                                  )
+                                : SizedBox()
                           ],
                         );
                       },
