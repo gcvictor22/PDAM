@@ -6,6 +6,7 @@ import com.salesianostriana.dam.pdam.api.files.dto.FileResponse;
 import com.salesianostriana.dam.pdam.api.files.service.FIleService;
 import com.salesianostriana.dam.pdam.api.files.service.StorageService;
 import com.salesianostriana.dam.pdam.api.files.utils.MediaTypeUrlResource;
+import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.security.jwt.access.JwtProvider;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRequest;
@@ -16,7 +17,6 @@ import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
-import com.salesianostriana.dam.pdam.api.validation.annotation.user.UniqueUserName;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.service.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +106,24 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Content-Type", resource.getType())
                 .body(resource);
+    }
+
+    @GetMapping("/follows/{id}")
+    public GetPageDto<UserWhoLikeDto> getFollows (@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(id);
+        return userService.getFollows(user, pageable);
+    }
+
+    @GetMapping("/followers/{id}")
+    public GetPageDto<UserWhoLikeDto> getFollowers(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(id);
+        return userService.getFollowers(user, pageable);
+    }
+
+    @GetMapping("/likedPosts/{id}")
+    public GetPageDto<GetPostDto> getLikedPosts(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(id);
+        return userService.getLikedPosts(user, pageable);
     }
 
     @PostMapping("/login")

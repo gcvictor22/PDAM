@@ -27,10 +27,9 @@ public class UserProfileDto {
     private String imgPath;
     private String email;
     private String phoneNumber;
-    private List<GetUserDto> follows;
-    private List<GetUserDto> followers;
+    private int follows;
+    private int followers;
     private List<GetPostDto> publishedPosts;
-    private List<GetPostDto> likedPosts;
     private boolean followedByUser;
     private boolean verified;
     private String city;
@@ -50,10 +49,9 @@ public class UserProfileDto {
                 .createdAt(user.getCreatedAt())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .follows(user.getFollows().stream().map(GetUserDto::of).collect(Collectors.toList()))
-                .followers(user.getFollowers().stream().map(GetUserDto::of).collect(Collectors.toList()))
+                .follows(user.getFollows().size())
+                .followers(user.getFollowers().size())
                 .publishedPosts(user.getPublishedPosts().stream().map(p -> GetPostDto.of(p, user)).toList())
-                .likedPosts(user.getLikedPosts().stream().map(p -> GetPostDto.of(p, user)).toList())
                 .verified(user.isVerified())
                 .followedByUser(user.getFollowers().stream().filter(u -> Objects.equals(u.getId(), loggedUser.getId())).toList().size() > 0)
                 .city(user.getCity().getName())

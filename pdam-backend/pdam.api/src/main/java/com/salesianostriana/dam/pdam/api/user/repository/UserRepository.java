@@ -1,6 +1,9 @@
 package com.salesianostriana.dam.pdam.api.user.repository;
 
+import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -51,4 +54,25 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     boolean checkFollower(@Param("id1") UUID id1, @Param("id2") UUID id2);
 
     Optional<User> findByEmail(String email);
+
+    @Query("""
+            SELECT u.follows
+            FROM User u
+            WHERE u.id = :id
+            """)
+    Page<User> findFollows(Pageable pageable, UUID id);
+
+    @Query("""
+            SELECT u.followers
+            FROM User u
+            WHERE u.id = :id
+            """)
+    Page<User> findFollowers(Pageable pageable, UUID id);
+
+    @Query("""
+            SELECT u.likedPosts
+            FROM User u
+            WHERE u.id = :id
+            """)
+    Page<Post> getLikedPosts(Pageable pageable, UUID id);
 }

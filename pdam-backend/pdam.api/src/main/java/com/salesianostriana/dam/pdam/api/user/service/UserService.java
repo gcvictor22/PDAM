@@ -8,9 +8,10 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.GenderNotFoundExcept
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
+import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRepository;
-import com.salesianostriana.dam.pdam.api.user.dto.ForgotPasswordChangeDto;
+import com.salesianostriana.dam.pdam.api.user.dto.*;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
@@ -18,9 +19,6 @@ import com.salesianostriana.dam.pdam.api.exception.empty.EmptyUserListException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.specifications.user.USBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
-import com.salesianostriana.dam.pdam.api.user.dto.EditPasswordDto;
-import com.salesianostriana.dam.pdam.api.user.dto.GetUserDto;
-import com.salesianostriana.dam.pdam.api.user.dto.NewUserDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -261,5 +259,27 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(forgotPasswordChangeDto.getNewPassword()));
         return userRepository.save(user);
+    }
+
+    public GetPageDto<UserWhoLikeDto> getFollows(User user, Pageable pageable) {
+
+        Page<UserWhoLikeDto> getFollowsDto = userRepository.findFollows(pageable, user.getId()).map(u -> UserWhoLikeDto.of(user));
+
+        return new GetPageDto<>(getFollowsDto);
+
+    }
+
+    public GetPageDto<UserWhoLikeDto> getFollowers(User user, Pageable pageable) {
+
+        Page<UserWhoLikeDto> getFollowersDto = userRepository.findFollowers(pageable, user.getId()).map(UserWhoLikeDto::of);
+
+        return new GetPageDto<>(getFollowersDto);
+
+    }
+
+    public GetPageDto<GetPostDto> getLikedPosts(User user, Pageable pageable) {
+        Page<GetPostDto> getLikedPostsDto = userRepository.getLikedPosts(pageable, user.getId()).map(p -> GetPostDto.of(p, user));
+
+        return new GetPageDto<>(getLikedPostsDto);
     }
 }
