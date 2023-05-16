@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/models/user/GetUserResponse.dart';
 
 import '../config/locator.dart';
@@ -28,5 +29,12 @@ class UserRepository {
 
     var jsonResponse = await _client.get(url);
     return GetUserResponse.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<dynamic> follow(String userName) async {
+    String url = "/user/follow/$userName";
+
+    var jsonResponse = await _client.post(url);
+    return GetUserDto.fromJson(jsonDecode(jsonResponse));
   }
 }

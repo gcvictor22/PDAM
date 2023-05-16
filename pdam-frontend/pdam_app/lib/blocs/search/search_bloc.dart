@@ -43,6 +43,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
       transformer: throttleDroppable(throttleDuration),
     );
+
+    on<SearchFollowEvent>((event, emit) async {
+      await _follow(event.userName);
+    });
   }
 
   _onInit(
@@ -91,5 +95,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<dynamic> _fetchEvents(String search) async {
     return await _eventService.findAll(0, search);
+  }
+
+  Future<dynamic> _follow(String userName) async {
+    return await _userService.follow(userName);
   }
 }

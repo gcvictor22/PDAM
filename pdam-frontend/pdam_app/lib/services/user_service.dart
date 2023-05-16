@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/models/user/GetUserResponse.dart';
 import 'package:pdam_app/repositories/user_repository.dart';
 
@@ -24,6 +25,16 @@ class UserService {
 
     if (token != null) {
       GetUserResponse response = await _userRepository.findAll(search);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> follow(String userName) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      GetUserDto response = await _userRepository.follow(userName);
       return response;
     }
     throw new Exception("Ha ocurrido un error en el servicio");

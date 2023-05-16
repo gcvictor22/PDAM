@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/blocs/search/search_bloc.dart';
 import 'package:pdam_app/services/event_service.dart';
 import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/widgets/Search.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../config/locator.dart';
@@ -127,7 +128,11 @@ class _SearchPageSFState extends State<SearchPageSF> {
 class SearchList extends StatefulWidget {
   final SearchSuccess state;
   final TextEditingController text;
-  const SearchList({super.key, required this.state, required this.text});
+  const SearchList({
+    super.key,
+    required this.state,
+    required this.text,
+  });
 
   @override
   State<SearchList> createState() => _SearchListState();
@@ -166,34 +171,16 @@ class _SearchListState extends State<SearchList> {
                           children: [
                             widget.state.users is! bool
                                 ? index < widget.state.users.length
-                                    ? Container(
-                                        margin: EdgeInsets.only(
-                                          bottom: 10,
-                                        ),
-                                        color: Colors.red,
-                                        height: 40,
-                                        width: double.infinity,
-                                        child: Center(
-                                          child: Text(widget
-                                              .state.users[index].userName),
-                                        ),
+                                    ? UserCard(
+                                        user: widget.state.users[index],
+                                        context: context,
                                       )
                                     : SizedBox()
                                 : SizedBox(),
                             widget.state.events is! bool
                                 ? index < widget.state.events.length
-                                    ? Container(
-                                        margin: EdgeInsets.only(
-                                          bottom: 10,
-                                        ),
-                                        color: Colors.red,
-                                        height: 40,
-                                        width: double.infinity,
-                                        child: Center(
-                                          child: Text(
-                                              widget.state.events[index].name),
-                                        ),
-                                      )
+                                    ? EventCard(
+                                        event: widget.state.events[index])
                                     : SizedBox()
                                 : SizedBox(),
                             end == true

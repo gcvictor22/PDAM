@@ -10,3 +10,12 @@ abstract class SearchEvent extends Equatable {
 class SearchInitialEvent extends SearchEvent {}
 
 class SearchWriteEvent extends SearchEvent {}
+
+class SearchFollowEvent extends SearchEvent {
+  final String userName;
+
+  SearchFollowEvent({required this.userName});
+
+  @override
+  List<Object> get props => [userName];
+}

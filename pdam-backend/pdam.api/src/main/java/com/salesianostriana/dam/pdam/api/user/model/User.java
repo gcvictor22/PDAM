@@ -184,8 +184,8 @@ public class User implements UserDetails {
         List<User> aux1 = this.getFollowers();
         List<User> aux2 = loggedUser.getFollows();
         if (b){
-            aux1.remove(this.getFollowers().indexOf(loggedUser)+1);
-            aux2.remove(loggedUser.getFollows().indexOf(this)+1);
+            aux1.remove(loggedUser);
+            aux2.remove(this);
             if (aux1.size()<1){
                 this.roles.remove(UserRole.VERIFIED);
                 this.setVerified(false);
