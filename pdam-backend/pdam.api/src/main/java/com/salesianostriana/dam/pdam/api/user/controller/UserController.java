@@ -37,6 +37,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.List;
@@ -66,19 +67,25 @@ public class UserController {
         return userService.findAll(params, pageable, user);
     }
 
-    @GetMapping("/profile")
-    public UserProfileDto viewProfile(@AuthenticationPrincipal User loggedUser){
-        return UserProfileDto.of(userService.getProfileByUserName(loggedUser.getUsername()), loggedUser);
+    @GetMapping("/profile/")
+    public UserProfileDto viewProfile(@AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(loggedUser.getId());
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
+        return UserProfileDto.of(userService.getProfileByUserName(user.getUsername()), user, publishedPosts);
     }
 
     @GetMapping("/{id}")
-    public UserProfileDto viewUser(@PathVariable UUID id, @AuthenticationPrincipal User user){
-        return UserProfileDto.of(userService.getProfile(id), user);
+    public UserProfileDto viewUser(@PathVariable UUID id, @AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(loggedUser.getId());
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
+        return UserProfileDto.of(userService.getProfile(id), user, publishedPosts);
     }
 
     @GetMapping("/userName/{userName}")
-    public UserProfileDto viewUserProfile(@PathVariable String userName, @AuthenticationPrincipal User user){
-        return UserProfileDto.of(userService.getProfileByUserName(userName), user);
+    public UserProfileDto viewUserProfile(@PathVariable String userName, @AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        User user = userService.getProfile(loggedUser.getId());
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
+        return UserProfileDto.of(userService.getProfileByUserName(userName), user, publishedPosts);
     }
 
     @GetMapping("/profileImg")
@@ -150,7 +157,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException {
+    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException, IOException {
         User user = userService.createUser(newUserDto);
         verificationTokenService.generateVerificationToken(user);
         userService.emailSender(newUserDto.getEmail(), user);
@@ -220,7 +227,7 @@ public class UserController {
 
     @PutMapping("/edit/email")
     public GetUserDto changeEmail(@Valid
-            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser) throws MessagingException {
+            @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser) throws MessagingException, IOException {
         User user = userService.editEmail(editEmailDto.getEmail(), loggedUser);
         verificationTokenService.generateVerificationToken(user);
         userService.emailSender(user.getEmail(), loggedUser);

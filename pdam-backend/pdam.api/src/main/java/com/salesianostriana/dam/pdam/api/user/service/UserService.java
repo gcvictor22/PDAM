@@ -21,6 +21,8 @@ import com.salesianostriana.dam.pdam.api.search.specifications.user.USBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,6 +35,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -82,33 +86,19 @@ public class UserService {
         return save(createUserRequest, EnumSet.of(UserRole.USER));
     }
 
-    public void emailSender(String toEmail, User user) throws MessagingException {
+    public void emailSender(String toEmail, User user) throws MessagingException, IOException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom("dyscotkeo@gmail.com");
         helper.setTo(toEmail);
         message.setSubject("¡Bienvenido a DiscoTkeo "+user.getUsername()+"!");
-        message.setContent("<!DOCTYPE html>\n" +
-                "<html lang=\"es\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Código de verificación</title>\n" +
-                "</head>\n" +
-                "<body style=\"max-width: 700px;\">\n" +
-                "    <img src=\"https://i.pinimg.com/originals/ba/34/d4/ba34d4023f8263c2085e5d60706e7900.png\"\n" +
-                "        style=\"display: block; margin: auto; max-width: 700px;\">\n" +
-                "    <div style=\"width: 100%; text-align: center;\">\n" +
-                "        <h3>¡Ya casi hemos terminado!</h3>\n" +
-                "        <p>Utiliza el siguiente código para verificar tu cuenta</p>\n" +
-                "    </div>\n" +
-                "    <div style=\"width: 100%; background: #a300ff; text-align: center; color: white; padding: 10px 0;\">\n" +
-                "        <h3 style=\"font-family: Verdana, Geneva, Tahoma, sans-serif;\">"+user.getVerificationToken().getVerificationNumber()+"</h3>\n" +
-                "    </div>\n" +
-                "</body>\n" +
-                "</html>", "text/html");
+
+        Resource resource = new ClassPathResource("templates/welcome.html");
+        File file = resource.getFile();
+        String content = new String(Files.readAllBytes(file.toPath()));
+
+        message.setContent(content, "text/html");
 
         javaMailSender.send(message);
     }
@@ -281,5 +271,12 @@ public class UserService {
         Page<GetPostDto> getLikedPostsDto = userRepository.getLikedPosts(pageable, user.getId()).map(p -> GetPostDto.of(p, user));
 
         return new GetPageDto<>(getLikedPostsDto);
+    }
+
+    public GetPageDto<GetPostDto> getPublisedPosts(User loggedUser, Pageable pageable) {
+
+        Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, loggedUser.getId()).map(p -> GetPostDto.of(p, loggedUser));
+
+        return new GetPageDto<>(getPublishedPosts);
     }
 }

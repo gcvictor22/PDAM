@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -56,23 +57,32 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
     Optional<User> findByEmail(String email);
 
     @Query("""
-            SELECT u.follows
-            FROM User u
+            SELECT uf
+            FROM User u JOIN u.follows uf
             WHERE u.id = :id
             """)
     Page<User> findFollows(Pageable pageable, UUID id);
 
     @Query("""
-            SELECT u.followers
-            FROM User u
+            SELECT uf
+            FROM User u JOIN u.followers uf
             WHERE u.id = :id
             """)
     Page<User> findFollowers(Pageable pageable, UUID id);
 
     @Query("""
-            SELECT u.likedPosts
-            FROM User u
+            SELECT p
+            FROM User u JOIN u.likedPosts p
             WHERE u.id = :id
             """)
     Page<Post> getLikedPosts(Pageable pageable, UUID id);
+
+
+    @Query("""
+            SELECT p
+            FROM User u JOIN u.publishedPosts p
+            WHERE u.id = :id
+            ORDER BY p.postDate DESC
+            """)
+    Page<Post> getPublishedPosts(@Nullable Pageable pageable, UUID id);
 }

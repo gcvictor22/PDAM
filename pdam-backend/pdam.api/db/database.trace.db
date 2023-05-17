@@ -19425,3 +19425,27 @@ update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? w
 org.h2.jdbc.JdbcSQLDataException: Valor demasiado largo para la columna "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_F988759F-6ED0-49E8-8F9F-652BA2094119-5546-000007FF93D5B454.jpg, im... (306)"
 Value too long for column "IMG_PATHS CHARACTER VARYING(255)": "'image_picker_F988759F-6ED0-49E8-8F9F-652BA2094119-5546-000007FF93D5B454.jpg, im... (306)"; SQL statement:
 update post set affair=?, content=?, img_paths=?, post_date=?, user_who_post=? where id=? [22001-214]
+2023-05-17 19:14:24 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=? [42001-214]
+2023-05-17 19:31:32 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=? [42001-214]
+2023-05-17 19:35:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=? [42001-214]
+2023-05-17 19:39:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=? [42001-214]
+2023-05-17 19:42:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join userfollows follows1_, user_entity user2_ where user0_.id=follows1_.user_who_follows_id and follows1_.user_who_is_followed_id=user2_.id and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join userfollows follows1_, user_entity user2_ where user0_.id=follows1_.user_who_follows_id and follows1_.user_who_is_followed_id=user2_.id and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join userfollows follows1_, user_entity user2_ where user0_.id=follows1_.user_who_follows_id and follows1_.user_who_is_followed_id=user2_.id and user0_.id=? [42001-214]
+2023-05-17 19:46:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; se esperaba "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"
+Syntax error in SQL statement "select count([*].) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=?"; expected "*, DISTINCT, ALL, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+select count(.) as col_0_0_ from user_entity user0_ cross join post publishedp1_ where user0_.id=publishedp1_.user_who_post and user0_.id=? [42001-214]

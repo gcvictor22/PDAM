@@ -71,6 +71,7 @@ class JwtAuthenticationService extends AuthenticationService {
     await _localStorageService.saveToDisk('user_token', response.token);
     await _localStorageService.saveToDisk(
         'user_refresh_token', response.refreshToken);
+    await _localStorageService.saveToDisk("userName", response.userName);
     return User.fromLoginResponse(response);
   }
 

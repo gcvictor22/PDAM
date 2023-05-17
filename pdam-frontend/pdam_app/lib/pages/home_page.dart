@@ -1,15 +1,11 @@
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:pdam_app/pages/events_page.dart';
 import 'package:pdam_app/pages/posts_page.dart';
+import 'package:pdam_app/pages/profile_page.dart';
 import 'package:pdam_app/pages/search_page.dart';
-import '../blocs/authentication/authentication_bloc.dart';
-import '../blocs/authentication/authentication_event.dart';
-import '../config/locator.dart';
 import '../models/models.dart';
-import '../services/authentication_service.dart';
 import 'new_post_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -45,14 +41,12 @@ class _HomePageStatesState extends State<HomePageStates> {
 
   @override
   Widget build(BuildContext context) {
-    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
-
     List<Widget> _screens = [
       PostsPage(),
       EventsPage(),
       NewPostPage(),
       SearchPage(),
-      ProfilePage(authBloc, user)
+      ProfilePage()
     ];
 
     return Container(
@@ -135,38 +129,4 @@ class _HomePageStatesState extends State<HomePageStates> {
       ),
     );
   }
-}
-
-Widget ProfilePage(AuthenticationBloc authBloc, User user) {
-  return SafeArea(
-    bottom: false,
-    minimum: const EdgeInsets.all(16),
-    child: Center(
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Welcome, ${user.fullName}',
-            style: TextStyle(fontSize: 24),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          ElevatedButton(
-            child: Text('Logout'),
-            onPressed: () {
-              authBloc.add(UserLoggedOut());
-            },
-          ),
-          ElevatedButton(
-              onPressed: () async {
-                print("Check");
-                JwtAuthenticationService service =
-                    getIt<JwtAuthenticationService>();
-                await service.getCurrentUser();
-              },
-              child: Text('Check'))
-        ],
-      ),
-    ),
-  );
 }

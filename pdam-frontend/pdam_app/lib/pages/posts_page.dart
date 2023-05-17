@@ -167,42 +167,38 @@ class _PostsListState extends State<PostsList>
               controller: _tabController,
               children: [
                 widget.state.followedPosts is! String
-                    ? SingleChildScrollView(
-                        child: Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height,
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: RefreshWidget(
-                            onRefresh: () => loadlistF(),
-                            scrollController: _scrollControllerF,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount: widget.state.followedPosts.length,
-                              padding: EdgeInsets.only(top: 20),
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    index >= widget.state.followedPosts.length
-                                        ? const BottomLoader()
-                                        : Post(
-                                            post: widget
-                                                .state.followedPosts[index],
-                                            context: context,
-                                          ),
-                                    index ==
-                                            widget.state.followedPosts.length -
-                                                1
-                                        ? SizedBox(
-                                            height: 210,
-                                          )
-                                        : SizedBox(
-                                            height: 0,
-                                          ),
-                                  ],
-                                );
-                              },
-                            ),
+                    ? Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: RefreshWidget(
+                          onRefresh: () => loadlistF(),
+                          scrollController: _scrollControllerF,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            itemCount: widget.state.followedPosts.length,
+                            padding: EdgeInsets.only(top: 20),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  index >= widget.state.followedPosts.length
+                                      ? const BottomLoader()
+                                      : Post(
+                                          num: 1,
+                                          post:
+                                              widget.state.followedPosts[index],
+                                          context: context,
+                                        ),
+                                  index == widget.state.followedPosts.length - 1
+                                      ? SizedBox(
+                                          height: 100,
+                                        )
+                                      : SizedBox(
+                                          height: 0,
+                                        ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                       )
@@ -217,39 +213,38 @@ class _PostsListState extends State<PostsList>
                         ),
                       ),
                 widget.state.posts is! String
-                    ? SingleChildScrollView(
-                        child: Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height,
-                          padding: EdgeInsets.only(left: 20, right: 20),
-                          child: RefreshWidget(
-                            onRefresh: () => loadlist(),
-                            scrollController: _scrollController,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount: widget.state.posts.length,
-                              padding: EdgeInsets.only(top: 20),
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    index >= widget.state.posts.length
-                                        ? const BottomLoader()
-                                        : Post(
-                                            post: widget.state.posts[index],
-                                            context: context,
-                                          ),
-                                    index == widget.state.posts.length - 1
-                                        ? SizedBox(
-                                            height: 210,
-                                          )
-                                        : SizedBox(
-                                            height: 0,
-                                          ),
-                                  ],
-                                );
-                              },
-                            ),
+                    ? Container(
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height,
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: RefreshWidget(
+                          onRefresh: () => loadlist(),
+                          scrollController: _scrollController,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            itemCount: widget.state.posts.length,
+                            padding: EdgeInsets.only(top: 20),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  index >= widget.state.posts.length
+                                      ? const BottomLoader()
+                                      : Post(
+                                          num: 1,
+                                          post: widget.state.posts[index],
+                                          context: context,
+                                        ),
+                                  index == widget.state.posts.length - 1
+                                      ? SizedBox(
+                                          height: 210,
+                                        )
+                                      : SizedBox(
+                                          height: 0,
+                                        ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                       )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
+import 'package:pdam_app/blocs/bloc/profile_bloc.dart';
 import 'package:pdam_app/rest/rest.dart';
 
 import '../blocs/posts/posts_bloc.dart';
@@ -9,8 +10,13 @@ import '../models/post/GetPostDto.dart';
 class Post extends StatefulWidget {
   final GetPostDto post;
   final BuildContext context;
+  final int num;
 
-  Post({super.key, required this.post, required this.context});
+  Post(
+      {super.key,
+      required this.post,
+      required this.context,
+      required this.num});
 
   @override
   State<Post> createState() => _PostState();
@@ -224,7 +230,15 @@ class _PostState extends State<Post> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   LikeButton(
-                    onTap: (isLiked) => like(widget.post, isLiked),
+                    onTap: (isLiked) {
+                      switch (num) {
+                        // ignore: constant_pattern_never_matches_value_type
+                        case 1:
+                          return like(widget.post, isLiked);
+                        default:
+                          return like2(widget.post, isLiked);
+                      }
+                    },
                     likeCount: widget.post.usersWhoLiked,
                     isLiked: widget.post.likedByUser,
                     likeBuilder: (isLiked) {
@@ -282,6 +296,11 @@ class _PostState extends State<Post> {
 
   Future<bool> like(GetPostDto post, bool bool) async {
     widget.context.read<PostsBloc>().add(LikeAPost(post.id));
+    return !bool;
+  }
+
+  Future<bool> like2(GetPostDto post, bool bool) async {
+    widget.context.read<ProfileBloc>().add(ProfileLikeAPost(id: post.id));
     return !bool;
   }
 
