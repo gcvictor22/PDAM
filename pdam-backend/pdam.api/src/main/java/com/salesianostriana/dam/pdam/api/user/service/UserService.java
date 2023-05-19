@@ -90,13 +90,14 @@ public class UserService {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("dyscotkeo@gmail.com");
+        helper.setFrom("no.reply.dyscotkeo@gmail.com");
         helper.setTo(toEmail);
         message.setSubject("¡Bienvenido a DiscoTkeo "+user.getUsername()+"!");
 
         Resource resource = new ClassPathResource("templates/welcome.html");
         File file = resource.getFile();
         String content = new String(Files.readAllBytes(file.toPath()));
+        content = content.replace("${verificationNumber}", String.valueOf(user.getVerificationToken().getVerificationNumber()));
 
         message.setContent(content, "text/html");
 

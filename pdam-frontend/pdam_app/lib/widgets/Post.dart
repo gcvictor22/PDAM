@@ -231,7 +231,7 @@ class _PostState extends State<Post> {
                 children: [
                   LikeButton(
                     onTap: (isLiked) {
-                      switch (num) {
+                      switch (widget.num) {
                         // ignore: constant_pattern_never_matches_value_type
                         case 1:
                           return like(widget.post, isLiked);

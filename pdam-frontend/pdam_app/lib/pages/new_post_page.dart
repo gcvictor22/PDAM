@@ -72,7 +72,9 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
     XFile? _newImage = await imagePicker.pickImage(source: ImageSource.camera);
 
     if (_newImage != null) {
-      widget.formBloc.files.add(_newImage);
+      if (widget.formBloc.files.length < 4) {
+        widget.formBloc.files.add(_newImage);
+      }
     }
 
     setState(() {});

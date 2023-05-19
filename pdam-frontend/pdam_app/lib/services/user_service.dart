@@ -50,4 +50,34 @@ class UserService {
     }
     throw new Exception("Ha ocurrido un error en el servicio");
   }
+
+  Future<dynamic> updateFullName(String fullName) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updateFullName(fullName);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> updateUserName(String userName) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updateUserName(userName);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> updatePhoneNumber(String phoneNumber) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updatePhoneNumber(phoneNumber);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
 }

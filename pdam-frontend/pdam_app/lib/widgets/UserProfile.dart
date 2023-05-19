@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/blocs/bloc/profile_bloc.dart';
+import 'package:pdam_app/pages/edit_profile_page.dart';
 import 'package:pdam_app/widgets/Post.dart';
 
 import '../models/post/GetPostDto.dart';
@@ -171,19 +172,34 @@ class _UserProfileState extends State<UserProfile> {
                             ),
                           ),
                         )
-                      : Container(
-                          padding: EdgeInsets.symmetric(vertical: 5),
-                          width: 180,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(5),
+                      : GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) {
+                                return SettingsPage(
+                                  fullName: widget.profile.fullName!,
+                                  userName: widget.profile.userName!,
+                                  phoneNumber: widget.profile.phoneNumber!,
+                                  email: widget.profile.email!,
+                                );
+                              },
+                            ),
                           ),
-                          child: Center(
-                            child: Text(
-                              "Ajustes",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            width: 180,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Ajustes",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
@@ -279,7 +295,7 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
       content: Text(
-          "¿Estas seguro que quires dejar de seguir a ${widget.profile.userName}?"),
+          "¿Estás seguro que quires dejar de seguir a ${widget.profile.userName}?"),
       actions: [
         CupertinoDialogAction(
           child: Text("Cancelar"),

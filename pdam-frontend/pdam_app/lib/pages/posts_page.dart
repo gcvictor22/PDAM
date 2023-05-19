@@ -237,7 +237,7 @@ class _PostsListState extends State<PostsList>
                                         ),
                                   index == widget.state.posts.length - 1
                                       ? SizedBox(
-                                          height: 210,
+                                          height: 100,
                                         )
                                       : SizedBox(
                                           height: 0,

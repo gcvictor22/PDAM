@@ -45,4 +45,25 @@ class UserRepository {
     var jsonResponse = await _client.get(url);
     return GetProfileDto.fromJson(jsonDecode(jsonResponse));
   }
+
+  Future<dynamic> updateFullName(String fullName) async {
+    String url = "/user/update/fullName";
+
+    var jsonResponse = await _client.get(url);
+    return GetUserDto.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<dynamic> updateUserName(String userName) async {
+    String url = "/user/update/userName";
+
+    var jsonResponse = await _client.get(url);
+    return GetUserDto.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<dynamic> updatePhoneNumber(String phoneNumber) async {
+    String url = "/user/update/phoneNumber";
+
+    var jsonResponse = await _client.get(url);
+    return GetUserDto.fromJson(jsonDecode(jsonResponse));
+  }
 }
