@@ -118,20 +118,22 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
           TextFieldBlocBuilder(
             textFieldBloc: formBloc.fullName,
             decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Nombre completo',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+              border: OutlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              labelText: 'Nombre completo',
+              labelStyle: TextStyle(fontSize: 20),
+              fillColor: Colors.white,
+              contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+              filled: true,
+              isDense: true,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(
+                    color: Color.fromRGBO(173, 29, 254, 1), width: 1),
+              ),
+            ),
           ),
           SizedBox(
             height: 30,

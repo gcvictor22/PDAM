@@ -6,7 +6,7 @@ import 'package:pdam_app/services/post_service.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/UserProfile.dart';
 
-import '../blocs/bloc/profile_bloc.dart';
+import '../blocs/profile/profile_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

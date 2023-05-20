@@ -111,6 +111,37 @@ class RestClient {
     }
   }
 
+  Future<dynamic> postProfileImg(String url, XFile file) async {
+    late LocalStorageService _localStorageService;
+    GetIt.I
+        .getAsync<LocalStorageService>()
+        .then((value) => _localStorageService = value);
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse(ApiConstants.baseUrl + url),
+    );
+
+    final bytes = await file.readAsBytes();
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      bytes,
+      filename: file.name,
+    ));
+
+    final headers = {
+      'Authorization':
+          'Bearer ${_localStorageService.getFromDisk("user_token")}'
+    };
+    request.headers.addAll(headers);
+
+    try {
+      final response = await request.send();
+      return response;
+    } catch (error) {
+      throw new Exception("Error en el cliente");
+    }
+  }
+
   Future<dynamic> put(String url, [dynamic body]) async {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
-import 'package:pdam_app/blocs/bloc/profile_bloc.dart';
+import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/rest/rest.dart';
 
 import '../blocs/posts/posts_bloc.dart';

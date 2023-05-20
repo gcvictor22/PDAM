@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pdam_app/models/user/GetProfile.dart';
 import 'package:pdam_app/models/user/GetUserDto.dart';
@@ -76,6 +77,16 @@ class UserService {
 
     if (token != null) {
       var response = await _userRepository.updatePhoneNumber(phoneNumber);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> updateProfileImg(XFile file) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updateProfileImg(file);
       return response;
     }
     throw new Exception("Ha ocurrido un error en el servicio");

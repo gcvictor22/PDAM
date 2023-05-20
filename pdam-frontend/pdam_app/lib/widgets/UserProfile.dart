@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdam_app/blocs/bloc/profile_bloc.dart';
+import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/pages/edit_profile_page.dart';
 import 'package:pdam_app/widgets/Post.dart';
 
@@ -182,6 +182,7 @@ class _UserProfileState extends State<UserProfile> {
                                   userName: widget.profile.userName!,
                                   phoneNumber: widget.profile.phoneNumber!,
                                   email: widget.profile.email!,
+                                  contextSuper: widget.context,
                                 );
                               },
                             ),
@@ -327,6 +328,10 @@ class _UserProfileState extends State<UserProfile> {
     if (_isBottom) {
       context.read<ProfileBloc>().add(ProfileScrollPostsEvent());
     }
+  }
+
+  Future<dynamic> refresh() async {
+    context.read<ProfileBloc>().add(ProfileInitialEvent());
   }
 
   bool get _isBottom {

@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/post/MultiPartFilesRequest.dart';
+import 'package:pdam_app/models/user/EditModel.dart';
 import 'package:pdam_app/models/user/GetProfile.dart';
 import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/models/user/GetUserResponse.dart';
@@ -47,23 +51,35 @@ class UserRepository {
   }
 
   Future<dynamic> updateFullName(String fullName) async {
-    String url = "/user/update/fullName";
+    String url = "/user/edit/fullName";
 
-    var jsonResponse = await _client.get(url);
+    var jsonResponse =
+        await _client.put(url, EditModelFullName(fullName: fullName));
     return GetUserDto.fromJson(jsonDecode(jsonResponse));
   }
 
   Future<dynamic> updateUserName(String userName) async {
-    String url = "/user/update/userName";
+    String url = "/user/edit/userName";
 
-    var jsonResponse = await _client.get(url);
+    var jsonResponse =
+        await _client.put(url, EditModelUserName(userName: userName));
     return GetUserDto.fromJson(jsonDecode(jsonResponse));
   }
 
   Future<dynamic> updatePhoneNumber(String phoneNumber) async {
-    String url = "/user/update/phoneNumber";
+    String url = "/user/edit/phoneNumber";
 
-    var jsonResponse = await _client.get(url);
+    var jsonResponse =
+        await _client.put(url, EditModelPhoneNumber(phoneNumber: phoneNumber));
     return GetUserDto.fromJson(jsonDecode(jsonResponse));
+  }
+
+  Future<dynamic> updateProfileImg(XFile file) async {
+    String url = "/user/upload";
+
+    StreamedResponse response = await _client.postProfileImg(url, file);
+    var stringResponse = await response.stream.bytesToString();
+    print(stringResponse);
+    return MultiPartFileRequest.fromJson(jsonDecode(stringResponse));
   }
 }

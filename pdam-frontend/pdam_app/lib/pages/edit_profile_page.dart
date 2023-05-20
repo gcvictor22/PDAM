@@ -7,7 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pdam_app/blocs/authentication/authentication_bloc.dart';
 import 'package:pdam_app/blocs/authentication/authentication_event.dart';
 import 'package:pdam_app/blocs/edit_profile/edit_profile_bloc.dart';
-import 'package:pdam_app/pages/login_page.dart';
+import 'package:pdam_app/blocs/profile/profile_bloc.dart';
+import 'package:pdam_app/main.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/SpaceLine.dart';
 
@@ -20,12 +21,14 @@ class SettingsPage extends StatelessWidget {
   final String userName;
   final String phoneNumber;
   final String email;
+  final BuildContext contextSuper;
   const SettingsPage(
       {super.key,
       required this.fullName,
       required this.userName,
       required this.phoneNumber,
-      required this.email});
+      required this.email,
+      required this.contextSuper});
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,8 @@ class SettingsPage extends StatelessWidget {
             ),
             body: FormBlocListener<EditProfileFormBloc, String, String>(
                 onSuccess: (context, state) {
+                  LoadingDialog.hide(context);
+                  contextSuper.read<ProfileBloc>().add(ProfileInitialEvent());
                   Navigator.pop(context);
                 },
                 onLoading: (context, state) {
@@ -95,8 +100,21 @@ class SettingsPageSF extends StatefulWidget {
 
 class _SettingsPageSFState extends State<SettingsPageSF> {
   final ImagePicker imagePicker = ImagePicker();
-
+  bool enable = false;
   late Image image;
+  bool newImage = false;
+
+  _onValueChange() {
+    setState(() {
+      enable = widget.formBloc.fullName.value !=
+              widget.formBloc.fullNameInitialValue ||
+          widget.formBloc.userName.value !=
+              widget.formBloc.userNameInitialValue ||
+          widget.formBloc.phoneNumber.value !=
+              widget.formBloc.phoneNumberInitialValue ||
+          newImage;
+    });
+  }
 
   @override
   void initState() {
@@ -109,6 +127,9 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
   }
 
   Future getPhoto() async {
+    if (widget.formBloc.profileImg.isNotEmpty) {
+      widget.formBloc.profileImg.clear();
+    }
     XFile? _newImage = await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (_newImage != null) {
@@ -116,176 +137,204 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
         File(_newImage.path),
         fit: BoxFit.cover,
       );
+      setState(() {
+        newImage = true;
+      });
+      widget.formBloc.profileImg.add(_newImage);
     }
-
-    setState(() {});
+    _onValueChange();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Center(
-              child: Container(
-                width: 125,
-                height: 125,
-                margin: EdgeInsets.only(top: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(100),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  width: 125,
+                  height: 125,
+                  margin: EdgeInsets.only(top: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(100),
+                    ),
                   ),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: image,
                 ),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: image,
               ),
-            ),
-            CupertinoButton(
-              child: Row(
+              Row(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Abrir galaría "),
-                  Icon(
-                    Icons.image,
-                    size: 20,
-                  )
+                  CupertinoButton(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Abrir galaría "),
+                        Icon(
+                          Icons.image,
+                          size: 20,
+                        )
+                      ],
+                    ),
+                    onPressed: () => getPhoto(),
+                  ),
+                  newImage ? Text("|") : SizedBox(),
+                  newImage
+                      ? CupertinoButton(
+                          child: Text(
+                            "Restablecer",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onPressed: () {
+                            image = Image.network(
+                              ApiConstants.baseUrl +
+                                  "/user/userImg/${widget.userName}",
+                              fit: BoxFit.cover,
+                            );
+                            newImage = false;
+                            _onValueChange();
+                          })
+                      : SizedBox()
                 ],
               ),
-              onPressed: () => getPhoto(),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: 40,
+              SizedBox(
+                height: 20,
               ),
-              child: Column(
-                children: [
-                  TextFieldBlocBuilder(
-                    textFieldBloc: widget.formBloc.fullName,
-                    decoration: InputDecoration(
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 40,
+                ),
+                child: Column(
+                  children: [
+                    TextFieldBlocBuilder(
+                      textFieldBloc: widget.formBloc.fullName,
+                      onChanged: (value) => _onValueChange(),
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(217, 217, 217, 1)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          labelText: 'Nombre completo',
+                          labelStyle: TextStyle(fontSize: 20),
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                          filled: true,
+                          isDense: true,
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(173, 29, 254, 1),
+                                  width: 1))),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    TextFieldBlocBuilder(
+                      textFieldBloc: widget.formBloc.userName,
+                      onChanged: (value) => _onValueChange(),
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(217, 217, 217, 1)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          labelText: 'Nombre de usuario',
+                          labelStyle: TextStyle(fontSize: 20),
+                          fillColor: Colors.white,
+                          contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                          filled: true,
+                          isDense: true,
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide: BorderSide(
+                                  color: Color.fromRGBO(173, 29, 254, 1),
+                                  width: 1))),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    TextFieldBlocBuilder(
+                      textFieldBloc: widget.formBloc.phoneNumber,
+                      onChanged: (value) => _onValueChange(),
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(217, 217, 217, 1)),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        labelText: 'Nombre completo',
+                        labelText: 'Número de teléfono',
                         labelStyle: TextStyle(fontSize: 20),
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                         filled: true,
                         isDense: true,
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: Color.fromRGBO(173, 29, 254, 1),
-                                width: 1))),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  TextFieldBlocBuilder(
-                    textFieldBloc: widget.formBloc.userName,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromRGBO(217, 217, 217, 1)),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        labelText: 'Nombre de usuario',
-                        labelStyle: TextStyle(fontSize: 20),
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                        filled: true,
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            borderSide: BorderSide(
-                                color: Color.fromRGBO(173, 29, 254, 1),
-                                width: 1))),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  TextFieldBlocBuilder(
-                    textFieldBloc: widget.formBloc.phoneNumber,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(217, 217, 217, 1)),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Número de teléfono',
-                      labelStyle: TextStyle(fontSize: 20),
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                      filled: true,
-                      isDense: true,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Color.fromRGBO(173, 29, 254, 1),
-                          width: 1,
+                            color: Color.fromRGBO(173, 29, 254, 1),
+                            width: 1,
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      enable
+                          ? Color.fromRGBO(173, 29, 254, 1)
+                          : Color.fromRGBO(173, 29, 254, 1).withOpacity(0.35),
+                    ),
+                    padding: MaterialStateProperty.all<EdgeInsets>(
+                        EdgeInsets.all(10)),
+                    splashFactory: NoSplash.splashFactory,
+                    elevation: enable
+                        ? MaterialStatePropertyAll(10)
+                        : MaterialStatePropertyAll(0),
+                    overlayColor: enable
+                        ? MaterialStatePropertyAll(
+                            Colors.white.withOpacity(0.35))
+                        : MaterialStatePropertyAll(Colors.transparent),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
                   ),
-                ],
+                  child: Text('Guardar',
+                      style: TextStyle(color: Colors.white, fontSize: 40)),
+                  onPressed: () {
+                    if (enable) {
+                      widget.formBloc.submit();
+                    }
+                  },
+                ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SpaceLine(color: Colors.grey),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Cambiar de correo",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Icon(Icons.arrow_forward_ios)
-                ],
+              SizedBox(
+                height: 40,
               ),
-            ),
-            SpaceLine(color: Colors.grey),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Cambiar contraseña",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Icon(Icons.arrow_forward_ios)
-                ],
-              ),
-            ),
-            SpaceLine(color: Colors.grey),
-            SizedBox(
-              height: 40,
-            ),
-            SpaceLine(color: Colors.red.shade900),
-            GestureDetector(
-              onTap: () => showCupertinoDialog(
-                context: context,
-                builder: createDialog,
-                barrierDismissible: true,
-              ),
-              child: Container(
-                color: Colors.transparent,
+              SpaceLine(color: Colors.grey),
+              Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                 child: Row(
@@ -293,17 +342,64 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Cerrar sesión",
-                      style:
-                          TextStyle(fontSize: 20, color: Colors.red.shade900),
+                      "Cambiar de correo",
+                      style: TextStyle(fontSize: 20),
                     ),
-                    Icon(Icons.arrow_forward_ios, color: Colors.red.shade900)
+                    Icon(Icons.arrow_forward_ios)
                   ],
                 ),
               ),
-            ),
-            SpaceLine(color: Colors.red.shade900),
-          ],
+              SpaceLine(color: Colors.grey),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Cambiar contraseña",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
+              ),
+              SpaceLine(color: Colors.grey),
+              SizedBox(
+                height: 40,
+              ),
+              SpaceLine(color: Colors.red.shade900),
+              GestureDetector(
+                onTap: () => showCupertinoDialog(
+                  context: context,
+                  builder: createDialog,
+                  barrierDismissible: true,
+                ),
+                child: Container(
+                  color: Colors.transparent,
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Cerrar sesión",
+                        style:
+                            TextStyle(fontSize: 20, color: Colors.red.shade900),
+                      ),
+                      Icon(Icons.arrow_forward_ios, color: Colors.red.shade900)
+                    ],
+                  ),
+                ),
+              ),
+              SpaceLine(color: Colors.red.shade900),
+              SizedBox(
+                height: 40,
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -383,7 +479,7 @@ Widget createDialog(BuildContext context) {
             context,
             MaterialPageRoute(
               builder: (_) {
-                return LoginPage();
+                return MyApp();
               },
             ),
           );
