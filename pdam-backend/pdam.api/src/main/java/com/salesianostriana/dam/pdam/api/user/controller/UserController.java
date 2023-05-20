@@ -202,6 +202,14 @@ public class UserController {
                 .orElseThrow(() -> new RefreshTokenException("Refresh token not found"));
     }
 
+    @PostMapping("/forgotPassword/")
+    public GetUserDto forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
+        User user = userService.getProfileByUserName(forgotPasswordDto.getUserName());
+        verificationTokenService.generateVerificationToken(user);
+        userService.forgotPassword(user);
+        return GetUserDto.of(user);
+    }
+
     @PutMapping("/edit/password")
     public GetUserDto changePassword(@Valid @RequestBody EditPasswordDto editPasswordDto,
                                                        @AuthenticationPrincipal User loggedUser) {
@@ -244,19 +252,6 @@ public class UserController {
     @PutMapping("/verification")
     public GetUserDto accountverification(@Valid @RequestBody GetVerificationTokenDto verificationTokenDto){
         User user = verificationTokenService.activateAccount(verificationTokenDto);
-        return GetUserDto.of(user);
-    }
-
-    @PutMapping("/forgotPassword")
-    public void forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
-        User user = userService.getProfileByUserName(forgotPasswordDto.getUserName());
-        verificationTokenService.generateVerificationToken(user);
-        userService.forgotPassword(user);
-    }
-
-    @PutMapping("/forgotPassword/validate")
-    public GetUserDto forgotPasswordValidator(@Valid @RequestBody GetVerificationTokenDto getVerificationTokenDto){
-        User user = userService.forgotPasswordValidator(getVerificationTokenDto);
         return GetUserDto.of(user);
     }
 

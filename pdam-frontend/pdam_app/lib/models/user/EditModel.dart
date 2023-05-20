@@ -64,3 +64,18 @@ class EditModelPassword {
     return data;
   }
 }
+
+class EditModelForgotPassword {
+  final String newPassword;
+  final String newPasswordVerify;
+
+  EditModelForgotPassword(
+      {required this.newPassword, required this.newPasswordVerify});
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['newPassword'] = this.newPassword;
+    data['newPasswordVerify'] = this.newPasswordVerify;
+    return data;
+  }
+}

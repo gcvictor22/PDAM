@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pdam_app/pages/forgot_password.dart';
 import 'package:pdam_app/pages/register_form_page.dart';
 import '../blocs/blocs.dart';
 import '../config/locator.dart';
@@ -288,7 +289,12 @@ class __SignInFormState extends State<_SignInForm> {
                                 ],
                               ),
                               TextButton(
-                                onPressed: () => print("Bien por ahora"),
+                                onPressed: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ForgotPasswordPage(),
+                                    )),
                                 style: ButtonStyle(
                                     padding: MaterialStatePropertyAll(
                                         EdgeInsets.zero),

@@ -113,4 +113,16 @@ class UserService {
     }
     throw new Exception("Ha ocurrido un error en el servicio");
   }
+
+  Future<dynamic> forgotPassword(String userName) async {
+    var response = await _userRepository.forgotPassword(userName);
+    return response;
+  }
+
+  Future<dynamic> forgotPasswordChange(
+      String userName, String newPassword, String newPasswordVerify) async {
+    var response = await _userRepository.forgotPasswordChange(
+        userName, newPassword, newPasswordVerify);
+    return response;
+  }
 }
