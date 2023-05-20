@@ -83,7 +83,7 @@ class _PostState extends State<Post> {
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.network(
                       ApiConstants.baseUrl +
-                          "/user/userImg/${widget.post.userWhoPost.userName}",
+                          "/post/file/${widget.post.userWhoPost.imgPath}",
                       fit: BoxFit.cover,
                     ),
                   ),

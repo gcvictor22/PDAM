@@ -21,6 +21,7 @@ class SettingsPage extends StatelessWidget {
   final String userName;
   final String phoneNumber;
   final String email;
+  final String imgPath;
   final BuildContext contextSuper;
   const SettingsPage(
       {super.key,
@@ -28,7 +29,8 @@ class SettingsPage extends StatelessWidget {
       required this.userName,
       required this.phoneNumber,
       required this.email,
-      required this.contextSuper});
+      required this.contextSuper,
+      required this.imgPath});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +82,11 @@ class SettingsPage extends StatelessWidget {
                   LoadingDialog.hide(context);
                   showError(context);
                 },
-                child: SettingsPageSF(formBloc: formBloc, userName: userName)),
+                child: SettingsPageSF(
+                  formBloc: formBloc,
+                  userName: userName,
+                  imgPath: imgPath,
+                )),
           );
         },
       ),
@@ -91,8 +97,12 @@ class SettingsPage extends StatelessWidget {
 class SettingsPageSF extends StatefulWidget {
   final EditProfileFormBloc formBloc;
   final String userName;
+  final String imgPath;
   const SettingsPageSF(
-      {super.key, required this.formBloc, required this.userName});
+      {super.key,
+      required this.formBloc,
+      required this.userName,
+      required this.imgPath});
 
   @override
   State<SettingsPageSF> createState() => _SettingsPageSFState();
@@ -121,7 +131,7 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
     // TODO: implement initState
     super.initState();
     image = Image.network(
-      ApiConstants.baseUrl + "/user/userImg/${widget.userName}",
+      ApiConstants.baseUrl + "/post/file/${widget.imgPath}",
       fit: BoxFit.cover,
     );
   }
@@ -342,7 +352,7 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Cambiar de correo",
+                      "Cambiar email",
                       style: TextStyle(fontSize: 20),
                     ),
                     Icon(Icons.arrow_forward_ios)

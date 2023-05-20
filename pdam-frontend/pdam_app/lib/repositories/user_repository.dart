@@ -79,7 +79,6 @@ class UserRepository {
 
     StreamedResponse response = await _client.postProfileImg(url, file);
     var stringResponse = await response.stream.bytesToString();
-    print(stringResponse);
     return MultiPartFileRequest.fromJson(jsonDecode(stringResponse));
   }
 }

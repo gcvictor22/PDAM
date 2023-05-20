@@ -32,7 +32,6 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _scrollController.addListener(_onScroll);
     numberOfFollowers = widget.profile.followers!;
     followedByUser = widget.profile.followedByUser!;
@@ -62,8 +61,7 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: Image.network(
-                  ApiConstants.baseUrl +
-                      "/user/userImg/${widget.profile.userName}",
+                  ApiConstants.baseUrl + "/post/file/${widget.profile.imgPath}",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -183,6 +181,7 @@ class _UserProfileState extends State<UserProfile> {
                                   phoneNumber: widget.profile.phoneNumber!,
                                   email: widget.profile.email!,
                                   contextSuper: widget.context,
+                                  imgPath: widget.profile.imgPath!,
                                 );
                               },
                             ),
