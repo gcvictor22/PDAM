@@ -109,362 +109,370 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.fullName,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              labelText: 'Nombre completo',
-              labelStyle: TextStyle(fontSize: 20),
-              fillColor: Colors.white,
-              contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-              filled: true,
-              isDense: true,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                borderSide: BorderSide(
-                    color: Color.fromRGBO(173, 29, 254, 1), width: 1),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.fullName,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                labelText: 'Nombre completo',
+                labelStyle: TextStyle(fontSize: 20),
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                filled: true,
+                isDense: true,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderSide: BorderSide(
+                      color: Color.fromRGBO(173, 29, 254, 1), width: 1),
+                ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Card(
-                  color: genders[0].isSelected
-                      ? Color.fromRGBO(173, 29, 254, 1)
-                      : Colors.white,
-                  child: InkWell(
-                    child: Container(
-                        height: 80,
-                        width: 80,
-                        alignment: Alignment.center,
-                        margin: new EdgeInsets.all(5.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              genders[0].icon,
-                              color: genders[0].isSelected
-                                  ? Colors.white
-                                  : Color.fromRGBO(173, 29, 254, 1),
-                              size: 40,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              genders[0].name,
-                              style: TextStyle(
-                                  color: genders[0].isSelected
-                                      ? Colors.white
-                                      : Color.fromRGBO(173, 29, 254, 1)),
-                            )
-                          ],
-                        )),
-                    onTap: () {
-                      setState(() {
-                        genders.forEach((gender) => gender.isSelected = false);
-                        genders[0].isSelected = true;
-                        formBloc.genderId.updateValue(genders[0].id);
-                      });
-                    },
-                  )),
-              Card(
-                  color: genders[1].isSelected
-                      ? Color.fromRGBO(173, 29, 254, 1)
-                      : Colors.white,
-                  child: InkWell(
-                    child: Container(
-                        height: 80,
-                        width: 80,
-                        alignment: Alignment.center,
-                        margin: new EdgeInsets.all(5.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              genders[1].icon,
-                              color: genders[1].isSelected
-                                  ? Colors.white
-                                  : Color.fromRGBO(173, 29, 254, 1),
-                              size: 40,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              genders[1].name,
-                              style: TextStyle(
-                                  color: genders[1].isSelected
-                                      ? Colors.white
-                                      : Color.fromRGBO(173, 29, 254, 1)),
-                            )
-                          ],
-                        )),
-                    onTap: () {
-                      setState(() {
-                        genders.forEach((gender) => gender.isSelected = false);
-                        genders[1].isSelected = true;
-                        formBloc.genderId.updateValue(genders[1].id);
-                      });
-                    },
-                  )),
-              Card(
-                  color: genders[2].isSelected
-                      ? Color.fromRGBO(173, 29, 254, 1)
-                      : Colors.white,
-                  child: InkWell(
-                    child: Container(
-                        height: 80,
-                        width: 80,
-                        alignment: Alignment.center,
-                        margin: new EdgeInsets.all(5.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              genders[2].icon,
-                              color: genders[2].isSelected
-                                  ? Colors.white
-                                  : Color.fromRGBO(173, 29, 254, 1),
-                              size: 40,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              genders[2].name,
-                              style: TextStyle(
-                                  color: genders[2].isSelected
-                                      ? Colors.white
-                                      : Color.fromRGBO(173, 29, 254, 1)),
-                            )
-                          ],
-                        )),
-                    onTap: () {
-                      setState(() {
-                        genders.forEach((gender) => gender.isSelected = false);
-                        genders[2].isSelected = true;
-                        formBloc.genderId.updateValue(genders[2].id);
-                      });
-                    },
-                  ))
-            ],
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.userName,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Nombre de usuario',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.password,
-            suffixButton: SuffixButton.obscureText,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Contraseña',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.verifyPassword,
-            suffixButton: SuffixButton.obscureText,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Repite la contraseña',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.email,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Email',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.phoneNumber,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                labelText: 'Número de teléfono',
-                labelStyle: TextStyle(fontSize: 20),
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                filled: true,
-                isDense: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    borderSide: BorderSide(
-                        color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "¿Donde resides?",
-                style: TextStyle(fontSize: 20),
-              ),
-              CupertinoButton(
-                child: Text(
-                  // ignore: unnecessary_null_comparison
-                  _selectedCity != null
-                      ? _selectedCity.name.length > 13
-                          ? _selectedCity.name.substring(0, 13) + "..."
-                          : _selectedCity.name
-                      : "",
-                  style: TextStyle(
-                      fontSize: 20, decoration: TextDecoration.underline),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Card(
+                    color: genders[0].isSelected
+                        ? Color.fromRGBO(173, 29, 254, 1)
+                        : Colors.white,
+                    child: InkWell(
+                      child: Container(
+                          height: 80,
+                          width: 80,
+                          alignment: Alignment.center,
+                          margin: new EdgeInsets.all(5.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                genders[0].icon,
+                                color: genders[0].isSelected
+                                    ? Colors.white
+                                    : Color.fromRGBO(173, 29, 254, 1),
+                                size: 40,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                genders[0].name,
+                                style: TextStyle(
+                                    color: genders[0].isSelected
+                                        ? Colors.white
+                                        : Color.fromRGBO(173, 29, 254, 1)),
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        setState(() {
+                          genders
+                              .forEach((gender) => gender.isSelected = false);
+                          genders[0].isSelected = true;
+                          formBloc.genderId.updateValue(genders[0].id);
+                        });
+                      },
+                    )),
+                Card(
+                    color: genders[1].isSelected
+                        ? Color.fromRGBO(173, 29, 254, 1)
+                        : Colors.white,
+                    child: InkWell(
+                      child: Container(
+                          height: 80,
+                          width: 80,
+                          alignment: Alignment.center,
+                          margin: new EdgeInsets.all(5.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                genders[1].icon,
+                                color: genders[1].isSelected
+                                    ? Colors.white
+                                    : Color.fromRGBO(173, 29, 254, 1),
+                                size: 40,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                genders[1].name,
+                                style: TextStyle(
+                                    color: genders[1].isSelected
+                                        ? Colors.white
+                                        : Color.fromRGBO(173, 29, 254, 1)),
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        setState(() {
+                          genders
+                              .forEach((gender) => gender.isSelected = false);
+                          genders[1].isSelected = true;
+                          formBloc.genderId.updateValue(genders[1].id);
+                        });
+                      },
+                    )),
+                Card(
+                    color: genders[2].isSelected
+                        ? Color.fromRGBO(173, 29, 254, 1)
+                        : Colors.white,
+                    child: InkWell(
+                      child: Container(
+                          height: 80,
+                          width: 80,
+                          alignment: Alignment.center,
+                          margin: new EdgeInsets.all(5.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                genders[2].icon,
+                                color: genders[2].isSelected
+                                    ? Colors.white
+                                    : Color.fromRGBO(173, 29, 254, 1),
+                                size: 40,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                genders[2].name,
+                                style: TextStyle(
+                                    color: genders[2].isSelected
+                                        ? Colors.white
+                                        : Color.fromRGBO(173, 29, 254, 1)),
+                              )
+                            ],
+                          )),
+                      onTap: () {
+                        setState(() {
+                          genders
+                              .forEach((gender) => gender.isSelected = false);
+                          genders[2].isSelected = true;
+                          formBloc.genderId.updateValue(genders[2].id);
+                        });
+                      },
+                    ))
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.userName,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: 'Nombre de usuario',
+                  labelStyle: TextStyle(fontSize: 20),
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  filled: true,
+                  isDense: true,
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.password,
+              suffixButton: SuffixButton.obscureText,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: 'Contraseña',
+                  labelStyle: TextStyle(fontSize: 20),
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  filled: true,
+                  isDense: true,
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.verifyPassword,
+              suffixButton: SuffixButton.obscureText,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: 'Repite la contraseña',
+                  labelStyle: TextStyle(fontSize: 20),
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  filled: true,
+                  isDense: true,
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.email,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: 'Email',
+                  labelStyle: TextStyle(fontSize: 20),
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  filled: true,
+                  isDense: true,
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.phoneNumber,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                  prefixText: "+34 | ",
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(217, 217, 217, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: 'Número de teléfono',
+                  labelStyle: TextStyle(fontSize: 20),
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  filled: true,
+                  isDense: true,
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                          color: Color.fromRGBO(173, 29, 254, 1), width: 1))),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "¿Donde resides?",
+                  style: TextStyle(fontSize: 20),
                 ),
-                onPressed: () {
-                  showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CupertinoActionSheet(
-                        title: Text('Selecciona la provincia donde resides'),
-                        actions: [
-                          SizedBox(
-                            height: 300,
-                            child: CupertinoPicker(
-                              magnification: 1.3,
-                              itemExtent: 40,
-                              useMagnifier: true,
-                              scrollController: FixedExtentScrollController(
-                                  initialItem: cities.indexOf(_selectedCity)),
-                              onSelectedItemChanged: (int index) {
-                                setState(() {
-                                  _selectedCity = cities[index];
-                                  formBloc.cityId.updateValue(_selectedCity.id);
-                                });
-                              },
-                              children: cities.map((city) {
-                                return Center(
-                                  child: Text(
-                                    city.name,
-                                  ),
-                                );
-                              }).toList(),
+                CupertinoButton(
+                  child: Text(
+                    // ignore: unnecessary_null_comparison
+                    _selectedCity != null
+                        ? _selectedCity.name.length > 13
+                            ? _selectedCity.name.substring(0, 13) + "..."
+                            : _selectedCity.name
+                        : "",
+                    style: TextStyle(
+                        fontSize: 20, decoration: TextDecoration.underline),
+                  ),
+                  onPressed: () {
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CupertinoActionSheet(
+                          title: Text('Selecciona la provincia donde resides'),
+                          actions: [
+                            SizedBox(
+                              height: 300,
+                              child: CupertinoPicker(
+                                magnification: 1.3,
+                                itemExtent: 40,
+                                useMagnifier: true,
+                                scrollController: FixedExtentScrollController(
+                                    initialItem: cities.indexOf(_selectedCity)),
+                                onSelectedItemChanged: (int index) {
+                                  setState(() {
+                                    _selectedCity = cities[index];
+                                    formBloc.cityId
+                                        .updateValue(_selectedCity.id);
+                                  });
+                                },
+                                children: cities.map((city) {
+                                  return Center(
+                                    child: Text(
+                                      city.name,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            )
+                          ],
+                          cancelButton: CupertinoButton(
+                            child: Text(
+                              'Cerrar',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             ),
-                          )
-                        ],
-                        cancelButton: CupertinoButton(
-                          child: Text(
-                            'Cerrar',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          )),
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromRGBO(173, 29, 254, 1),
+                        );
+                      },
+                    );
+                  },
                 ),
-                padding:
-                    MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+              ],
+            )),
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromRGBO(173, 29, 254, 1),
+                  ),
+                  padding:
+                      MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
                 ),
+                child: Text('Continuar',
+                    style: TextStyle(color: Colors.white, fontSize: 40)),
+                onPressed: () {
+                  formBloc.submit();
+                },
               ),
-              child: Text('Continuar',
-                  style: TextStyle(color: Colors.white, fontSize: 40)),
-              onPressed: () {
-                formBloc.submit();
-              },
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

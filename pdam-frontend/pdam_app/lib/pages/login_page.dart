@@ -118,147 +118,147 @@ class __SignInFormState extends State<_SignInForm> {
                   color: Colors.white, size: 45),
             );
           }
-          return SingleChildScrollView(
-            child: Form(
-                key: _key,
-                autovalidateMode: _autoValidate
-                    ? AutovalidateMode.always
-                    : AutovalidateMode.disabled,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SafeArea(
-                      child: Container(
-                        child: Image.asset(
-                          'assets/login-logo.png',
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: SingleChildScrollView(
+              child: Form(
+                  key: _key,
+                  autovalidateMode: _autoValidate
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SafeArea(
+                        child: Container(
+                          child: Image.asset(
+                            'assets/login-logo.png',
+                          ),
+                          margin: EdgeInsets.only(top: 100),
+                          width: double.infinity,
                         ),
+                        minimum: EdgeInsets.all(15),
+                      ),
+                      Container(
                         margin: EdgeInsets.only(top: 100),
                         width: double.infinity,
-                      ),
-                      minimum: EdgeInsets.all(15),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 100),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                      ),
-                      padding: EdgeInsets.fromLTRB(50, 50, 50, 30),
-                      child: Container(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            TextFormField(
-                              style: TextStyle(fontSize: 20),
-                              cursorColor: Color.fromRGBO(173, 29, 254, 1),
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Color.fromRGBO(217, 217, 217, 1)),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  labelText: 'Nombre de usuario',
-                                  labelStyle: TextStyle(fontSize: 20),
-                                  fillColor: Colors.white,
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                  filled: true,
-                                  isDense: true,
-                                  floatingLabelStyle: TextStyle(
-                                      color: Color.fromRGBO(173, 29, 254, 1)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Color.fromRGBO(173, 29, 254, 1),
-                                          width: 1))),
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              autocorrect: false,
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'UserName is required.';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              cursorColor: Color.fromRGBO(173, 29, 254, 1),
-                              style: TextStyle(fontSize: 20),
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color:
-                                              Color.fromRGBO(217, 217, 217, 1)),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  labelText: 'Contraseña',
-                                  labelStyle: TextStyle(fontSize: 20),
-                                  fillColor: Colors.white,
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                  filled: true,
-                                  isDense: true,
-                                  floatingLabelStyle: TextStyle(
-                                      color: Color.fromRGBO(173, 29, 254, 1)),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      borderSide: BorderSide(
-                                          color:
-                                              Color.fromRGBO(173, 29, 254, 1),
-                                          width: 1))),
-                              obscureText: true,
-                              controller: _passwordController,
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Password is required.';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            //RaisedButton(
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Color.fromRGBO(173, 29, 254, 1)),
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.all(10)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20)),
+                        ),
+                        padding: EdgeInsets.fromLTRB(50, 50, 50, 30),
+                        child: Container(
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              TextFormField(
+                                style: TextStyle(fontSize: 20),
+                                cursorColor: Color.fromRGBO(173, 29, 254, 1),
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromRGBO(
+                                                217, 217, 217, 1)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    labelText: 'Nombre de usuario',
+                                    labelStyle: TextStyle(fontSize: 20),
+                                    fillColor: Colors.white,
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    filled: true,
+                                    isDense: true,
+                                    floatingLabelStyle: TextStyle(
+                                        color: Color.fromRGBO(173, 29, 254, 1)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        borderSide: BorderSide(
+                                            color:
+                                                Color.fromRGBO(173, 29, 254, 1),
+                                            width: 1))),
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                autocorrect: false,
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'UserName is required.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              TextFormField(
+                                cursorColor: Color.fromRGBO(173, 29, 254, 1),
+                                style: TextStyle(fontSize: 20),
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromRGBO(
+                                                217, 217, 217, 1)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    labelText: 'Contraseña',
+                                    labelStyle: TextStyle(fontSize: 20),
+                                    fillColor: Colors.white,
+                                    contentPadding:
+                                        EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                    filled: true,
+                                    isDense: true,
+                                    floatingLabelStyle: TextStyle(
+                                        color: Color.fromRGBO(173, 29, 254, 1)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        borderSide: BorderSide(
+                                            color:
+                                                Color.fromRGBO(173, 29, 254, 1),
+                                            width: 1))),
+                                obscureText: true,
+                                controller: _passwordController,
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Password is required.';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              //RaisedButton(
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color.fromRGBO(173, 29, 254, 1)),
+                                  padding:
+                                      MaterialStateProperty.all<EdgeInsets>(
+                                          EdgeInsets.all(10)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
                                   ),
                                 ),
+                                child: Text('Iniciar sesión',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 40)),
+                                onPressed: state is LoginLoading
+                                    ? () {}
+                                    : _onLoginButtonPressed,
                               ),
-                              child: Text('Iniciar sesión',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 40)),
-                              onPressed: state is LoginLoading
-                                  ? () {}
-                                  : _onLoginButtonPressed,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              width: 50,
-                              height: 40,
-                              child: Row(
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Text(
@@ -287,23 +287,26 @@ class __SignInFormState extends State<_SignInForm> {
                                   )
                                 ],
                               ),
-                            ),
-                            TextButton(
+                              TextButton(
                                 onPressed: () => print("Bien por ahora"),
                                 style: ButtonStyle(
+                                    padding: MaterialStatePropertyAll(
+                                        EdgeInsets.zero),
                                     overlayColor: MaterialStatePropertyAll(
                                         Colors.transparent)),
                                 child: Text("¿Has olvidado tu contraseña?",
                                     style: TextStyle(
                                         fontSize: 17,
                                         decoration: TextDecoration.underline,
-                                        color: Colors.black)))
-                          ],
+                                        color: Colors.black)),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                )),
+                      )
+                    ],
+                  )),
+            ),
           );
         },
       ),

@@ -230,7 +230,7 @@ public class UserController {
             @RequestBody EditEmailDto editEmailDto, @AuthenticationPrincipal User loggedUser) throws MessagingException, IOException {
         User user = userService.editEmail(editEmailDto.getEmail(), loggedUser);
         verificationTokenService.generateVerificationToken(user);
-        userService.emailSender(user.getEmail(), loggedUser);
+        userService.emailSender(user.getEmail(), user);
         return GetUserDto.of(user);
     }
 
@@ -249,7 +249,7 @@ public class UserController {
 
     @PutMapping("/forgotPassword")
     public void forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
-        User user = userService.findByUserName(forgotPasswordDto.getUserName());
+        User user = userService.getProfileByUserName(forgotPasswordDto.getUserName());
         verificationTokenService.generateVerificationToken(user);
         userService.forgotPassword(user);
     }

@@ -81,4 +81,26 @@ class UserRepository {
     var stringResponse = await response.stream.bytesToString();
     return MultiPartFileRequest.fromJson(jsonDecode(stringResponse));
   }
+
+  Future<dynamic> updateEmail(String email) async {
+    String url = "/user/edit/email";
+
+    var response = await _client.put(url, EditModelEmail(email: email));
+    return GetUserDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> updatePasswords(
+      String oldPassword, String newPassword, String newPasswordVerify) async {
+    String url = "/user/edit/password";
+
+    var response = await _client.put(
+      url,
+      EditModelPassword(
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+        newPasswordVerify: newPasswordVerify,
+      ),
+    );
+    return GetUserDto.fromJson(jsonDecode(response));
+  }
 }

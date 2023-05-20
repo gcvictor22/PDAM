@@ -9,6 +9,8 @@ import 'package:pdam_app/blocs/authentication/authentication_event.dart';
 import 'package:pdam_app/blocs/edit_profile/edit_profile_bloc.dart';
 import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/main.dart';
+import 'package:pdam_app/pages/edit_email_page.dart';
+import 'package:pdam_app/pages/edit_password_page.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/SpaceLine.dart';
 
@@ -281,6 +283,7 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
                       onChanged: (value) => _onValueChange(),
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
+                        prefixText: "+34 | ",
                         border: OutlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromRGBO(217, 217, 217, 1)),
@@ -344,35 +347,52 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
                 height: 40,
               ),
               SpaceLine(color: Colors.grey),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Cambiar email",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          EditEmailPage(userName: widget.userName),
+                    )),
+                child: Container(
+                  color: Colors.transparent,
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Cambiar email",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
                 ),
               ),
               SpaceLine(color: Colors.grey),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Cambiar contraseña",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Icon(Icons.arrow_forward_ios)
-                  ],
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditPasswordPage(),
+                    )),
+                child: Container(
+                  color: Colors.transparent,
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Cambiar contraseña",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
                 ),
               ),
               SpaceLine(color: Colors.grey),

@@ -82,11 +82,33 @@ class UserService {
     throw new Exception("Ha ocurrido un error en el servicio");
   }
 
+  Future<dynamic> updateEmail(String email) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updateEmail(email);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
   Future<dynamic> updateProfileImg(XFile file) async {
     String? token = await _localStorageService.getFromDisk("user_token");
 
     if (token != null) {
       var response = await _userRepository.updateProfileImg(file);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> updatePassword(
+      String oldPassword, String newPassword, String newPasswordVerify) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updatePasswords(
+          oldPassword, newPassword, newPasswordVerify);
       return response;
     }
     throw new Exception("Ha ocurrido un error en el servicio");
