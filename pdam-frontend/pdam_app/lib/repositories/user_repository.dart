@@ -103,4 +103,11 @@ class UserRepository {
     );
     return GetUserDto.fromJson(jsonDecode(response));
   }
+
+  Future<dynamic> getUserByUserName(int it, String userName) async {
+    String url = "/user/userName/$userName?page=$it";
+
+    var response = await _client.get(url);
+    return GetProfileDto.fromJson(jsonDecode(response));
+  }
 }

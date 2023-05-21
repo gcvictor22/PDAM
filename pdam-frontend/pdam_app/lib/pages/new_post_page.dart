@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pdam_app/blocs/new_post_form/new_post_form_bloc.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../config/locator.dart';
 import '../services/post_service.dart';
+import '../widgets/GradientSlide.dart';
 
 class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
@@ -51,6 +52,8 @@ class NewPostPageSF extends StatefulWidget {
 
 class _NewPostPageSFState extends State<NewPostPageSF> {
   final ImagePicker imagePicker = ImagePicker();
+
+  bool icon = false;
 
   Future getImage(ImageSource source) async {
     List<XFile> imagesTemporary = await imagePicker.pickMultiImage();
@@ -183,6 +186,9 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                             );
                           },
                           textFieldBloc: widget.formBloc.content,
+                          onChanged: (value) => setState(() {
+                            icon = value.length > 0;
+                          }),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -317,28 +323,41 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
                   SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromRGBO(173, 29, 254, 1),
-                        ),
-                        padding: MaterialStateProperty.all<EdgeInsets>(
-                            EdgeInsets.all(10)),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                      child: Text('Postear',
-                          style: TextStyle(color: Colors.white, fontSize: 40)),
-                      onPressed: () {
-                        widget.formBloc.submit();
-                      },
+                  GradientSlideToAct(
+                    text: Shimmer.fromColors(
+                      period: Duration(milliseconds: 3000),
+                      child: Text("Desliza para postear"),
+                      baseColor: Colors.black,
+                      highlightColor: Colors.white.withOpacity(0.85),
                     ),
+                    textStyle: TextStyle(color: Colors.black),
+                    height: 60,
+                    onSubmit: () {
+                      widget.formBloc.submit();
+                    },
+                    dragableIcon: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                    width: 340,
+                    submittedIcon: !icon
+                        ? Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          )
+                        : Icon(
+                            Icons.done,
+                            color: Colors.white,
+                          ),
+                    dragableIconBackgroundColor:
+                        Color.fromRGBO(173, 29, 254, 1),
+                    gradient: LinearGradient(colors: [
+                      Color.fromRGBO(173, 29, 254, 1),
+                      Color.fromRGBO(183, 59, 255, 1),
+                      Color.fromRGBO(205, 127, 251, 1),
+                      Color.fromRGBO(226, 182, 251, 1),
+                    ]),
+                    backgroundColor: Colors.white,
                   )
                 ],
               ),

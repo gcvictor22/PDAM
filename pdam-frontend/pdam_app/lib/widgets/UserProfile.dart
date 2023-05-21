@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/blocs/profile/profile_bloc.dart';
+import 'package:pdam_app/blocs/user_details/user_details_bloc.dart';
 import 'package:pdam_app/pages/edit_profile_page.dart';
 import 'package:pdam_app/widgets/Post.dart';
 
@@ -13,11 +14,13 @@ class UserProfile extends StatefulWidget {
   final GetProfileDto profile;
   final List<GetPostDto> posts;
   final BuildContext context;
+  final int num;
   const UserProfile(
       {super.key,
       required this.profile,
       required this.posts,
-      required this.context});
+      required this.context,
+      required this.num});
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -277,7 +280,10 @@ class _UserProfileState extends State<UserProfile> {
             itemCount: widget.posts.length,
             padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
             itemBuilder: (context, index) {
-              return Post(num: 2, post: widget.posts[index], context: context);
+              return Post(
+                  num: widget.num == 3 ? 3 : 2,
+                  post: widget.posts[index],
+                  context: context);
             },
           ),
         )
@@ -318,14 +324,28 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future follow(String userName) async {
-    widget.context
-        .read<ProfileBloc>()
-        .add(ProfileFollowEvent(userName: userName));
+    switch (widget.num) {
+      case 1:
+        widget.context
+            .read<ProfileBloc>()
+            .add(ProfileFollowEvent(userName: userName));
+        break;
+      default:
+        widget.context
+            .read<UserDetailsBloc>()
+            .add(UserDetailsFollowEvent(userName: userName));
+    }
   }
 
   void _onScroll() {
     if (_isBottom) {
-      context.read<ProfileBloc>().add(ProfileScrollPostsEvent());
+      switch (widget.num) {
+        case 1:
+          context.read<ProfileBloc>().add(ProfileScrollPostsEvent());
+          break;
+        default:
+          context.read<UserDetailsBloc>().add(UserDetailsScrollPostsEvent());
+      }
     }
   }
 

@@ -113,4 +113,14 @@ class UserService {
     }
     throw new Exception("Ha ocurrido un error en el servicio");
   }
+
+  Future<dynamic> getUserByUserName(int it, String userName) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.getUserByUserName(it, userName);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
 }

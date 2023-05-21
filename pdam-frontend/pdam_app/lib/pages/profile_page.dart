@@ -74,6 +74,7 @@ class _ProfileLandingPageState extends State<ProfileLandingPage> {
       profile: widget.state.profile,
       posts: widget.state.posts,
       context: context,
+      num: 1,
     );
   }
 }

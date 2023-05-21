@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
 import 'package:pdam_app/blocs/profile/profile_bloc.dart';
+import 'package:pdam_app/blocs/user_details/user_details_bloc.dart';
+import 'package:pdam_app/pages/user_details_page.dart';
 import 'package:pdam_app/rest/rest.dart';
 
 import '../blocs/posts/posts_bloc.dart';
@@ -56,7 +58,17 @@ class _PostState extends State<Post> {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () => print(widget.post.userWhoPost.userName),
+              onPressed: () {
+                if (widget.num == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserDetailsPage(
+                          userName: widget.post.userWhoPost.userName),
+                    ),
+                  );
+                }
+              },
               style: ButtonStyle(
                 padding: MaterialStatePropertyAll(
                   EdgeInsets.only(top: 5, bottom: 5),
@@ -235,6 +247,8 @@ class _PostState extends State<Post> {
                         // ignore: constant_pattern_never_matches_value_type
                         case 1:
                           return like(widget.post, isLiked);
+                        case 3:
+                          return like3(widget.post, isLiked);
                         default:
                           return like2(widget.post, isLiked);
                       }
@@ -301,6 +315,13 @@ class _PostState extends State<Post> {
 
   Future<bool> like2(GetPostDto post, bool bool) async {
     widget.context.read<ProfileBloc>().add(ProfileLikeAPost(id: post.id));
+    return !bool;
+  }
+
+  Future<bool> like3(GetPostDto post, bool bool) async {
+    widget.context
+        .read<UserDetailsBloc>()
+        .add(UserDetailsLikeAPost(id: post.id));
     return !bool;
   }
 
