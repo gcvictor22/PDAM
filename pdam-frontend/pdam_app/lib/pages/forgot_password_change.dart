@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:pdam_app/blocs/forgot_password/forgot_password_change.dart';
+import 'package:pdam_app/blocs/forgot_password/forgot_password_change_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/main.dart';
-import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/services/authentication_service.dart';
+import 'package:pdam_app/widgets/Loading.dart';
 
 class ChangeForgotPasswordPage extends StatelessWidget {
   final String userName;
@@ -11,7 +12,7 @@ class ChangeForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserService userService = getIt<UserService>();
+    JwtAuthenticationService userService = getIt<JwtAuthenticationService>();
     return BlocProvider(
         create: (context) => ForgotPassworChangeBloc(userService, userName),
         child: Builder(
@@ -40,17 +41,23 @@ class ChangeForgotPasswordPage extends StatelessWidget {
                 child:
                     FormBlocListener<ForgotPassworChangeBloc, String, String>(
                         onSuccess: (context, state) {
+                          LoadingDialog.hide(context);
                           showOk(context);
-                          Navigator.push(
+                          Future.delayed(Duration(microseconds: 3000)).then(
+                            (value) => Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MyApp(),
-                              ));
+                              ),
+                            ),
+                          );
                         },
                         onLoading: (context, state) {
                           const CircularProgressIndicator();
                         },
-                        onSubmitting: (context, state) {},
+                        onSubmitting: (context, state) {
+                          LoadingDialog.show(context);
+                        },
                         onFailure: (context, state) {
                           showError(context);
                         },

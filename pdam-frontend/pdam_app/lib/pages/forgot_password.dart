@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/forgot_password/forgot_password_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
-import 'package:pdam_app/pages/change_forgo_password_change.dart';
-import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/pages/forgot_password_change.dart';
+import 'package:pdam_app/services/authentication_service.dart';
+import 'package:pdam_app/widgets/Loading.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../blocs/register_form/regirter_verification_form_bloc.dart';
@@ -13,7 +14,7 @@ class ForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserService userService = getIt<UserService>();
+    JwtAuthenticationService userService = getIt<JwtAuthenticationService>();
     return BlocProvider(
         create: (context) => ForgotPasswordBloc(userService),
         child: Builder(
@@ -41,6 +42,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 minimum: EdgeInsets.only(left: 30, right: 30),
                 child: FormBlocListener<ForgotPasswordBloc, String, String>(
                     onSuccess: (context, state) {
+                      LoadingDialog.hide(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -54,7 +56,9 @@ class ForgotPasswordPage extends StatelessWidget {
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
-                    onSubmitting: (context, state) {},
+                    onSubmitting: (context, state) {
+                      LoadingDialog.show(context);
+                    },
                     onFailure: (context, state) {
                       showError(context);
                     },
@@ -240,7 +244,11 @@ class EditPasswordVerificationPage extends StatelessWidget {
             final formBloc = context.read<RegisterVerificationFormBloc>();
             return Scaffold(
               appBar: AppBar(
-                title: Text('Recuperar contraseña',
+                leading: GestureDetector(
+                  child: Icon(Icons.arrow_back_ios, color: Colors.black),
+                  onTap: () => Navigator.pop(context),
+                ),
+                title: Text('Contraseña olvidada',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
@@ -254,23 +262,24 @@ class EditPasswordVerificationPage extends StatelessWidget {
                 child: FormBlocListener<RegisterVerificationFormBloc, String,
                         String>(
                     onSuccess: (context, state) {
-                      Future.delayed(Duration(seconds: 3)).then((value) => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) {
-                                  return ChangeForgotPasswordPage(
-                                    userName: userName,
-                                  );
-                                },
-                              ),
-                            ),
-                          });
+                      LoadingDialog.hide(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return ChangeForgotPasswordPage(
+                              userName: userName,
+                            );
+                          },
+                        ),
+                      );
                     },
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
-                    onSubmitting: (context, state) {},
+                    onSubmitting: (context, state) {
+                      LoadingDialog.show(context);
+                    },
                     onFailure: (context, state) {
                       showError(context);
                     },
@@ -379,7 +388,7 @@ class _RegisterVerificationPageSFState
                         ),
                       ),
                     ),
-                    child: Text('Terminar',
+                    child: Text('Continuar',
                         style: TextStyle(color: Colors.white, fontSize: 40)),
                     onPressed: enable
                         ? () {

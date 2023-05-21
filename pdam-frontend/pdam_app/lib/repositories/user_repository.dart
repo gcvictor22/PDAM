@@ -103,24 +103,4 @@ class UserRepository {
     );
     return GetUserDto.fromJson(jsonDecode(response));
   }
-
-  Future<dynamic> forgotPassword(String userName) async {
-    String url = "/user/forgotPassword/";
-    var response =
-        await _client.post(url, EditModelUserName(userName: userName));
-
-    return jsonDecode(response);
-  }
-
-  Future<dynamic> forgotPasswordChange(
-      String userName, String newPassword, String newPasswordVerify) async {
-    String url = "/user/forgotPassword/$userName";
-
-    var response = await _client.put(
-        url,
-        EditModelForgotPassword(
-            newPassword: newPassword, newPasswordVerify: newPasswordVerify));
-
-    return GetUserDto.fromJson(jsonDecode(response));
-  }
 }

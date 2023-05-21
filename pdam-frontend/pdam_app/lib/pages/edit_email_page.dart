@@ -4,6 +4,7 @@ import 'package:pdam_app/blocs/edit_profile/edit_email_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/pages/register_verification_form_page.dart';
 import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/widgets/Loading.dart';
 
 class EditEmailPage extends StatelessWidget {
   final String userName;
@@ -39,6 +40,7 @@ class EditEmailPage extends StatelessWidget {
                 minimum: EdgeInsets.only(left: 30, right: 30),
                 child: FormBlocListener<EditEmailBloc, String, String>(
                     onSuccess: (context, state) {
+                      LoadingDialog.hide(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -51,7 +53,9 @@ class EditEmailPage extends StatelessWidget {
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
-                    onSubmitting: (context, state) {},
+                    onSubmitting: (context, state) {
+                      LoadingDialog.show(context);
+                    },
                     onFailure: (context, state) {
                       showError(context);
                     },

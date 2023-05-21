@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/services/authentication_service.dart';
 
 class ForgotPassworChangeBloc extends FormBloc<String, String> {
-  final UserService _userService;
+  final JwtAuthenticationService _userService;
   final String userName;
 
   final newPassword = TextFieldBloc(validators: [FieldBlocValidators.required]);
   final newPasswordVerify =
       TextFieldBloc(validators: [FieldBlocValidators.required]);
 
-  ForgotPassworChangeBloc(UserService userService, this.userName)
+  ForgotPassworChangeBloc(JwtAuthenticationService userService, this.userName)
       // ignore: unnecessary_null_comparison
       : assert(userService != null),
         _userService = userService {

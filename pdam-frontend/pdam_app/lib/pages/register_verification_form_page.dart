@@ -17,6 +17,7 @@ class RegisterVerfificarionPage extends StatelessWidget {
             final formBloc = context.read<RegisterVerificationFormBloc>();
             return Scaffold(
               appBar: AppBar(
+                leading: Icon(Icons.do_disturb, color: Colors.white),
                 title: Text('Registro',
                     style: TextStyle(
                         color: Colors.black,

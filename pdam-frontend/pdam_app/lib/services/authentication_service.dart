@@ -63,6 +63,18 @@ class JwtAuthenticationService extends AuthenticationService {
     return response;
   }
 
+  Future<dynamic> forgotPassword(String userName) async {
+    var response = await _authenticationRepository.forgotPassword(userName);
+    return response;
+  }
+
+  Future<dynamic> forgotPasswordChange(
+      String userName, String newPassword, String newPasswordVerify) async {
+    var response = await _authenticationRepository.forgotPasswordChange(
+        userName, newPassword, newPasswordVerify);
+    return response;
+  }
+
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
     LoginResponse response =

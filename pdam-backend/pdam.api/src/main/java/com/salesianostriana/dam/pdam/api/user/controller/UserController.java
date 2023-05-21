@@ -203,11 +203,11 @@ public class UserController {
     }
 
     @PostMapping("/forgotPassword/")
-    public GetUserDto forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
+    public ResponseEntity<GetUserDto> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) throws MessagingException {
         User user = userService.getProfileByUserName(forgotPasswordDto.getUserName());
         verificationTokenService.generateVerificationToken(user);
         userService.forgotPassword(user);
-        return GetUserDto.of(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(GetUserDto.of(user));
     }
 
     @PutMapping("/edit/password")
