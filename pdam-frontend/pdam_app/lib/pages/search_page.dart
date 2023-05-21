@@ -153,19 +153,16 @@ class _SearchListState extends State<SearchList> {
                       padding: EdgeInsets.zero,
                       itemCount: 40,
                       itemBuilder: (context, index) {
-                        var end = false;
+                        var sum = 0;
 
-                        if (widget.state.users is! bool &&
-                            widget.state.events is! bool) {
-                          end = index ==
-                              widget.state.users.length +
-                                  widget.state.events.length -
-                                  1;
-                        } else if (widget.state.events is bool) {
-                          end = index == widget.state.users.length - 1;
-                        } else {
-                          end = index == widget.state.events.length - 1;
+                        if (widget.state.users is! bool) {
+                          sum += widget.state.users.length as int;
                         }
+                        if (widget.state.events is! bool) {
+                          sum += widget.state.events.length as int;
+                        }
+
+                        var end = sum == index - 1;
 
                         return Column(
                           children: [
