@@ -118,7 +118,7 @@ class _UserDetailsLandingPageState extends State<UserDetailsLandingPage> {
         ),
         body: UserProfile(
           profile: widget.state.profile,
-          posts: widget.state.posts,
+          posts: widget.state.profile.publishedPosts!.content!,
           context: context,
           num: 3,
         ),

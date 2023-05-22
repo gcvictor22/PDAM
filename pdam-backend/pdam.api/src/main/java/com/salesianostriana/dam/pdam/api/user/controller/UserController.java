@@ -70,22 +70,23 @@ public class UserController {
     @GetMapping("/profile/")
     public UserProfileDto viewProfile(@AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
         User user = userService.getProfile(loggedUser.getId());
-        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublishedPosts(user, pageable);
         return UserProfileDto.of(userService.getProfileByUserName(user.getUsername()), user, publishedPosts);
     }
 
     @GetMapping("/{id}")
     public UserProfileDto viewUser(@PathVariable UUID id, @AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
         User user = userService.getProfile(loggedUser.getId());
-        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublishedPosts(user, pageable);
         return UserProfileDto.of(userService.getProfile(id), user, publishedPosts);
     }
 
     @GetMapping("/userName/{userName}")
     public UserProfileDto viewUserProfile(@PathVariable String userName, @AuthenticationPrincipal User loggedUser, @PageableDefault(size = 20, page = 0) Pageable pageable){
         User user = userService.getProfile(loggedUser.getId());
-        GetPageDto<GetPostDto> publishedPosts = userService.getPublisedPosts(user, pageable);
-        return UserProfileDto.of(userService.getProfileByUserName(userName), user, publishedPosts);
+        User userToGet = userService.getProfileByUserName(userName);
+        GetPageDto<GetPostDto> publishedPosts = userService.getPublishedPostsFromUser(userToGet, user, pageable);
+        return UserProfileDto.of(userToGet, user, publishedPosts);
     }
 
     @GetMapping("/profileImg")
@@ -116,15 +117,15 @@ public class UserController {
     }
 
     @GetMapping("/follows/{id}")
-    public GetPageDto<UserWhoLikeDto> getFollows (@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+    public GetPageDto<UserWhoLikeDto> getFollows (@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User loggedUser){
         User user = userService.getProfile(id);
-        return userService.getFollows(user, pageable);
+        return userService.getFollows(user, pageable, loggedUser);
     }
 
     @GetMapping("/followers/{id}")
-    public GetPageDto<UserWhoLikeDto> getFollowers(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+    public GetPageDto<UserWhoLikeDto> getFollowers(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User loggedUser){
         User user = userService.getProfile(id);
-        return userService.getFollowers(user, pageable);
+        return userService.getFollowers(user, pageable, loggedUser);
     }
 
     @GetMapping("/likedPosts/{id}")

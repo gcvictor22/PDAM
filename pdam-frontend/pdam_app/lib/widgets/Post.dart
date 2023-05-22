@@ -64,7 +64,7 @@ class _PostState extends State<Post> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserDetailsPage(
-                          userName: widget.post.userWhoPost.userName),
+                          userName: widget.post.userWhoPost.userName!),
                     ),
                   );
                 }
@@ -100,9 +100,9 @@ class _PostState extends State<Post> {
                     ),
                   ),
                   Text(
-                    widget.post.userWhoPost.userName.length < 15
-                        ? widget.post.userWhoPost.userName
-                        : widget.post.userWhoPost.userName.substring(0, 12) +
+                    widget.post.userWhoPost.userName!.length < 15
+                        ? widget.post.userWhoPost.userName!
+                        : widget.post.userWhoPost.userName!.substring(0, 12) +
                             "...",
                     style: TextStyle(
                         fontSize: 25,
@@ -112,7 +112,7 @@ class _PostState extends State<Post> {
                   SizedBox(
                     width: 5,
                   ),
-                  widget.post.userWhoPost.verified
+                  widget.post.userWhoPost.verified!
                       ? Icon(
                           Icons.verified,
                           color: Colors.blue,

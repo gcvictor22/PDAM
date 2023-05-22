@@ -1,5 +1,7 @@
 import 'package:pdam_app/models/post/GetPostDto.dart';
 
+import '../user/GetProfile.dart';
+
 class GetPostDtoResponse {
   late List<GetPostDto> content;
   late int currentPage;
@@ -91,28 +93,6 @@ class Content {
     data['comments'] = this.comments;
     data['likedByUser'] = this.likedByUser;
     data['postDate'] = this.postDate;
-    return data;
-  }
-}
-
-class UserWhoPost {
-  String? userName;
-  String? imgPath;
-  bool? verified;
-
-  UserWhoPost({this.userName, this.imgPath, this.verified});
-
-  UserWhoPost.fromJson(Map<String, dynamic> json) {
-    userName = json['userName'];
-    imgPath = json['imgPath'];
-    verified = json['verified'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userName'] = this.userName;
-    data['imgPath'] = this.imgPath;
-    data['verified'] = this.verified;
     return data;
   }
 }

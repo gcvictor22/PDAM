@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/blocs/user_details/user_details_bloc.dart';
 import 'package:pdam_app/pages/edit_profile_page.dart';
+import 'package:pdam_app/pages/follows_and_followers.dart';
 import 'package:pdam_app/widgets/Post.dart';
 
 import '../models/post/GetPostDto.dart';
@@ -103,20 +104,36 @@ class _UserProfileState extends State<UserProfile> {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Column(
-                        children: [
-                          Text("Seguidores"),
-                          Text("${numberOfFollowers}")
-                        ],
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        children: [
-                          Text("Siguiendo"),
-                          Text("${widget.profile.follows}")
-                        ],
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                FollowsAndFollowersPage(id: widget.profile.id!),
+                          ),
+                        ),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Text("Seguidores"),
+                                  Text("${numberOfFollowers}")
+                                ],
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                children: [
+                                  Text("Siguiendo"),
+                                  Text("${widget.profile.follows}")
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       SizedBox(
                         width: 20,

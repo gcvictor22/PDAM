@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
+import 'package:pdam_app/pages/user_details_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../blocs/search/search_bloc.dart';
 import '../models/user/GetUserDto.dart';
 import '../rest/rest_client.dart';
 
@@ -44,208 +43,105 @@ class _UserCardState extends State<UserCard> {
     }
   }
 
-  Widget createDialog(BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text(
-        "Alerta",
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Text(
-          "¿Estas seguro que quires dejar de seguir a ${widget.user.userName}?"),
-      actions: [
-        CupertinoDialogAction(
-          child: Text("Cancelar"),
-          onPressed: () => Navigator.pop(context),
-        ),
-        CupertinoDialogAction(
-          child: Text("Dejar de seguir"),
-          onPressed: () {
-            Navigator.pop(context);
-            follow(widget.user.userName);
-            setState(() {
-              followed = !followed;
-              numberOfFollowers -= 1;
-            });
-          },
-          isDestructiveAction: true,
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => print(widget.user.id),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+    return Container(
+      width: double.infinity,
+      child: GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                UserDetailsPage(userName: widget.user.userName),
+          ),
         ),
-        margin: EdgeInsets.only(bottom: 10),
         child: Container(
-          padding: EdgeInsets.all(10),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 70,
-                height: 70,
-                margin: EdgeInsets.only(right: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(100),
-                  ),
-                ),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Image.network(
-                  ApiConstants.baseUrl +
-                      "/user/userImg/${widget.user.userName}",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    width: 160,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "${widget.user.userName.length >= 10 ? widget.user.userName.substring(0, 8) + "..." : widget.user.userName}",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            widget.user.verified
-                                ? Icon(
-                                    Icons.verified,
-                                    color: Colors.blue,
-                                  )
-                                : SizedBox(),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "${widget.user.fullName}",
-                              style: TextStyle(
-                                fontSize: 13,
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.groups_2),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${_convertNumber(numberOfFollowers)}",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.photo_library),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${widget.user.countOfPosts}",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (!followed) {
-                    follow(widget.user.userName);
-                    setState(() {
-                      followed = !followed;
-                      numberOfFollowers += 1;
-                    });
-                  } else {
-                    showCupertinoDialog(
-                      context: context,
-                      builder: createDialog,
-                      barrierDismissible: true,
-                    );
-                  }
-                },
-                child: Container(
-                  margin: EdgeInsets.zero,
-                  width: 75,
-                  padding: EdgeInsets.symmetric(vertical: 5),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          margin: EdgeInsets.only(bottom: 10),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  margin: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
-                    color: followed
-                        ? Colors.white
-                        : Color.fromRGBO(173, 29, 254, 1),
-                    border: Border.all(
-                      color: Color.fromRGBO(173, 29, 254, 1),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(100),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(75)),
                   ),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Image.network(
+                    ApiConstants.baseUrl +
+                        "/user/userImg/${widget.user.userName}",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 30),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        followed
-                            ? Icons.person_remove
-                            : Icons.person_add_alt_sharp,
-                        color: !followed
-                            ? Colors.white
-                            : Color.fromRGBO(173, 29, 254, 1),
-                        size: 25,
-                      )
+                      Row(
+                        children: [
+                          Text(
+                            widget.user.userName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          if (widget.user.verified)
+                            Icon(
+                              Icons.verified,
+                              color: Colors.blue,
+                            ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Text(widget.user.fullName,
+                          style: TextStyle(fontSize: 12)),
+                      SizedBox(height: 5),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.groups_2),
+                              SizedBox(width: 5),
+                              Text('${widget.user.followers}'),
+                            ],
+                          ),
+                          SizedBox(width: 50),
+                          Row(
+                            children: [
+                              Icon(Icons.image),
+                              SizedBox(width: 5),
+                              Text('${widget.user.countOfPosts}'),
+                            ],
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  Future follow(String userName) async {
-    widget.context
-        .read<SearchBloc>()
-        .add(SearchFollowEvent(userName: userName));
   }
 }
 
@@ -305,7 +201,8 @@ class EventCard extends StatelessWidget {
                 ),
               ),
               Container(
-                width: 170,
+                width: 130,
+                margin: EdgeInsets.only(left: 25),
                 child: Column(
                   children: [
                     Row(
@@ -318,7 +215,6 @@ class EventCard extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
                           ),
                         ),
                       ],

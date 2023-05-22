@@ -133,13 +133,22 @@ class UserWhoPost {
   String? userName;
   String? imgPath;
   bool? verified;
+  bool? followedByUser;
+  bool? loggedUser;
 
-  UserWhoPost({this.userName, this.imgPath, this.verified});
+  UserWhoPost(
+      {this.userName,
+      this.imgPath,
+      this.verified,
+      this.followedByUser,
+      this.loggedUser});
 
   UserWhoPost.fromJson(Map<String, dynamic> json) {
     userName = json['userName'];
     imgPath = json['imgPath'];
     verified = json['verified'];
+    followedByUser = json['followedByUser'];
+    loggedUser = json['loggedUser'];
   }
 
   Map<String, dynamic> toJson() {
@@ -147,6 +156,8 @@ class UserWhoPost {
     data['userName'] = this.userName;
     data['imgPath'] = this.imgPath;
     data['verified'] = this.verified;
+    data['followedByUser'] = this.followedByUser;
+    data['loggedUser'] = this.loggedUser;
     return data;
   }
 }

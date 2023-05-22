@@ -40,7 +40,7 @@ public class ViewPostDto {
                 .imgPath(post.getImgPaths())
                 .userWhoPost(post.getUserWhoPost().getUsername())
                 .likedByUser(user.getLikedPosts().stream().filter(p -> Objects.equals(p.getId(), post.getId())).toList().size() > 0)
-                .usersWhoLiked(post.getUsersWhoLiked().stream().map(UserWhoLikeDto::of).toList())
+                .usersWhoLiked(post.getUsersWhoLiked().stream().map(u -> UserWhoLikeDto.of(u, user)).toList())
                 .comments(post.getComments().stream().map(GetCommentDto::of).toList())
                 .postDate(post.getPostDate())
                 .build();

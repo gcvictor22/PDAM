@@ -123,4 +123,24 @@ class UserService {
     }
     throw new Exception("Ha ocurrido un error en el servicio");
   }
+
+  Future<dynamic> getUserFollows(String id, int it) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.getUserFollows(id, it);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> getUserFollowers(String id, int it) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.getUserFollowers(id, it);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
 }

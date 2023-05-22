@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pdam_app/models/post/MultiPartFilesRequest.dart';
 import 'package:pdam_app/models/user/EditModel.dart';
+import 'package:pdam_app/models/user/FollowsAndFollowersResponse.dart';
 import 'package:pdam_app/models/user/GetProfile.dart';
 import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/models/user/GetUserResponse.dart';
@@ -109,5 +110,19 @@ class UserRepository {
 
     var response = await _client.get(url);
     return GetProfileDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> getUserFollows(String id, int it) async {
+    String url = "/user/follows/$id?page=$it";
+
+    var response = await _client.get(url);
+    return FollowsAndFollowersResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> getUserFollowers(String id, int it) async {
+    String url = "/user/followers/$id?page=$it";
+
+    var response = await _client.get(url);
+    return FollowsAndFollowersResponse.fromJson(jsonDecode(response));
   }
 }

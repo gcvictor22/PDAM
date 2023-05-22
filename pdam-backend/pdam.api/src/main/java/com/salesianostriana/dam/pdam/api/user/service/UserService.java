@@ -252,17 +252,17 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public GetPageDto<UserWhoLikeDto> getFollows(User user, Pageable pageable) {
+    public GetPageDto<UserWhoLikeDto> getFollows(User user, Pageable pageable, User loggedUser) {
 
-        Page<UserWhoLikeDto> getFollowsDto = userRepository.findFollows(pageable, user.getId()).map(u -> UserWhoLikeDto.of(user));
+        Page<UserWhoLikeDto> getFollowsDto = userRepository.findFollows(pageable, user.getId()).map(u -> UserWhoLikeDto.of(u, loggedUser));
 
         return new GetPageDto<>(getFollowsDto);
 
     }
 
-    public GetPageDto<UserWhoLikeDto> getFollowers(User user, Pageable pageable) {
+    public GetPageDto<UserWhoLikeDto> getFollowers(User user, Pageable pageable, User loggedUser) {
 
-        Page<UserWhoLikeDto> getFollowersDto = userRepository.findFollowers(pageable, user.getId()).map(UserWhoLikeDto::of);
+        Page<UserWhoLikeDto> getFollowersDto = userRepository.findFollowers(pageable, user.getId()).map(u -> UserWhoLikeDto.of(u, loggedUser));
 
         return new GetPageDto<>(getFollowersDto);
 
@@ -274,9 +274,16 @@ public class UserService {
         return new GetPageDto<>(getLikedPostsDto);
     }
 
-    public GetPageDto<GetPostDto> getPublisedPosts(User loggedUser, Pageable pageable) {
+    public GetPageDto<GetPostDto> getPublishedPosts(User loggedUser, Pageable pageable) {
 
         Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, loggedUser.getId()).map(p -> GetPostDto.of(p, loggedUser));
+
+        return new GetPageDto<>(getPublishedPosts);
+    }
+
+    public GetPageDto<GetPostDto> getPublishedPostsFromUser(User userToGet, User loggedUser, Pageable pageable) {
+
+        Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, userToGet.getId()).map(p -> GetPostDto.of(p, loggedUser));
 
         return new GetPageDto<>(getPublishedPosts);
     }
