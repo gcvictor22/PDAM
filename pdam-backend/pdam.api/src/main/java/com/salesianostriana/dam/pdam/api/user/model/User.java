@@ -4,6 +4,7 @@ import com.salesianostriana.dam.pdam.api.city.model.City;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.gender.model.Gender;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
+import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
 import lombok.*;
@@ -68,6 +69,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "userWhoPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Post> publishedPosts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "userHolder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<PaymentMethod> paymentMethods = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id",
@@ -220,5 +225,10 @@ public class User implements UserDetails {
             });
             p.getComments().clear();
         });
+    }
+
+    public void addPaymentMethod(PaymentMethod paymentMethod) {
+        paymentMethod.setUserHolder(this);
+        this.getPaymentMethods().add(paymentMethod);
     }
 }

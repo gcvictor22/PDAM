@@ -34,6 +34,18 @@ class FollowsFollowersBloc
         await _fetchAll(event, emit);
       },
     );
+
+    on<FollowsFollowersScrollFollowsEvent>(
+      (event, emit) async {
+        await _onScrollFollows(event, emit);
+      },
+    );
+
+    on<FollowsFollowersScrollFollowersEvent>(
+      (event, emit) async {
+        await _onScrollFollowers(event, emit);
+      },
+    );
   }
 
   Future<void> _fetchAll(

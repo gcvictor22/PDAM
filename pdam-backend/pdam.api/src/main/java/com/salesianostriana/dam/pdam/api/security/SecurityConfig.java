@@ -75,7 +75,8 @@ public class SecurityConfig {
                                 .antMatchers("/user/**").hasRole("USER")
                                 .antMatchers("/post/**").hasRole("USER")
                                 .antMatchers("/discotheque/**").hasRole("USER")
-                                .antMatchers("/comment/**").hasRole("VERIFIED")
+                                .antMatchers("/comment/**").hasRole("USER")
+                                .antMatchers("/payment/**").hasRole("USER")
                                 .antMatchers("/party/create").hasRole("AUTH")
                                 .anyRequest().authenticated();
 
