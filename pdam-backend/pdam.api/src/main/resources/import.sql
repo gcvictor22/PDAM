@@ -100,4 +100,10 @@ insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', '8ee56ea7-ce36-595c-bfb4-b5fd87e34b09');
 insert into userfollows (user_who_is_followed_id, user_who_follows_id) values ('74002906-c609-5b6b-9acf-177f11e48261', 'df442a4d-2ec0-54b6-ab24-019787533d25');
 
-alter sequence hibernate_sequence restart with 76
+insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (76, '4111111111111111', 'Jon Doe', '123', '08/25', false, '74002906-c609-5b6b-9acf-177f11e48261', 'VISA');
+insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (77, '5555555555554444', 'Pepito Joselito', '456', '10/24', false, '74002906-c609-5b6b-9acf-177f11e48261', 'MASTERCARD');
+insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (78, '378282246310005', 'Agencia Tributaria', '7894', '07/23', true, '74002906-c609-5b6b-9acf-177f11e48261', 'AMERICAN_EXPRESS');
+insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (79, '6011111111111117', 'Miguel Campos', '234', '09/27', false, '74002906-c609-5b6b-9acf-177f11e48261', 'DISCOVER');
+
+
+alter sequence hibernate_sequence restart with 80

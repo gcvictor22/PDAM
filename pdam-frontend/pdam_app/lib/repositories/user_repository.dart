@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/payment_method.dart';
 import 'package:pdam_app/models/post/MultiPartFilesRequest.dart';
 import 'package:pdam_app/models/user/EditModel.dart';
 import 'package:pdam_app/models/user/FollowsAndFollowersResponse.dart';
@@ -124,5 +125,27 @@ class UserRepository {
 
     var response = await _client.get(url);
     return FollowsAndFollowersResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> getUserPaymentMethods() async {
+    String url = "/payment/";
+
+    var response = await _client.get(url);
+    return PaymentMethodResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> newPaymentMethod(
+      NewPaymentMethodDto newPaymentMethodDto) async {
+    String url = "/payment/";
+
+    var response = await _client.post(url, newPaymentMethodDto);
+    return GetPaymentMethodDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> updateActiveMethod(int id) async {
+    String url = "/payment/activate/$id";
+
+    var response = await _client.put(url);
+    return GetPaymentMethodDto.fromJson(jsonDecode(response));
   }
 }

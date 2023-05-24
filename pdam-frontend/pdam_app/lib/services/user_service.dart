@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pdam_app/models/payment_method.dart';
 import 'package:pdam_app/models/user/GetProfile.dart';
 import 'package:pdam_app/models/user/GetUserDto.dart';
 import 'package:pdam_app/models/user/GetUserResponse.dart';
@@ -139,6 +140,38 @@ class UserService {
 
     if (token != null) {
       var response = await _userRepository.getUserFollowers(id, it);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> getUserPaymentMethods() async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.getUserPaymentMethods();
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> newPaymentMethod(
+      NewPaymentMethodDto newPaymentMethodDto) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response =
+          await _userRepository.newPaymentMethod(newPaymentMethodDto);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> updateActiveMethod(int id) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      var response = await _userRepository.updateActiveMethod(id);
       return response;
     }
     throw new Exception("Ha ocurrido un error en el servicio");

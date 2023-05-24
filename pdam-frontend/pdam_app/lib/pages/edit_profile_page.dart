@@ -11,6 +11,7 @@ import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/main.dart';
 import 'package:pdam_app/pages/edit_email_page.dart';
 import 'package:pdam_app/pages/edit_password_page.dart';
+import 'package:pdam_app/pages/payment_methods.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/SpaceLine.dart';
 
@@ -388,6 +389,30 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
                     children: [
                       Text(
                         "Cambiar contraseña",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              ),
+              SpaceLine(color: Colors.grey),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentMethodsPage(),
+                    )),
+                child: Container(
+                  color: Colors.transparent,
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Métodos de pago",
                         style: TextStyle(fontSize: 20),
                       ),
                       Icon(Icons.arrow_forward_ios)

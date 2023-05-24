@@ -23,6 +23,7 @@ dependencies:
   path_provider: ^2.0.15
   skeletons: ^0.0.3
   shimmer: ^3.0.0
+  flutter_credit_card: ^3.0.6
 
   flutter:
     sdk: flutter
@@ -49,3 +50,8 @@ flutter:
     - assets/404.gif
     - assets/loader.png
     - assets/search.gif
+    - assets/mastercard.png
+    - assets/visa.png
+    - assets/american_express.png
+    - assets/discover.png
+    - assets/default_card.avif

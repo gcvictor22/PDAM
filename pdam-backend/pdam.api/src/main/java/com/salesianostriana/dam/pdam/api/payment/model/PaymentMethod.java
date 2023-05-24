@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.payment.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.dam.pdam.api.payment.service.PaymentMethodService;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class PaymentMethod {
     @JoinColumn(name = "userHolder", foreignKey = @ForeignKey(name = "FK_USER_PAYMENT_METHOD"))
     private User userHolder;
 
-    private String type;
+    @Convert(converter = CardTypeConverter.class)
+    private CardType type;
 
 }

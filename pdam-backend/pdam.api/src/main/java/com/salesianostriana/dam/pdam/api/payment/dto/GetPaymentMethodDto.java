@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.dam.pdam.api.payment.model.CardType;
 import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +20,9 @@ public class GetPaymentMethodDto {
     private Long id;
     private String number;
     private String holder;
-
-    @JsonFormat(pattern = "MM/yyyy")
     private String expiredDate;
-
     private boolean active;
-
-    private String type;
+    private CardType type;
 
     public static GetPaymentMethodDto of(PaymentMethod paymentMethod){
         return GetPaymentMethodDto.builder()
@@ -39,3 +36,4 @@ public class GetPaymentMethodDto {
     }
 
 }
+

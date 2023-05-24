@@ -14,6 +14,8 @@ import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
 import com.salesianostriana.dam.pdam.api.party.dto.NewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.party.repository.PartyRepository;
+import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
+import com.salesianostriana.dam.pdam.api.payment.service.PaymentMethodService;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.search.specifications.post.PSBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
@@ -49,7 +51,7 @@ public class PartyService {
     private final DiscothequeRepository discothequeRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final EventService eventService;
+    private final PaymentMethodService paymentMethodService;
 
     private final JavaMailSender javaMailSender;
 
@@ -114,7 +116,7 @@ public class PartyService {
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
         contentStream.newLineAtOffset(100, 700);
-        contentStream.showText("Implementame estaaaaaaaaaa");
+        contentStream.showText("Metodo de pago activo: "+paymentMethodService.getActiveMethod(loggedUser).getNumber());
         contentStream.endText();
         contentStream.close();
 

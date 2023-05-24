@@ -3,6 +3,7 @@ package com.salesianostriana.dam.pdam.api.payment.service;
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.payment.dto.GetPaymentMethodDto;
 import com.salesianostriana.dam.pdam.api.payment.dto.NewPaymentMethodDto;
+import com.salesianostriana.dam.pdam.api.payment.model.CardType;
 import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.payment.repository.PaymentMethodRepository;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -27,16 +28,18 @@ public class PaymentMethodService {
 
     public PaymentMethod create(NewPaymentMethodDto newPaymentMethodDto, User loggedUser) {
 
+        String sanitizedCardNumber = newPaymentMethodDto.getNumber().replaceAll("\\s", "").replaceAll("-", "");
+
         User user = userRepository.userWithPostsById(loggedUser.getId()).orElseThrow(() -> new UserNotFoundException(loggedUser.getId()));
 
         PaymentMethod paymentMethod = paymentMethodRepository.save(
                 PaymentMethod.builder()
-                        .number(newPaymentMethodDto.getNumber())
+                        .number(sanitizedCardNumber)
                         .holder(newPaymentMethodDto.getHolder())
                         .expiredDate(newPaymentMethodDto.getExpiredDate())
                         .cvv(newPaymentMethodDto.getCvv())
                         .activeMethod(user.getPaymentMethods().isEmpty())
-                        .type(getCardType(newPaymentMethodDto.getNumber()))
+                        .type(identifyCardType(newPaymentMethodDto.getNumber()))
                         .build()
         );
 
@@ -46,23 +49,20 @@ public class PaymentMethodService {
 
     }
 
-    public static String getCardType(String cardNumber) {
-        // Eliminar espacios en blanco y guiones
-        String sanitizedCardNumber = cardNumber.replaceAll("\\s", "").replaceAll("-", "");
-
-        if (sanitizedCardNumber.matches("^(4\\d{12}(?:\\d{3})?)$")) {
-            return "Visa";
-        } else if (sanitizedCardNumber.matches("^(5[1-5]\\d{14})$")) {
-            return "Mastercard";
+    public static CardType identifyCardType(String cardNumber) {
+        if (cardNumber.startsWith("4")) {
+            return CardType.VISA;
+        } else if (cardNumber.startsWith("5")) {
+            char secondDigit = cardNumber.charAt(1);
+            if (secondDigit >= '1' && secondDigit <= '5') {
+                return CardType.MASTERCARD;
+            }
+        } else if (cardNumber.startsWith("34") || cardNumber.startsWith("37")) {
+            return CardType.AMERICAN_EXPRESS;
+        } else if (cardNumber.startsWith("6011") || cardNumber.startsWith("65")) {
+            return CardType.DISCOVER;
         }
-        else if (sanitizedCardNumber.matches("^(34|37\\d{13})$")) {
-             return "American Express";
-         }
-         else if (sanitizedCardNumber.matches("^(6011\\d{12})$")) {
-             return "Discover";
-         }
-
-        return "Desconocido";
+        return CardType.OTHER;
     }
 
     public PaymentMethod getActiveMethod(User loggedUser) {
@@ -73,7 +73,7 @@ public class PaymentMethodService {
         User user = userRepository.userWithPostsById(loggedUser.getId()).orElseThrow(() -> new UserNotFoundException(loggedUser.getId()));
         PaymentMethod paymentMethod = paymentMethodRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        if (user.getPaymentMethods().stream().filter(p -> Objects.equals(p.getId(), paymentMethod.getId())).toList().size() == 0){
+        if (user.getPaymentMethods().stream().filter(p -> Objects.equals(p.getId(), paymentMethod.getId())).toList().size() > 0){
             user.getPaymentMethods().forEach(p -> {
                 p.setActiveMethod(false);
                 paymentMethodRepository.save(p);
@@ -88,13 +88,13 @@ public class PaymentMethodService {
 
     public List<GetPaymentMethodDto> findAll(User loggedUser) {
         User user = userRepository.userWithPostsById(loggedUser.getId()).orElseThrow(() -> new UserNotFoundException(loggedUser.getId()));
-        if (user.getPaymentMethods().isEmpty()) {
-            throw new EntityNotFoundException();
-        }else {
-            return user.getPaymentMethods().stream().map(u -> {
+        return user.getPaymentMethods().stream().map(u -> {
+            if (u.getType().equals(CardType.AMERICAN_EXPRESS) || u.getNumber().length() == 15){
+                u.setNumber("**** ****** "+u.getNumber().substring(10, 15));
+            }else {
                 u.setNumber("**** **** **** "+u.getNumber().substring(12, 16));
-                return GetPaymentMethodDto.of(u);
-            }).toList();
-        }
+            }
+            return GetPaymentMethodDto.of(u);
+        }).toList();
     }
 }
