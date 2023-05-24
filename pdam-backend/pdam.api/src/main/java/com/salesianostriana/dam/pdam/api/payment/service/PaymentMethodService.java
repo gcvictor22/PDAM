@@ -9,12 +9,18 @@ import com.salesianostriana.dam.pdam.api.payment.repository.PaymentMethodReposit
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
 import com.salesianostriana.dam.pdam.api.user.service.UserService;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.param.PaymentMethodCreateParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -25,8 +31,11 @@ public class PaymentMethodService {
     private final PaymentMethodRepository paymentMethodRepository;
     private final UserRepository userRepository;
 
+    @Value("${secret.stripe.key}")
+    private String stripeSecret;
 
-    public PaymentMethod create(NewPaymentMethodDto newPaymentMethodDto, User loggedUser) {
+
+    public PaymentMethod create(NewPaymentMethodDto newPaymentMethodDto, User loggedUser, String stripe_id) {
 
         String sanitizedCardNumber = newPaymentMethodDto.getNumber().replaceAll("\\s", "").replaceAll("-", "");
 
@@ -40,6 +49,7 @@ public class PaymentMethodService {
                         .cvv(newPaymentMethodDto.getCvv())
                         .activeMethod(user.getPaymentMethods().isEmpty())
                         .type(identifyCardType(newPaymentMethodDto.getNumber()))
+                        .stripe_id(stripe_id)
                         .build()
         );
 
@@ -96,5 +106,39 @@ public class PaymentMethodService {
             }
             return GetPaymentMethodDto.of(u);
         }).toList();
+    }
+
+    public com.stripe.model.PaymentMethod createPMStripe(NewPaymentMethodDto paymentMethod, User loggedUser) {
+        try {
+            Stripe.apiKey = stripeSecret;
+
+/*
+            Map<String, Object> card = new HashMap<>();
+            card.put("number", paymentMethod.getNumber());
+            card.put("exp_month", Integer.parseInt(paymentMethod.getExpiredDate().split("/")[0]));
+            card.put("exp_year", Integer.parseInt(paymentMethod.getExpiredDate().split("/")[1]));
+            card.put("cvc", paymentMethod.getCvv());
+            card.put("customer", loggedUser.getStripeCustomer_id());
+            Map<String, Object> params = new HashMap<>();
+            params.put("type", "card");
+            params.put("card", card);
+
+            return com.stripe.model.PaymentMethod.create(params);
+ */
+            PaymentMethodCreateParams.Builder builder = new PaymentMethodCreateParams.Builder()
+                    .setType(PaymentMethodCreateParams.Type.CARD)
+                    .setCard(PaymentMethodCreateParams.CardDetails.builder()
+                            .setNumber(paymentMethod.getNumber())
+                            .setExpMonth(Long.parseLong(paymentMethod.getExpiredDate().split("/")[0]))
+                            .setExpYear(Long.parseLong(paymentMethod.getExpiredDate().split("/")[1]))
+                            .setCvc(paymentMethod.getCvv())
+                            .build());
+
+            return com.stripe.model.PaymentMethod.create(builder.build());
+
+        }catch (StripeException e) {
+            System.out.println(e.toString());
+            throw new RuntimeException();
+        }
     }
 }

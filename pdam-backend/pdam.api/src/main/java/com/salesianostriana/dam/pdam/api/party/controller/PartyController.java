@@ -15,12 +15,14 @@ import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.PaymentIntent;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +53,9 @@ public class PartyController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("@eventService.authUser(#user)")
-    public ResponseEntity<GetPartyDto> create(@RequestBody NewPartyDto newPartyDto, @AuthenticationPrincipal User user){
+    @PreAuthorize("@eventService.authUser(#loggedUser)")
+    public ResponseEntity<GetPartyDto> create(@RequestBody NewPartyDto newPartyDto, @AuthenticationPrincipal User loggedUser){
+        User user = userService.getProfile(loggedUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(partyService.save(newPartyDto, user));
     }
 
@@ -61,9 +64,24 @@ public class PartyController {
 
         User user = userService.getProfile(loggedUser.getId());
         Party party = partyService.buy(id, user);
+        PaymentIntent paymentIntent = partyService.createStripe(party, user);
         partyService.setUpdatedPopularity(party.getDiscotheque());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(GetPartyDto.of(party));
+        return ResponseEntity.status(HttpStatus.CREATED).body(GetPartyDto.ofStripe(party, paymentIntent.getId()));
+    }
+
+    @PostMapping("/confirm/{id}")
+    public ResponseEntity<?> confirmBuy(@PathVariable String id, @AuthenticationPrincipal User loggedUser) {
+        User user = userService.getProfile(loggedUser.getId());
+
+        partyService.confirmStripe(id, user);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelBuy(@PathVariable String id) {
+        partyService.cancelStripe(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

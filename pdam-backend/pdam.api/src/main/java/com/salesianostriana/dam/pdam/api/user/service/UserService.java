@@ -20,7 +20,12 @@ import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.specifications.user.USBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.param.CustomerCreateParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -52,6 +57,9 @@ public class UserService {
     private final PostRepository postRepository;
     private final JavaMailSender javaMailSender;
 
+    @Value("${secret.stripe.key}")
+    private String stripeSecret;
+
     public GetPageDto<GetUserDto> findAll(List<SearchCriteria> params, Pageable pageable, User user){
         if (userRepository.findAll().isEmpty())
             throw new EmptyUserListException();
@@ -64,7 +72,8 @@ public class UserService {
         return new GetPageDto<>(pageGetClientDto);
     }
 
-    public User save(NewUserDto createUser, EnumSet<UserRole> roles) {
+    public User save(NewUserDto createUser, EnumSet<UserRole> roles, String customer_id) {
+
         User user =  User.builder()
                 .userName(createUser.getUsername())
                 .password(passwordEncoder.encode(createUser.getPassword()))
@@ -77,13 +86,29 @@ public class UserService {
                 .gender(genderRepository.findById(createUser.getGenderId()).orElseThrow(() -> new GenderNotFoundException(createUser.getGenderId())))
                 .createdAt(createUser.getCreatedAt())
                 .enabled(false)
+                .stripeCustomer_id(customer_id)
                 .build();
 
         return userRepository.save(user);
     }
 
-    public User createUser(NewUserDto createUserRequest) {
-        return save(createUserRequest, EnumSet.of(UserRole.USER));
+    public User createUser(NewUserDto createUserRequest, String customer_id) {
+        return save(createUserRequest, EnumSet.of(UserRole.USER), customer_id);
+    }
+
+    public Customer stripeCustomer(NewUserDto createUser) {
+        try {
+            Stripe.apiKey = stripeSecret;
+
+            CustomerCreateParams.Builder customer = new CustomerCreateParams.Builder()
+                    .setEmail(createUser.getEmail());
+
+            return Customer.create(customer.build());
+
+        }catch (StripeException e){
+            System.out.println(e.toString());
+            throw new RuntimeException();
+        }
     }
 
     public void emailSender(String toEmail, User user) throws MessagingException, IOException {

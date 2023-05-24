@@ -30,6 +30,8 @@ public class PaymentMethod {
     private String cvv;
     private boolean activeMethod;
 
+    private String stripe_id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userHolder", foreignKey = @ForeignKey(name = "FK_USER_PAYMENT_METHOD"))
     private User userHolder;

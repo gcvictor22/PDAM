@@ -19,6 +19,7 @@ import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.service.VerificationTokenService;
+import com.stripe.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -158,8 +159,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<GetUserDto> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException, IOException {
-        User user = userService.createUser(newUserDto);
+    public ResponseEntity<?> createUser(@Valid @RequestBody NewUserDto newUserDto) throws MessagingException, IOException {
+        Customer customer = userService.stripeCustomer(newUserDto);
+        User user = userService.createUser(newUserDto, customer.getId());
         verificationTokenService.generateVerificationToken(user);
         userService.emailSender(newUserDto.getEmail(), user);
 

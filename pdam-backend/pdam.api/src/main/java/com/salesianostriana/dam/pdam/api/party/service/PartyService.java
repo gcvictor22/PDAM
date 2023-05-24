@@ -4,8 +4,6 @@ import com.salesianostriana.dam.pdam.api.discotheque.model.Discotheque;
 import com.salesianostriana.dam.pdam.api.discotheque.repository.DiscothequeRepository;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.event.repository.EventRepository;
-import com.salesianostriana.dam.pdam.api.event.service.EventService;
-import com.salesianostriana.dam.pdam.api.exception.accesdenied.EventDeniedAccessException;
 import com.salesianostriana.dam.pdam.api.exception.empty.EmptyDiscothequeListException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.DiscothequeNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.PartyNotFoundException;
@@ -14,20 +12,23 @@ import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
 import com.salesianostriana.dam.pdam.api.party.dto.NewPartyDto;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.party.repository.PartyRepository;
-import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.payment.service.PaymentMethodService;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.search.specifications.post.PSBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentConfirmParams;
+import com.stripe.param.PaymentIntentCreateParams;
+import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,13 +39,11 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PartyService {
 
     private final PartyRepository partyRepository;
@@ -54,6 +53,9 @@ public class PartyService {
     private final PaymentMethodService paymentMethodService;
 
     private final JavaMailSender javaMailSender;
+
+    @Value("${secret.stripe.key}")
+    private String stripeSecret;
 
 
     public GetPageDto<GetPartyDto> findAll(List<SearchCriteria> params, Pageable pageable) {
@@ -146,6 +148,53 @@ public class PartyService {
         if (event.getCity().getUsersWhoLive().size() > 0){
             event.setPopularity(eventRepository.popularityCityEvent(event.getCity().getId(), event.getId()));
             eventRepository.save(event);
+        }
+    }
+
+    public PaymentIntent createStripe(Party party, User loggedUser) {
+        try {
+            Stripe.apiKey = stripeSecret;
+
+            PaymentIntentCreateParams.Builder builder = new PaymentIntentCreateParams.Builder()
+                    .setCurrency("eur")
+                    .setAmount((long) party.getPrice()*100)
+                    .setDescription(party.getName()+"\n\n"+party.getDescription())
+                    .setCustomer(loggedUser.getStripeCustomer_id())
+                    .setPaymentMethod(paymentMethodService.getActiveMethod(loggedUser).getStripe_id());
+
+            return PaymentIntent.create(builder.build());
+
+        }catch (StripeException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void confirmStripe(String id, User loggedUser) {
+        try {
+
+            Stripe.apiKey = stripeSecret;
+
+            PaymentIntent paymentIntent = PaymentIntent.retrieve(id);
+            PaymentIntentConfirmParams.Builder builder = new PaymentIntentConfirmParams.Builder()
+                    .setPaymentMethod(paymentMethodService.getActiveMethod(loggedUser).getStripe_id());
+
+            paymentIntent.confirm(builder.build());
+
+        } catch (StripeException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void cancelStripe(String id) {
+        try {
+
+            Stripe.apiKey = stripeSecret;
+
+            PaymentIntent.retrieve(id).cancel();
+
+        } catch (StripeException e) {
+
+            throw new RuntimeException();
         }
     }
 }

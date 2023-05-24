@@ -7,6 +7,7 @@ import com.salesianostriana.dam.pdam.api.payment.model.CardType;
 import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.payment.service.PaymentMethodService;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PaymentMethodController {
 
     private final PaymentMethodService paymentMethodService;
+    private final UserService userService;
 
 
     @GetMapping("/")
@@ -32,10 +34,13 @@ public class PaymentMethodController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<GetPaymentMethodDto> create(@Valid @RequestBody NewPaymentMethodDto newPaymentMethodDto, @AuthenticationPrincipal User user) {
-        PaymentMethod paymentMethod = paymentMethodService.create(newPaymentMethodDto, user);
+    public ResponseEntity<GetPaymentMethodDto> create(@Valid @RequestBody NewPaymentMethodDto newPaymentMethodDto, @AuthenticationPrincipal User loggedUser) {
+        User user = userService.getProfile(loggedUser.getId());
+        com.stripe.model.PaymentMethod pm = paymentMethodService.createPMStripe(newPaymentMethodDto, user);
+        pm.setCustomer(user.getStripeCustomer_id());
+        PaymentMethod paymentMethod = paymentMethodService.create(newPaymentMethodDto, user, pm.getId());
         if (paymentMethod.getType().equals(CardType.AMERICAN_EXPRESS) || paymentMethod.getNumber().length() == 15){
-            paymentMethod.setNumber("**** ****** *"+newPaymentMethodDto.getNumber().substring(11, 15));
+            paymentMethod.setNumber("**** ****** "+newPaymentMethodDto.getNumber().substring(10, 15));
         }else {
             paymentMethod.setNumber("**** **** **** "+newPaymentMethodDto.getNumber().substring(12, 16));
         }
