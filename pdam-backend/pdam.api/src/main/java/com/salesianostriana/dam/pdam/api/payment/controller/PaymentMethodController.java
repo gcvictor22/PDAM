@@ -8,6 +8,7 @@ import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.payment.service.PaymentMethodService;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.service.UserService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/payment")
 @RestController
@@ -34,10 +37,9 @@ public class PaymentMethodController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<GetPaymentMethodDto> create(@Valid @RequestBody NewPaymentMethodDto newPaymentMethodDto, @AuthenticationPrincipal User loggedUser) {
+    public ResponseEntity<GetPaymentMethodDto> create(@Valid @RequestBody NewPaymentMethodDto newPaymentMethodDto, @AuthenticationPrincipal User loggedUser) throws StripeException {
         User user = userService.getProfile(loggedUser.getId());
         com.stripe.model.PaymentMethod pm = paymentMethodService.createPMStripe(newPaymentMethodDto, user);
-        pm.setCustomer(user.getStripeCustomerId());
         PaymentMethod paymentMethod = paymentMethodService.create(newPaymentMethodDto, user, pm.getId());
         if (paymentMethod.getType().equals(CardType.AMERICAN_EXPRESS) || paymentMethod.getNumber().length() == 15){
             paymentMethod.setNumber("**** ****** "+newPaymentMethodDto.getNumber().substring(10, 15));

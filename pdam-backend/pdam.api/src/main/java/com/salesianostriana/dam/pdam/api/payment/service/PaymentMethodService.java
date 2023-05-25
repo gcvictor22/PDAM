@@ -112,19 +112,6 @@ public class PaymentMethodService {
         try {
             Stripe.apiKey = stripeSecret;
 
-/*
-            Map<String, Object> card = new HashMap<>();
-            card.put("number", paymentMethod.getNumber());
-            card.put("exp_month", Integer.parseInt(paymentMethod.getExpiredDate().split("/")[0]));
-            card.put("exp_year", Integer.parseInt(paymentMethod.getExpiredDate().split("/")[1]));
-            card.put("cvc", paymentMethod.getCvv());
-            card.put("customer", loggedUser.getStripeCustomer_id());
-            Map<String, Object> params = new HashMap<>();
-            params.put("type", "card");
-            params.put("card", card);
-
-            return com.stripe.model.PaymentMethod.create(params);
- */
             PaymentMethodCreateParams.Builder builder = new PaymentMethodCreateParams.Builder()
                     .setType(PaymentMethodCreateParams.Type.CARD)
                     .setCard(PaymentMethodCreateParams.CardDetails.builder()
@@ -134,11 +121,17 @@ public class PaymentMethodService {
                             .setCvc(paymentMethod.getCvv())
                             .build());
 
-            return com.stripe.model.PaymentMethod.create(builder.build());
+            com.stripe.model.PaymentMethod pm = com.stripe.model.PaymentMethod.create(builder.build());
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("customer", loggedUser.getStripeCustomerId());
+
+            pm.attach(params);
+
+            return pm;
 
         }catch (StripeException e) {
-            System.out.println(e.toString());
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

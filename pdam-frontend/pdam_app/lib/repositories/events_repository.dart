@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
+import 'package:pdam_app/models/event/GetPartiesResponse.dart';
 
 import '../config/locator.dart';
 import '../rest/rest_client.dart';
@@ -58,5 +59,29 @@ class EventRepository {
     }
 
     return GetEventDtoResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> findAllDiscothequeParties(int id, int it) async {
+    String url = "/party/$id?page=$it";
+
+    var response = await _client.get(url);
+    return GetPartiesResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> buyParty(int id) async {
+    String url = "/party/buy/$id";
+
+    var response = await _client.post(url);
+    return GetPartyDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> confirmPartyBuy(String stripeId) async {
+    String url = "/party/confirm/$stripeId";
+    await _client.post(url);
+  }
+
+  Future<dynamic> cancelPartyBuy(String stripeId) async {
+    String url = "/party/cancel/$stripeId";
+    await _client.post(url);
   }
 }

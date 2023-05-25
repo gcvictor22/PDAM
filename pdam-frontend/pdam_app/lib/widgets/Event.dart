@@ -4,35 +4,42 @@ import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
+import 'package:pdam_app/pages/parties_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../rest/rest_client.dart';
 
 class Event extends StatelessWidget {
   final GetEventDto event;
-  const Event({super.key, required this.event});
+  final int type;
+  const Event({super.key, required this.event, required this.type});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 15, top: 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
+    return GestureDetector(
+      onTap: () {
+        if (type == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => PartiesPage(id: event.id, name: event.name),
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 15, top: 0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+          border: Border.all(
+            color: Color.fromRGBO(173, 29, 254, 1),
+          ),
         ),
-        border: Border.all(
-          color: Color.fromRGBO(173, 29, 254, 1),
-        ),
-      ),
-      width: double.infinity,
-      padding: EdgeInsets.all(15),
-      child: TextButton(
-        style: ButtonStyle(
-          splashFactory: NoSplash.splashFactory,
-          overlayColor: MaterialStatePropertyAll(Colors.transparent),
-        ),
-        onPressed: () => print(event.id),
+        width: double.infinity,
+        padding: EdgeInsets.all(15),
         child: Column(
           children: [
             Center(

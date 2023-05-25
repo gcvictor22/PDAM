@@ -190,6 +190,7 @@ class _FollowsAndFollowersListState extends State<FollowsAndFollowersList>
             widget.state.follows.isNotEmpty
                 ? ListView.builder(
                     itemCount: widget.state.follows.length,
+                    controller: _scrollController,
                     itemBuilder: (context, index) {
                       return FollowsAndFollowers(
                         user: widget.state.follows[index],
@@ -206,6 +207,7 @@ class _FollowsAndFollowersListState extends State<FollowsAndFollowersList>
                   ),
             widget.state.followers.isNotEmpty
                 ? ListView.builder(
+                    controller: _scrollControllerF,
                     itemCount: widget.state.followers.length,
                     itemBuilder: (context, index) {
                       return FollowsAndFollowers(

@@ -4,7 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pdam_app/blocs/events/events_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/services/event_service.dart';
-import 'package:pdam_app/widgets/Discotheque.dart';
+import 'package:pdam_app/widgets/Event.dart';
 
 import '../widgets/BottomLoader.dart';
 import '../widgets/EmptyListMessage.dart';
@@ -208,7 +208,7 @@ class _EventsListState extends State<EventsList>
                           height: MediaQuery.of(context).size.height,
                           padding: EdgeInsets.only(left: 20, right: 20),
                           child: RefreshWidget(
-                            onRefresh: () => loadlistF(),
+                            onRefresh: () => loadlistD(),
                             scrollController: _scrollControllerD,
                             child: ListView.builder(
                               shrinkWrap: true,
@@ -220,9 +220,12 @@ class _EventsListState extends State<EventsList>
                                   children: [
                                     index >= widget.state.discotheques.length
                                         ? const BottomLoader()
-                                        : Event(
-                                            event: widget
-                                                .state.discotheques[index]),
+                                        : GestureDetector(
+                                            child: Event(
+                                                type: 1,
+                                                event: widget
+                                                    .state.discotheques[index]),
+                                          ),
                                     index ==
                                             widget.state.discotheques.length - 1
                                         ? SizedBox(
@@ -268,6 +271,7 @@ class _EventsListState extends State<EventsList>
                                     index >= widget.state.festivals.length
                                         ? const BottomLoader()
                                         : Event(
+                                            type: 2,
                                             event:
                                                 widget.state.festivals[index]),
                                     index == widget.state.festivals.length - 1
@@ -301,7 +305,7 @@ class _EventsListState extends State<EventsList>
                           height: MediaQuery.of(context).size.height,
                           padding: EdgeInsets.only(left: 20, right: 20),
                           child: RefreshWidget(
-                            onRefresh: () => loadlistF(),
+                            onRefresh: () => loadlistA(),
                             scrollController: _scrollControllerA,
                             child: ListView.builder(
                               shrinkWrap: true,
@@ -314,6 +318,11 @@ class _EventsListState extends State<EventsList>
                                     index >= widget.state.events.length
                                         ? const BottomLoader()
                                         : Event(
+                                            type: widget.state.events[index]
+                                                        .type ==
+                                                    "[DISCOTHEQUE]"
+                                                ? 1
+                                                : 2,
                                             event: widget.state.events[index]),
                                     index == widget.state.events.length - 1
                                         ? SizedBox(

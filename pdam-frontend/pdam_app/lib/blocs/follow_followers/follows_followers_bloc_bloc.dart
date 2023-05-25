@@ -97,6 +97,8 @@ class FollowsFollowersBloc
                   follows: List.of(fetchedFollows)..addAll(response.content),
                   followers: fetchedFollowers)),
               hasReachedMax = response.last,
+              fetchedFollows = List.of(fetchedFollows)
+                ..addAll(response.content),
               if (response.last != true) it += 1
             };
     }
@@ -116,6 +118,8 @@ class FollowsFollowersBloc
                   followers: List.of(fetchedFollowers)
                     ..addAll(responseF.content))),
               hasReachedMaxF = responseF.last,
+              fetchedFollowers = List.of(fetchedFollowers)
+                ..addAll(responseF.content),
               if (responseF.last != true) itF += 1
             };
     }

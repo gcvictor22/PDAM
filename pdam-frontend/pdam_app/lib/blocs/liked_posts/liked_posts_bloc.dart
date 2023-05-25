@@ -69,6 +69,7 @@ class LikedPostsBloc extends Bloc<LikedPostsEvent, LikedPostsState> {
                 ),
               ),
               hasReachedMax = response.last,
+              fetchedPosts = List.of(fetchedPosts)..addAll(response.content),
               if (response.last != true) it += 1
             };
     }

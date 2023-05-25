@@ -42,13 +42,11 @@ public class PartyController {
     private final UserService userService;
     private final EventService eventService;
 
-    @GetMapping("/")
-    public GetPageDto<GetPartyDto> findAll(
-            @RequestParam(value = "s", defaultValue = "") String search,
+    @GetMapping("/{id}")
+    public GetPageDto<GetPartyDto> findAll(@PathVariable Long id,
             @PageableDefault(size = 20, page = 0) Pageable pageable){
 
-        List<SearchCriteria> params = Extractor.extractSearchCriteriaList(search);
-        return partyService.findAll(params, pageable);
+        return partyService.findAll(pageable, id);
 
     }
 
@@ -71,7 +69,7 @@ public class PartyController {
     }
 
     @PostMapping("/confirm/{id}")
-    public ResponseEntity<?> confirmBuy(@PathVariable String id, @AuthenticationPrincipal User loggedUser) {
+    public ResponseEntity<?> confirmBuy(@PathVariable String id, @AuthenticationPrincipal User loggedUser) throws MessagingException, IOException {
         User user = userService.getProfile(loggedUser.getId());
 
         partyService.confirmStripe(id, user);

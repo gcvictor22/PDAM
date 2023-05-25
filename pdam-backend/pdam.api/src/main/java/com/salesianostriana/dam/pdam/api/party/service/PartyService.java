@@ -40,6 +40,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -58,15 +59,10 @@ public class PartyService {
     private String stripeSecret;
 
 
-    public GetPageDto<GetPartyDto> findAll(List<SearchCriteria> params, Pageable pageable) {
+    public GetPageDto<GetPartyDto> findAll(Pageable pageable, Long id) {
+        Discotheque discotheque = discothequeRepository.findById(id).orElseThrow(() -> new DiscothequeNotFoundException(id));
 
-        if (discothequeRepository.findAll().isEmpty())
-            throw new EmptyDiscothequeListException();
-
-        PSBuilder psBuilder = new PSBuilder(params);
-
-        Specification<Post> spec = psBuilder.build();
-        Page<GetPartyDto> getListDto = partyRepository.findAll(spec, pageable).map(GetPartyDto::of);
+        Page<GetPartyDto> getListDto = partyRepository.findAllPartiesByDiscothequeId(id, pageable, LocalDateTime.now()).map(GetPartyDto::of);
 
         return new GetPageDto<>(getListDto);
 
@@ -86,6 +82,7 @@ public class PartyService {
                 .price(newPartyDto.getPrice())
                 .drinkIncluded(newPartyDto.isDrinkIncluded())
                 .numberOfDrinks(newPartyDto.getNumberOfDrinks())
+                .imgPath("default-events.png")
                 .build();
 
         partyRepository.save(party);
@@ -95,7 +92,7 @@ public class PartyService {
         return GetPartyDto.of(party);
     }
 
-    public Party buy(Long id, User loggedUser) throws MessagingException, IOException {
+    public Party buy(Long id, User loggedUser) {
         Party party = partyRepository.findById(id).orElseThrow(() -> new PartyNotFoundException(id));
         Event event = party.getDiscotheque();
 
@@ -106,40 +103,6 @@ public class PartyService {
 
         eventRepository.save(event);
         userRepository.save(loggedUser);
-
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        PDDocument document = new PDDocument();
-        PDPage page = new PDPage();
-        document.addPage(page);
-
-        PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        contentStream.beginText();
-        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
-        contentStream.newLineAtOffset(100, 700);
-        contentStream.showText("Metodo de pago activo: "+paymentMethodService.getActiveMethod(loggedUser).getNumber());
-        contentStream.endText();
-        contentStream.close();
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        document.save(outputStream);
-        document.close();
-
-        helper.setFrom("no.reply.dyscotkeo@gmail.com");
-        helper.setTo(loggedUser.getEmail());
-        message.setSubject("¡Compra realizada con éxito "+loggedUser.getUsername()+"!");
-
-        javax.mail.internet.MimeBodyPart attachment = new javax.mail.internet.MimeBodyPart();
-        attachment.setContent(outputStream.toByteArray(), "application/pdf");
-        attachment.setFileName("example.pdf");
-
-        javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
-        multipart.addBodyPart(attachment);
-
-        message.setContent(multipart);
-
-        javaMailSender.send(message);
 
         return  partyRepository.save(party);
     }
@@ -165,11 +128,11 @@ public class PartyService {
             return PaymentIntent.create(builder.build());
 
         }catch (StripeException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
-    public void confirmStripe(String id, User loggedUser) {
+    public void confirmStripe(String id, User loggedUser) throws IOException, MessagingException {
         try {
 
             Stripe.apiKey = stripeSecret;
@@ -180,8 +143,44 @@ public class PartyService {
 
             paymentIntent.confirm(builder.build());
 
+            ////////////////////////////////////////////////
+
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            contentStream.newLineAtOffset(100, 700);
+            contentStream.showText("Metodo de pago activo: "+paymentMethodService.getActiveMethod(loggedUser).getNumber());
+            contentStream.endText();
+            contentStream.close();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            document.save(outputStream);
+            document.close();
+
+            helper.setFrom("no.reply.dyscotkeo@gmail.com");
+            helper.setTo(loggedUser.getEmail());
+            message.setSubject("¡Compra realizada con éxito "+loggedUser.getUsername()+"!");
+
+            javax.mail.internet.MimeBodyPart attachment = new javax.mail.internet.MimeBodyPart();
+            attachment.setContent(outputStream.toByteArray(), "application/pdf");
+            attachment.setFileName("example.pdf");
+
+            javax.mail.internet.MimeMultipart multipart = new javax.mail.internet.MimeMultipart();
+            multipart.addBodyPart(attachment);
+
+            message.setContent(multipart);
+
+            javaMailSender.send(message);
+
         } catch (StripeException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.pdam.api.party.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,13 +20,19 @@ public class GetPartyDto {
     private String description;
     private String discotheque;
     private int remainingTickets;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime startAt;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime endsAt;
+
     private boolean adult;
     private double price;
     private boolean drinkIncluded;
     private int numberOfDrinks;
-    private String payment_id;
+    private String imgPath;
+    private String paymentId;
 
     public static GetPartyDto of(Party party){
         return GetPartyDto.builder()
@@ -40,9 +47,10 @@ public class GetPartyDto {
                 .price(party.getPrice())
                 .drinkIncluded(party.isDrinkIncluded())
                 .numberOfDrinks(party.getNumberOfDrinks())
+                .imgPath(party.getImgPath())
                 .build();
     }
-    public static GetPartyDto ofStripe(Party party, String payment_id){
+    public static GetPartyDto ofStripe(Party party, String paymentId){
         return GetPartyDto.builder()
                 .id(party.getId())
                 .name(party.getName())
@@ -55,7 +63,8 @@ public class GetPartyDto {
                 .price(party.getPrice())
                 .drinkIncluded(party.isDrinkIncluded())
                 .numberOfDrinks(party.getNumberOfDrinks())
-                .payment_id(payment_id)
+                .imgPath(party.getImgPath())
+                .paymentId(paymentId)
                 .build();
     }
 
