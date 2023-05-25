@@ -13,6 +13,7 @@ import 'package:pdam_app/models/user/GetUserResponse.dart';
 import 'package:pdam_app/models/user/user.dart';
 
 import '../config/locator.dart';
+import '../models/post/GetPostDtoResponse.dart';
 import '../rest/rest_client.dart';
 
 @Order(-1)
@@ -147,5 +148,16 @@ class UserRepository {
 
     var response = await _client.put(url);
     return GetPaymentMethodDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> getLikedPosts(String id, int it) async {
+    String url = "/user/likedPosts/$id?page=$it";
+
+    var response = await _client.get(url);
+    return GetPostDtoResponse.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> deleteAccount() async {
+    await _client.delete("/user/delete");
   }
 }

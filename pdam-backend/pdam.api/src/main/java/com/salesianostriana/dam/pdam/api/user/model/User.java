@@ -124,7 +124,7 @@ public class User implements UserDetails {
     @Builder.Default
     private List<Party> parties = new ArrayList<>();
 
-    private String stripeCustomer_id;
+    private String stripeCustomerId;
 
     @Builder.Default
     private boolean accountNonExpired = true;

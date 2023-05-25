@@ -5,6 +5,8 @@ import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/blocs/user_details/user_details_bloc.dart';
 import 'package:pdam_app/pages/edit_profile_page.dart';
 import 'package:pdam_app/pages/follows_and_followers.dart';
+import 'package:pdam_app/pages/liked_posts_page.dart';
+import 'package:pdam_app/widgets/EmptyListMessage.dart';
 import 'package:pdam_app/widgets/Post.dart';
 
 import '../models/post/GetPostDto.dart';
@@ -261,27 +263,34 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: Colors.grey)),
-                ),
-                padding: EdgeInsets.fromLTRB(30, 5, 5, 5),
-                child: Row(
-                  children: [
-                    Text(
-                      "Favoritos",
-                      style: TextStyle(
-                        fontSize: 20,
+              GestureDetector(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LikedPostsPage(id: widget.profile.id!),
+                    )),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(left: BorderSide(color: Colors.grey)),
+                  ),
+                  padding: EdgeInsets.fromLTRB(30, 5, 5, 5),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Favoritos",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 17,
-                    )
-                  ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 17,
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -291,19 +300,26 @@ class _UserProfileState extends State<UserProfile> {
             border: Border(bottom: BorderSide(color: Colors.grey)),
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: widget.posts.length,
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
-            itemBuilder: (context, index) {
-              return Post(
-                  num: widget.num == 3 ? 3 : 2,
-                  post: widget.posts[index],
-                  context: context);
-            },
-          ),
-        )
+        widget.posts.isNotEmpty
+            ? Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: widget.posts.length,
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+                  itemBuilder: (context, index) {
+                    return Post(
+                        num: widget.num == 3 ? 3 : 2,
+                        post: widget.posts[index],
+                        context: context);
+                  },
+                ),
+              )
+            : Container(
+                margin: EdgeInsets.fromLTRB(40, 150, 40, 0),
+                child: EmptyListMessage(
+                    message:
+                        "${widget.profile.userName} todavía no ha publicado nada..."),
+              )
       ],
     );
   }

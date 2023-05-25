@@ -37,7 +37,7 @@ public class PaymentMethodController {
     public ResponseEntity<GetPaymentMethodDto> create(@Valid @RequestBody NewPaymentMethodDto newPaymentMethodDto, @AuthenticationPrincipal User loggedUser) {
         User user = userService.getProfile(loggedUser.getId());
         com.stripe.model.PaymentMethod pm = paymentMethodService.createPMStripe(newPaymentMethodDto, user);
-        pm.setCustomer(user.getStripeCustomer_id());
+        pm.setCustomer(user.getStripeCustomerId());
         PaymentMethod paymentMethod = paymentMethodService.create(newPaymentMethodDto, user, pm.getId());
         if (paymentMethod.getType().equals(CardType.AMERICAN_EXPRESS) || paymentMethod.getNumber().length() == 15){
             paymentMethod.setNumber("**** ****** "+newPaymentMethodDto.getNumber().substring(10, 15));

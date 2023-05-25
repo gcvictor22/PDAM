@@ -159,7 +159,7 @@ public class PartyService {
                     .setCurrency("eur")
                     .setAmount((long) party.getPrice()*100)
                     .setDescription(party.getName()+"\n\n"+party.getDescription())
-                    .setCustomer(loggedUser.getStripeCustomer_id())
+                    .setCustomer(loggedUser.getStripeCustomerId())
                     .setPaymentMethod(paymentMethodService.getActiveMethod(loggedUser).getStripe_id());
 
             return PaymentIntent.create(builder.build());

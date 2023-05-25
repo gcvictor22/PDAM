@@ -8,6 +8,7 @@ import 'package:pdam_app/models/user/GetUserResponse.dart';
 import 'package:pdam_app/repositories/user_repository.dart';
 
 import '../config/locator.dart';
+import '../models/post/GetPostDtoResponse.dart';
 import 'localstorage_service.dart';
 
 @Order(2)
@@ -175,5 +176,19 @@ class UserService {
       return response;
     }
     throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> getUserLikedPosts(String id, int it) async {
+    String? token = await _localStorageService.getFromDisk("user_token");
+
+    if (token != null) {
+      GetPostDtoResponse response = await _userRepository.getLikedPosts(id, it);
+      return response;
+    }
+    throw new Exception("Ha ocurrido un error en el servicio");
+  }
+
+  Future<dynamic> deleteAccount() async {
+    await _userRepository.deleteAccount();
   }
 }

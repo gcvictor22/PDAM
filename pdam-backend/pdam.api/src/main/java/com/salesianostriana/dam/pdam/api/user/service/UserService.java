@@ -10,6 +10,7 @@ import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordE
 import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRepository;
 import com.salesianostriana.dam.pdam.api.user.dto.*;
 import com.salesianostriana.dam.pdam.api.user.model.User;
@@ -86,7 +87,7 @@ public class UserService {
                 .gender(genderRepository.findById(createUser.getGenderId()).orElseThrow(() -> new GenderNotFoundException(createUser.getGenderId())))
                 .createdAt(createUser.getCreatedAt())
                 .enabled(false)
-                .stripeCustomer_id(customer_id)
+                .stripeCustomerId(customer_id)
                 .build();
 
         return userRepository.save(user);
@@ -162,6 +163,7 @@ public class UserService {
         return userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
     }
 
+    @Transactional
     public void deleteById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         refreshTokenRepository.deleteByUser(user);

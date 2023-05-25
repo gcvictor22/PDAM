@@ -85,4 +85,8 @@ class EditProfileFormBloc extends FormBloc<String, String> {
       // ignore: invalid_return_type_for_catch_error
     }).catchError((er) => print(er));
   }
+
+  Future<dynamic> deleteAccount() async {
+    _userService.deleteAccount();
+  }
 }

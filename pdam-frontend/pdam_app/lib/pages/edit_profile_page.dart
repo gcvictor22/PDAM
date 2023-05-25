@@ -452,11 +452,76 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
               SpaceLine(color: Colors.red.shade900),
               SizedBox(
                 height: 40,
+              ),
+              GestureDetector(
+                onTap: () => showCupertinoDialog(
+                  context: context,
+                  builder: createDialogDeleteAccount,
+                  barrierDismissible: true,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.red.shade900,
+                      borderRadius: BorderRadius.circular(40)),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Eliminar cuenta",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                      Icon(Icons.arrow_forward_ios, color: Colors.white)
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 40,
               )
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget createDialogDeleteAccount(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+    return CupertinoAlertDialog(
+      title: Text(
+        "Alerta",
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+          "¿Estás seguro que quires eliminar tu cuenta? Una vez que lo hagas no podrás recuperar tu cuenta."),
+      actions: [
+        CupertinoDialogAction(
+          child: Text("Cancelar"),
+          onPressed: () => Navigator.pop(context),
+        ),
+        CupertinoDialogAction(
+          child: Text("Eliminar cuenta"),
+          onPressed: () {
+            widget.formBloc.deleteAccount().then((value) {
+              authBloc.add(UserLoggedOut());
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => MyApp(),
+                ),
+              );
+            });
+          },
+          isDestructiveAction: true,
+        ),
+      ],
     );
   }
 }

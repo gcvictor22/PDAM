@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
+import 'package:pdam_app/blocs/liked_posts/liked_posts_bloc.dart';
 import 'package:pdam_app/blocs/profile/profile_bloc.dart';
 import 'package:pdam_app/blocs/user_details/user_details_bloc.dart';
 import 'package:pdam_app/pages/user_details_page.dart';
@@ -249,6 +250,8 @@ class _PostState extends State<Post> {
                           return like(widget.post, isLiked);
                         case 3:
                           return like3(widget.post, isLiked);
+                        case 4:
+                          return like4(widget.post, isLiked);
                         default:
                           return like2(widget.post, isLiked);
                       }
@@ -322,6 +325,11 @@ class _PostState extends State<Post> {
     widget.context
         .read<UserDetailsBloc>()
         .add(UserDetailsLikeAPost(id: post.id));
+    return !bool;
+  }
+
+  Future<bool> like4(GetPostDto post, bool bool) async {
+    widget.context.read<LikedPostsBloc>().add(LikedPostsLikeEvent(id: post.id));
     return !bool;
   }
 
