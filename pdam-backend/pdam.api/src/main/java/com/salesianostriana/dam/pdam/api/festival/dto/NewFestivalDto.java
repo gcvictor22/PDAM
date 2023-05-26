@@ -21,7 +21,7 @@ public class NewFestivalDto {
     private int capacity;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private LocalDateTime date;
+    private LocalDateTime dateTime;
 
     private int duration;
     private double price;

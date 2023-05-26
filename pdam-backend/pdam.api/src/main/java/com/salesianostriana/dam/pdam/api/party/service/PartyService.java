@@ -121,7 +121,7 @@ public class PartyService {
             PaymentIntentCreateParams.Builder builder = new PaymentIntentCreateParams.Builder()
                     .setCurrency("eur")
                     .setAmount((long) party.getPrice()*100)
-                    .setDescription(party.getName()+"\n\n"+party.getDescription())
+                    .setDescription(party.getName()+" // "+party.getDescription())
                     .setCustomer(loggedUser.getStripeCustomerId())
                     .setPaymentMethod(paymentMethodService.getActiveMethod(loggedUser).getStripe_id());
 

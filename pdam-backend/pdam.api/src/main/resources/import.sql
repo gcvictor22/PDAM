@@ -105,5 +105,6 @@ insert into payment_method (id, number, holder, cvv, expired_date, active_method
 insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (78, '378282246310005', 'Agencia Tributaria', '7894', '07/23', true, '74002906-c609-5b6b-9acf-177f11e48261', 'AMERICAN_EXPRESS');
 insert into payment_method (id, number, holder, cvv, expired_date, active_method, user_holder, type) values (79, '6011111111111117', 'Miguel Campos', '234', '09/27', false, '74002906-c609-5b6b-9acf-177f11e48261', 'DISCOVER');
 
+insert into attendedevents (user_id, event_id) values ('74002906-c609-5b6b-9acf-177f11e48261', 71);
 
 alter sequence hibernate_sequence restart with 80

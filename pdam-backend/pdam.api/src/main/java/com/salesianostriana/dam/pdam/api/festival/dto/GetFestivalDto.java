@@ -2,6 +2,7 @@ package com.salesianostriana.dam.pdam.api.festival.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.dam.pdam.api.festival.model.Festival;
+import com.stripe.model.PaymentIntent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class GetFestivalDto {
     private boolean drinkIncluded;
     private int numberOfDrinks;
     private boolean adult;
+    private String stripeId;
 
     public static GetFestivalDto of(Festival festival) {
 
@@ -46,6 +48,24 @@ public class GetFestivalDto {
                 .drinkIncluded(festival.isDrinkIncluded())
                 .numberOfDrinks(festival.getNumberOfDrinks())
                 .adult(festival.isAdult())
+                .build();
+    }
+
+    public static GetFestivalDto ofStripe(Festival festival, String stripeId) {
+        return GetFestivalDto.builder()
+                .id(festival.getId())
+                .description(festival.getDescription())
+                .name(festival.getName())
+                .location(festival.getLocation())
+                .date(festival.getDateTime())
+                .duration(festival.getDuration())
+                .remainingTickets(festival.getCapacity()-festival.getClients().size())
+                .city(festival.getCity().getName())
+                .price(festival.getPrice())
+                .drinkIncluded(festival.isDrinkIncluded())
+                .numberOfDrinks(festival.getNumberOfDrinks())
+                .adult(festival.isAdult())
+                .stripeId(stripeId)
                 .build();
     }
 }
