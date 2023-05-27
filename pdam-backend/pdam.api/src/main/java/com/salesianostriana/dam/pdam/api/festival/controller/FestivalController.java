@@ -24,6 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -45,6 +46,11 @@ public class FestivalController {
         return festivalService.findAll(params, pageable);
     }
 
+    @GetMapping("/{id}")
+    public GetFestivalDto findOne(@PathVariable Long id) {
+        return GetFestivalDto.of(festivalService.findById(id));
+    }
+
     @PostMapping("/")
     public ResponseEntity<GetEventDto> create(@RequestBody NewFestivalDto newFestivalDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(festivalService.save(newFestivalDto));
@@ -54,9 +60,17 @@ public class FestivalController {
     public ResponseEntity<?> buyFestival(@PathVariable Long id, @AuthenticationPrincipal User loggedUser) {
         User user = userService.getProfile(loggedUser.getId());
         Festival festival = festivalService.buy(id, user);
-        PaymentIntent paymentIntent = festivalService.createStripe(festival, user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(GetFestivalDto.ofStripe(festival, paymentIntent.getId()));
+        if (!user.getPaymentMethods().isEmpty() || festival.getCapacity() < festival.getClients().size()) {
+            PaymentIntent paymentIntent = festivalService.createStripe(festival, user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(GetFestivalDto.ofStripe(festival, paymentIntent.getId()));
+        }else {
+            if (user.getPaymentMethods().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EntityNotFoundException("No tienes ningún método de pago"));
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EntityNotFoundException("No quedan entradas disponibles para este festival"));
+            }
+        }
     }
 
     @PostMapping("/confirm/{id}")
@@ -71,13 +85,5 @@ public class FestivalController {
     public ResponseEntity<?> cancelBuy(@PathVariable String id) {
         festivalService.cancelStripe(id);
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PostMapping("/bill")
-    public ResponseEntity<?> sendBill(@AuthenticationPrincipal User loggedUser) throws IOException, WriterException, MessagingException {
-        User user = userService.getProfile(loggedUser.getId());
-
-        festivalService.confirmStripe("qonnino", user);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

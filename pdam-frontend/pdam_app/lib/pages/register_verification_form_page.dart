@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:pdam_app/blocs/register_form/regirter_verification_form_bloc.dart';
-import 'package:pdam_app/main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
+import '../widgets/Messages.dart';
 
 class RegisterVerfificarionPage extends StatelessWidget {
   final String userName;
@@ -32,24 +33,18 @@ class RegisterVerfificarionPage extends StatelessWidget {
                 child: FormBlocListener<RegisterVerificationFormBloc, String,
                         String>(
                     onSuccess: (context, state) {
-                      showOk(context);
-                      Future.delayed(Duration(seconds: 3)).then((value) => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) {
-                                  return MyApp();
-                                },
-                              ),
-                            ),
-                          });
+                      showOk(context,
+                          "Te has registrado correctamente, ya puedes iniciar sesión");
+
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     onLoading: (context, state) {
                       const CircularProgressIndicator();
                     },
                     onSubmitting: (context, state) {},
                     onFailure: (context, state) {
-                      showError(context);
+                      showError(context,
+                          "Ha ocurrido un error a la hora de verificar tu email");
                     },
                     child: _RegisterVerificationPageSF(
                         formBloc: formBloc, userName: userName)),
@@ -172,100 +167,4 @@ class _RegisterVerificationPageSFState
       ),
     ));
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Error",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Ha ocurrido un error a la hora de verificar el token. Intentelo de nuevo.",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "¡Bienvenido!",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Te has registrado correctamente, ya puedes iniciar sesión",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
 }

@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.payment.service;
 
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
+import com.salesianostriana.dam.pdam.api.exception.stripe.StripeBadRequestException;
 import com.salesianostriana.dam.pdam.api.payment.dto.GetPaymentMethodDto;
 import com.salesianostriana.dam.pdam.api.payment.dto.NewPaymentMethodDto;
 import com.salesianostriana.dam.pdam.api.payment.model.CardType;
@@ -131,7 +132,7 @@ public class PaymentMethodService {
             return pm;
 
         }catch (StripeException e) {
-            throw new RuntimeException(e);
+            throw new StripeBadRequestException();
         }
     }
 }

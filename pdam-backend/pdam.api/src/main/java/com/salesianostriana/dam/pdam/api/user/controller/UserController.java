@@ -130,9 +130,10 @@ public class UserController {
     }
 
     @GetMapping("/likedPosts/{id}")
-    public GetPageDto<GetPostDto> getLikedPosts(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable){
+    public GetPageDto<GetPostDto> getLikedPosts(@PathVariable UUID id, @PageableDefault(size = 20, page = 0) Pageable pageable, @AuthenticationPrincipal User loggedUser){
         User user = userService.getProfile(id);
-        return userService.getLikedPosts(user, pageable);
+        loggedUser = userService.getProfile(loggedUser.getId());
+        return userService.getLikedPosts(user, pageable, loggedUser);
     }
 
     @PostMapping("/login")

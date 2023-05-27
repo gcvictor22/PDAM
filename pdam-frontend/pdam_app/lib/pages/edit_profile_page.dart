@@ -18,6 +18,7 @@ import 'package:pdam_app/widgets/SpaceLine.dart';
 import '../config/locator.dart';
 import '../rest/rest_client.dart';
 import '../widgets/Loading.dart';
+import '../widgets/Messages.dart';
 
 class SettingsPage extends StatelessWidget {
   final String fullName;
@@ -83,7 +84,8 @@ class SettingsPage extends StatelessWidget {
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
-                  showError(context);
+                  showError(context,
+                      "Ha ocurrido un error al intentar actualizar tu perfil");
                 },
                 child: SettingsPageSF(
                   formBloc: formBloc,
@@ -524,55 +526,6 @@ class _SettingsPageSFState extends State<SettingsPageSF> {
       ],
     );
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Error",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Spacer(),
-                  Text(
-                    "Comprueba que todos los campos están rellenos con el formato esperado",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    ),
-  );
 }
 
 Widget createDialog(BuildContext context) {

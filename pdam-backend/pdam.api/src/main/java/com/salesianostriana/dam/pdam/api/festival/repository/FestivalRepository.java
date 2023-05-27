@@ -15,7 +15,7 @@ public interface FestivalRepository extends JpaRepository<Festival, Long>, JpaSp
             FROM Event e
             JOIN Festival d ON e.id = d.id
             WHERE TYPE(e) = Festival
-            ORDER BY d.popularity DESC
+            ORDER BY e.createdAt DESC
             """)
     Page<Festival> findAll(Specification<Festival> spec, Pageable pageable);
 }

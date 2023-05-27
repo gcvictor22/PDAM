@@ -9,6 +9,7 @@ import 'package:pdam_app/services/city_services.dart';
 
 import '../models/models.dart';
 import '../widgets/Loading.dart';
+import '../widgets/Messages.dart';
 
 class RegisterFormPage extends StatelessWidget {
   const RegisterFormPage({super.key});
@@ -65,7 +66,8 @@ class RegisterFormPage extends StatelessWidget {
                   },
                   onFailure: (context, state) {
                     LoadingDialog.hide(context);
-                    showError(context);
+                    showError(context,
+                        "Ha ocurrido un error, verifica que todos los datos son correctos");
                   },
                   child: RegisterFormPageSF(formBloc: formBloc)),
             ),
@@ -476,52 +478,4 @@ class _RegisterFormPageSFState extends State<RegisterFormPageSF> {
       ),
     );
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Error",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Comprueba que todos los campos están rellenos con el formato esperado",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
 }

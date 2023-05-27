@@ -6,6 +6,8 @@ import 'package:pdam_app/main.dart';
 import 'package:pdam_app/services/authentication_service.dart';
 import 'package:pdam_app/widgets/Loading.dart';
 
+import '../widgets/Messages.dart';
+
 class ChangeForgotPasswordPage extends StatelessWidget {
   final String userName;
   const ChangeForgotPasswordPage({super.key, required this.userName});
@@ -42,7 +44,8 @@ class ChangeForgotPasswordPage extends StatelessWidget {
                     FormBlocListener<ForgotPassworChangeBloc, String, String>(
                         onSuccess: (context, state) {
                           LoadingDialog.hide(context);
-                          showOk(context);
+                          showOk(context,
+                              "Tu contraseña se ha actualizado correctament, ya puedes volver a iniciar sesión");
                           Future.delayed(Duration(microseconds: 3000)).then(
                             (value) => Navigator.push(
                               context,
@@ -59,7 +62,8 @@ class ChangeForgotPasswordPage extends StatelessWidget {
                           LoadingDialog.show(context);
                         },
                         onFailure: (context, state) {
-                          showError(context);
+                          showError(context,
+                              "Ha ocurrido un error al intentar actualizar tu contraseña");
                         },
                         child: ChangeForgotPasswordPageSF(formBloc: formBloc)),
               ),
@@ -214,100 +218,4 @@ class ChangeForgotPasswordPageSFState
       )),
     );
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "¡Todo bien!",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Tu contraseña se ha actualizado con éxito",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Error",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Ha ocurrido un error a la hora de verificar el token. Intentelo de nuevo.",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
 }

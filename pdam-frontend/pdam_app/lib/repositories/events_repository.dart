@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:injectable/injectable.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
+import 'package:pdam_app/models/event/GetFestivalDto.dart';
 import 'package:pdam_app/models/event/GetPartiesResponse.dart';
 
 import '../config/locator.dart';
@@ -83,5 +84,28 @@ class EventRepository {
   Future<dynamic> cancelPartyBuy(String stripeId) async {
     String url = "/party/cancel/$stripeId";
     await _client.post(url);
+  }
+
+  Future<dynamic> buyFestival(int id) async {
+    String url = "/festival/buy/$id";
+
+    var response = await _client.post(url);
+    return GetFestivalDto.fromJson(jsonDecode(response));
+  }
+
+  Future<dynamic> confirmFestivalBuy(String stripeId) async {
+    String url = "/festival/confirm/$stripeId";
+    await _client.post(url);
+  }
+
+  Future<dynamic> cancelFestivalBuy(String stripeId) async {
+    String url = "/festival/cancel/$stripeId";
+    await _client.post(url);
+  }
+
+  Future<dynamic> findFestival(int id) async {
+    String url = "/festival/$id";
+    var response = await _client.get(url);
+    return GetFestivalDto.fromJson(jsonDecode(response));
   }
 }

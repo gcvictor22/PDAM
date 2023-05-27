@@ -46,12 +46,10 @@ class NewPaymentMethodBloc extends FormBloc<String, String> {
 
   @override
   FutureOr<void> onSubmitting() {
-    try {
-      _newPaymentMethod().then((value) {
-        emitSuccess();
-      });
-    } catch (e) {
+    _newPaymentMethod().then((value) {
+      emitSuccess();
+    }).catchError((onError) {
       emitFailure();
-    }
+    });
   }
 }

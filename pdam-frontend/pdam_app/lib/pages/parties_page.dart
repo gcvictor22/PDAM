@@ -125,13 +125,6 @@ class _PartiesPageListState extends State<PartiesPageList> {
               ),
             ],
           ),
-          leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
-          ),
         ),
         body: widget.state.parties.isNotEmpty
             ? ListView.builder(

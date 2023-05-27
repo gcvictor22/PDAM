@@ -17,7 +17,7 @@ public interface DiscothequeRepository extends JpaRepository<Discotheque, Long>,
             FROM Event e
             JOIN Discotheque d ON e.id = d.id
             WHERE TYPE(e) = Discotheque
-            ORDER BY d.popularity DESC
+            ORDER BY e.createdAt DESC
             """)
     Page<Discotheque> findAll(@Nullable Specification<Discotheque> spec, Pageable pageable);
 

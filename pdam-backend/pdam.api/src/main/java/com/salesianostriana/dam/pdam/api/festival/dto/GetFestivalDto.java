@@ -31,6 +31,7 @@ public class GetFestivalDto {
     private boolean drinkIncluded;
     private int numberOfDrinks;
     private boolean adult;
+    private String imgPath;
     private String stripeId;
 
     public static GetFestivalDto of(Festival festival) {
@@ -48,6 +49,7 @@ public class GetFestivalDto {
                 .drinkIncluded(festival.isDrinkIncluded())
                 .numberOfDrinks(festival.getNumberOfDrinks())
                 .adult(festival.isAdult())
+                .imgPath(festival.getImgPath())
                 .build();
     }
 

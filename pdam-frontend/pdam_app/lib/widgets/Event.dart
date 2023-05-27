@@ -4,6 +4,7 @@ import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdam_app/models/event/GetEventDtoReponse.dart';
+import 'package:pdam_app/pages/buy_festival_page.dart';
 import 'package:pdam_app/pages/parties_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,6 +24,13 @@ class Event extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (_) => PartiesPage(id: event.id, name: event.name),
+            ),
+          );
+        } else if (type == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BuyFestivalPage(id: event.id),
             ),
           );
         }

@@ -54,11 +54,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -106,9 +109,14 @@ public class FestivalService {
                 .adult(newFestivalDto.isAdult())
                 .type(EnumSet.of(EventType.FESTIVAL))
                 .imgPath("default-events.png")
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return GetEventDto.of(festivalRepository.save(festival));
+    }
+
+    public Festival findById(Long id) {
+        return festivalRepository.findById(id).orElseThrow(() -> new EventNotFoundException(id));
     }
 
     public Festival buy(Long id, User loggedUser) {
@@ -274,7 +282,7 @@ public class FestivalService {
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 12);
         contentStream.newLineAtOffset(startX, startYDatails - 60);
-        contentStream.showText(event.isDrinkIncluded() ? "Consumición/nes incluidas : "+String.valueOf(event.getNumberOfDrinks()) : "Sin consumición incluida");
+        contentStream.showText(event.isDrinkIncluded() ? "Consumición/nes incluidas: "+String.valueOf(event.getNumberOfDrinks()) : "Sin consumición incluida");
         contentStream.endText();
 
         contentStream.beginText();
@@ -297,6 +305,11 @@ public class FestivalService {
 
         /////////////////////////////////////////////////////////////////
 
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+        symbols.setDecimalSeparator('.');
+        symbols.setGroupingSeparator(',');
+        DecimalFormat decimalFormat = new DecimalFormat("#.##", symbols);
+
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 12);
         contentStream.newLineAtOffset(page.getMediaBox().getWidth() - textWidth - 50, startYDatails);
@@ -306,13 +319,13 @@ public class FestivalService {
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 12);
         contentStream.newLineAtOffset(page.getMediaBox().getWidth() - textWidth - 50, startYDatails - 20);
-        contentStream.showText("Precio: "+event.getPrice()*0.79+"€");
+        contentStream.showText("Precio: "+decimalFormat.format(event.getPrice() * 0.79)+"€");
         contentStream.endText();
 
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 12);
         contentStream.newLineAtOffset(page.getMediaBox().getWidth() - textWidth - 50, startYDatails - 40);
-        contentStream.showText("IVA: "+event.getPrice()*0.21+"€");
+        contentStream.showText("IVA: " + decimalFormat.format(event.getPrice() * 0.21) + "€");
         contentStream.endText();
 
         contentStream.beginText();
@@ -329,7 +342,7 @@ public class FestivalService {
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 15);
         contentStream.newLineAtOffset(page.getMediaBox().getWidth() - textWidth - 50, startYDatails - 110);
-        contentStream.showText(event.getPrice()+"€");
+        contentStream.showText(decimalFormat.format(event.getPrice())+"€");
         contentStream.endText();
 
         contentStream.beginText();

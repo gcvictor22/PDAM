@@ -5,55 +5,57 @@ import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/services/event_service.dart';
 import 'package:pdam_app/widgets/Loading.dart';
 
-class ConfirmPartyBuyPage extends StatelessWidget {
+class ConfirmFestivalBuyPage extends StatelessWidget {
   final String stripeId;
-  const ConfirmPartyBuyPage({super.key, required this.stripeId});
+  const ConfirmFestivalBuyPage({super.key, required this.stripeId});
 
   @override
   Widget build(BuildContext context) {
     EventService _eventService = getIt<EventService>();
     return BlocProvider(
       create: (context) => ConfirmBuyBloc(_eventService, stripeId),
-      child: ConfirmPartyBuyPageSF(),
+      child: ConfirmFestivalBuyPageSF(),
     );
   }
 }
 
-class ConfirmPartyBuyPageSF extends StatefulWidget {
-  const ConfirmPartyBuyPageSF({super.key});
+class ConfirmFestivalBuyPageSF extends StatefulWidget {
+  const ConfirmFestivalBuyPageSF({super.key});
 
   @override
-  State<ConfirmPartyBuyPageSF> createState() => _ConfirmPartyBuyPageSFState();
+  State<ConfirmFestivalBuyPageSF> createState() =>
+      _ConfirmFestivalBuyPageSFState();
 }
 
-class _ConfirmPartyBuyPageSFState extends State<ConfirmPartyBuyPageSF> {
+class _ConfirmFestivalBuyPageSFState extends State<ConfirmFestivalBuyPageSF> {
   @override
   Widget build(BuildContext context) {
     final formBloc = context.read<ConfirmBuyBloc>();
     return FormBlocListener<ConfirmBuyBloc, String, String>(
       onSuccess: (context, state) {
-        LoadingDialog.hide(context);
+        LoadingDialog.show(context);
         Navigator.of(context).popUntil((route) => route.isFirst);
       },
       onSubmitting: (context, state) {
         LoadingDialog.show(context);
       },
-      child: ConfirmPartyBuyWidget(
+      child: ConfirmFestivalBuyWidget(
         formBloc: formBloc,
       ),
     );
   }
 }
 
-class ConfirmPartyBuyWidget extends StatefulWidget {
+class ConfirmFestivalBuyWidget extends StatefulWidget {
   final ConfirmBuyBloc formBloc;
-  const ConfirmPartyBuyWidget({super.key, required this.formBloc});
+  const ConfirmFestivalBuyWidget({super.key, required this.formBloc});
 
   @override
-  State<ConfirmPartyBuyWidget> createState() => _ConfirmPartyBuyWidgetState();
+  State<ConfirmFestivalBuyWidget> createState() =>
+      _ConfirmFestivalBuyWidgetState();
 }
 
-class _ConfirmPartyBuyWidgetState extends State<ConfirmPartyBuyWidget> {
+class _ConfirmFestivalBuyWidgetState extends State<ConfirmFestivalBuyWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +114,7 @@ class _ConfirmPartyBuyWidgetState extends State<ConfirmPartyBuyWidget> {
                 child: Text('Confirmar compra',
                     style: TextStyle(color: Colors.white, fontSize: 25)),
                 onPressed: () {
-                  widget.formBloc.confirmPartyBuy();
+                  widget.formBloc.confirmFestivalBuy();
                 },
               ),
             ),
@@ -134,7 +136,7 @@ class _ConfirmPartyBuyWidgetState extends State<ConfirmPartyBuyWidget> {
                 child: Text('Cancelar compra',
                     style: TextStyle(color: Colors.white, fontSize: 25)),
                 onPressed: () {
-                  widget.formBloc.cancelPartyBuy();
+                  widget.formBloc.cancelFestivalBuy();
                 },
               ),
             )

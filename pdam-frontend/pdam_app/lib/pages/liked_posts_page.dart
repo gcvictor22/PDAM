@@ -1,4 +1,3 @@
-import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -8,7 +7,6 @@ import 'package:pdam_app/services/post_service.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/EmptyListMessage.dart';
 import 'package:pdam_app/widgets/Post.dart';
-import 'package:shimmer/shimmer.dart';
 
 class LikedPostsPage extends StatelessWidget {
   final String id;
@@ -106,19 +104,10 @@ class _LikedPostsListState extends State<LikedPostsList> {
                 padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 itemCount: widget.state.likedPosts.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Post(
-                        post: widget.state.likedPosts[index],
-                        context: context,
-                        num: 4,
-                      ),
-                      index == widget.state.likedPosts.length - 1
-                          ? SizedBox(
-                              height: 90,
-                            )
-                          : SizedBox(),
-                    ],
+                  return Post(
+                    post: widget.state.likedPosts[index],
+                    context: context,
+                    num: 4,
                   );
                 },
               )
@@ -126,39 +115,6 @@ class _LikedPostsListState extends State<LikedPostsList> {
                 margin: EdgeInsets.fromLTRB(40, 250, 40, 0),
                 child: EmptyListMessage(message: "Aquí no hay ningún post..."),
               ),
-        bottomNavigationBar: BlurryContainer(
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 34),
-          color: Colors.white.withOpacity(0.55),
-          borderRadius: BorderRadius.zero,
-          elevation: 6,
-          blur: 8,
-          child: GestureDetector(
-            onHorizontalDragEnd: (details) {
-              if (details.primaryVelocity! > 0) {
-                Navigator.pop(context);
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                GestureDetector(
-                  child: Icon(Icons.arrow_back_ios),
-                  onTap: () => Navigator.pop(context),
-                ),
-                Shimmer.fromColors(
-                  period: Duration(milliseconds: 3000),
-                  baseColor: Colors.black,
-                  highlightColor: Colors.white.withOpacity(0.85),
-                  child: Text(
-                    "Desliza o pulsa la flecha para volver",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

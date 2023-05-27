@@ -6,6 +6,8 @@ import 'package:pdam_app/blocs/new_payment_method/new_payment_method_bloc.dart';
 import 'package:pdam_app/blocs/payment_methods/payment_methods_bloc.dart';
 import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/services/user_service.dart';
+import 'package:pdam_app/widgets/Loading.dart';
+import 'package:pdam_app/widgets/Messages.dart';
 
 class NewPaymentMethodPage extends StatelessWidget {
   final BuildContext superContext;
@@ -78,10 +80,20 @@ class _NewPaymentMethodSFState extends State<NewPaymentMethodSF> {
 
     return FormBlocListener<NewPaymentMethodBloc, String, String>(
       onSuccess: (context, state) {
+        LoadingDialog.hide(context);
+        showOk(context, "Método de pago creado con éxito");
         widget.superContext
             .read<PaymentMethodsBloc>()
             .add(PaymentMethodsInitialEvent());
         Navigator.pop(context);
+      },
+      onSubmitting: (context, state) {
+        LoadingDialog.show(context);
+      },
+      onFailure: (context, state) {
+        LoadingDialog.hide(context);
+        showError(context,
+            "Ha ocurrido un error al intentar registrar el método de pago");
       },
       child: Scaffold(
         appBar: AppBar(

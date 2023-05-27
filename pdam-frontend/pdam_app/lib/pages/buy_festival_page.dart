@@ -1,149 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:pdam_app/blocs/buy_ticket/buy_party_bloc.dart';
-import 'package:pdam_app/pages/confirm_party_buy.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pdam_app/blocs/festival/festival_bloc.dart';
+import 'package:pdam_app/config/locator.dart';
 import 'package:pdam_app/pages/payment_methods.dart';
-import 'package:pdam_app/rest/rest_client.dart';
 import 'package:pdam_app/services/event_service.dart';
-import 'package:pdam_app/widgets/Loading.dart';
-import 'package:pdam_app/widgets/SpaceLine.dart';
 
-import '../config/locator.dart';
-import '../widgets/Messages.dart';
+import '../rest/rest_client.dart';
+import '../widgets/SpaceLine.dart';
 
-class BuyPartyPage extends StatelessWidget {
+class BuyFestivalPage extends StatelessWidget {
   final int id;
-  final String name;
-  final String imgPath;
-  final double price;
-  final bool drinkIncluded;
-  final int numberOfDrinks;
-  final bool adult;
-  const BuyPartyPage({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.imgPath,
-    required this.price,
-    required this.drinkIncluded,
-    required this.numberOfDrinks,
-    required this.adult,
-  });
+  const BuyFestivalPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
     EventService _eventService = getIt<EventService>();
     return BlocProvider(
-      create: (context) => BuyTicketsBloc(_eventService, id),
-      child: BuyPartyPageSF(
-        id: id,
-        name: name,
-        imgPath: imgPath,
-        price: price,
-        drinkIncluded: drinkIncluded,
-        numberOfDrinks: numberOfDrinks,
-        adult: adult,
-      ),
+      create: (context) =>
+          FestivalBloc(_eventService, id)..add(FestivalInitialEvent()),
+      child: BuyFestivalPageSF(),
     );
   }
 }
 
-class BuyPartyPageSF extends StatefulWidget {
-  final int id;
-  final String name;
-  final String imgPath;
-  final double price;
-  final bool drinkIncluded;
-  final int numberOfDrinks;
-  final bool adult;
-  const BuyPartyPageSF({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.imgPath,
-    required this.price,
-    required this.drinkIncluded,
-    required this.numberOfDrinks,
-    required this.adult,
-  });
+class BuyFestivalPageSF extends StatefulWidget {
+  const BuyFestivalPageSF({super.key});
 
   @override
-  State<BuyPartyPageSF> createState() => _BuyPartyPageSFState();
+  State<BuyFestivalPageSF> createState() => _BuyFestivalPageSFState();
 }
 
-class _BuyPartyPageSFState extends State<BuyPartyPageSF> {
+class _BuyFestivalPageSFState extends State<BuyFestivalPageSF> {
   @override
   Widget build(BuildContext context) {
-    final formBloc = context.read<BuyTicketsBloc>();
-    return FormBlocListener<BuyTicketsBloc, String, String>(
-      onSuccess: (context, state) {
-        LoadingDialog.hide(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ConfirmPartyBuyPage(stripeId: formBloc.stripeId),
-          ),
-        );
+    return BlocBuilder<FestivalBloc, FestivalState>(
+      builder: (context, state) {
+        if (state is FestivalSuccess) {
+          return BuyFestivalPageDetails(state: state);
+        } else if (state is FestivalFailure) {
+          return Center(child: Text(state.error));
+        } else {
+          return Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.white, size: 45),
+          );
+        }
       },
-      onFailure: (context, state) {
-        showError(context,
-            "Comprueba tus metodos de pago, o que todavía queden entradas disponibles");
-      },
-      onSubmitting: (context, state) {
-        LoadingDialog.show(context);
-      },
-      child: BuyPartyPageWidget(
-          id: widget.id,
-          name: widget.name,
-          imgPath: widget.imgPath,
-          price: widget.price,
-          drinkIncluded: widget.drinkIncluded,
-          numberOfDrinks: widget.numberOfDrinks,
-          adult: widget.adult),
     );
   }
 }
 
-class BuyPartyPageWidget extends StatefulWidget {
-  final int id;
-  final String name;
-  final String imgPath;
-  final double price;
-  final bool drinkIncluded;
-  final int numberOfDrinks;
-  final bool adult;
-
-  const BuyPartyPageWidget({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.imgPath,
-    required this.price,
-    required this.drinkIncluded,
-    required this.numberOfDrinks,
-    required this.adult,
-  });
+class BuyFestivalPageDetails extends StatefulWidget {
+  final FestivalSuccess state;
+  const BuyFestivalPageDetails({super.key, required this.state});
 
   @override
-  State<BuyPartyPageWidget> createState() => _BuyPartyPageWidget();
+  State<BuyFestivalPageDetails> createState() => _BuyFestivalPageDetailsState();
 }
 
-class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
+class _BuyFestivalPageDetailsState extends State<BuyFestivalPageDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text(
+          "Comprar entrada",
+          style: TextStyle(color: Colors.black),
+        ),
         leading: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-        ),
-        title: Text(
-          "Comprar entrada",
-          style: TextStyle(color: Colors.black),
         ),
       ),
       body: Container(
@@ -158,7 +89,7 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
             Column(
               children: [
                 Text(
-                  widget.name,
+                  widget.state.festival.name!,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -173,8 +104,8 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: Image.network(
-                      ApiConstants.baseUrl + "/post/file/${widget.imgPath}"),
+                  child: Image.network(ApiConstants.baseUrl +
+                      "/post/file/${widget.state.festival.imgPath}"),
                 ),
                 SizedBox(
                   height: 20,
@@ -209,7 +140,7 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        "${widget.price}€",
+                        "${widget.state.festival.price}€",
                         style: TextStyle(fontSize: 17),
                       ),
                     )
@@ -244,7 +175,43 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        "Consumición incluida: ${widget.drinkIncluded ? "Si" : "No"}",
+                        "Consumición incluida: ${widget.state.festival.drinkIncluded! ? "Si" : "No"}",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: widget.state.festival.drinkIncluded! ? 10 : 0,
+                ),
+                widget.state.festival.drinkIncluded!
+                    ? Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 40),
+                            child: Text(
+                              widget.state.festival.drinkIncluded!
+                                  ? "Cantidad de consumiciones: ${widget.state.festival.numberOfDrinks!}"
+                                  : "",
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          )
+                        ],
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(
+                        "Mayoría de edad requerida: ${widget.state.festival.adult! ? "Si" : "No"}",
                         style: TextStyle(fontSize: 17),
                       ),
                     )
@@ -260,9 +227,7 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        widget.drinkIncluded
-                            ? "Cantidad de consumiciones: ${widget.numberOfDrinks}"
-                            : "",
+                        "Inicio: ${widget.state.festival.date!}",
                         style: TextStyle(fontSize: 17),
                       ),
                     )
@@ -278,7 +243,7 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
-                        "Mayoría de edad requerida: ${widget.adult ? "Si" : "No"}",
+                        "Duración: ${widget.state.festival.duration!} días",
                         style: TextStyle(fontSize: 17),
                       ),
                     )
@@ -334,8 +299,9 @@ class _BuyPartyPageWidget extends State<BuyPartyPageWidget> {
                 child: Text('Continuar y confirmar pago',
                     style: TextStyle(color: Colors.white, fontSize: 25)),
                 onPressed: () {
-                  final formBloc = context.read<BuyTicketsBloc>();
-                  formBloc.buyParty();
+                  context
+                      .read<FestivalBloc>()
+                      .add(FestivalBuyEvent(context: context));
                 },
               ),
             )

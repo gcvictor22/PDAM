@@ -295,8 +295,8 @@ public class UserService {
 
     }
 
-    public GetPageDto<GetPostDto> getLikedPosts(User user, Pageable pageable) {
-        Page<GetPostDto> getLikedPostsDto = userRepository.getLikedPosts(pageable, user.getId()).map(p -> GetPostDto.of(p, user));
+    public GetPageDto<GetPostDto> getLikedPosts(User user, Pageable pageable, User loggedUser) {
+        Page<GetPostDto> getLikedPostsDto = userRepository.getLikedPosts(pageable, user.getId()).map(p -> GetPostDto.of(p, loggedUser));
 
         return new GetPageDto<>(getLikedPostsDto);
     }

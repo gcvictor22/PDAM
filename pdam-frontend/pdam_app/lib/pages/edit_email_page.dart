@@ -6,6 +6,8 @@ import 'package:pdam_app/pages/register_verification_form_page.dart';
 import 'package:pdam_app/services/user_service.dart';
 import 'package:pdam_app/widgets/Loading.dart';
 
+import '../widgets/Messages.dart';
+
 class EditEmailPage extends StatelessWidget {
   final String userName;
   const EditEmailPage({super.key, required this.userName});
@@ -57,7 +59,8 @@ class EditEmailPage extends StatelessWidget {
                       LoadingDialog.show(context);
                     },
                     onFailure: (context, state) {
-                      showError(context);
+                      showError(context,
+                          "Ha ocurrido un error, prueba con otro correo o intentalo más tarde");
                     },
                     child: _EditEmailPageSF(formBloc: formBloc)),
               ),
@@ -177,52 +180,4 @@ class _EditEmailPageSFState extends State<_EditEmailPageSF> {
       )),
     );
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showError(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Error",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Ha ocurrido un error a la hora de verificar el token. Intentelo de nuevo.",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
 }

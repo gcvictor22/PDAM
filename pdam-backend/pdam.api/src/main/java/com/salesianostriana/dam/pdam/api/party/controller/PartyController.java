@@ -28,6 +28,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -59,13 +60,20 @@ public class PartyController {
 
     @PostMapping("/buy/{id}")
     public ResponseEntity<?> buy(@PathVariable Long id, @AuthenticationPrincipal User loggedUser) throws MessagingException, IOException {
-
         User user = userService.getProfile(loggedUser.getId());
         Party party = partyService.buy(id, user);
-        PaymentIntent paymentIntent = partyService.createStripe(party, user);
-        partyService.setUpdatedPopularity(party.getDiscotheque());
+        if (!user.getPaymentMethods().isEmpty() || party.getDiscotheque().getCapacity() < party.getClients().size()) {
+            PaymentIntent paymentIntent = partyService.createStripe(party, user);
+            partyService.setUpdatedPopularity(party.getDiscotheque());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(GetPartyDto.ofStripe(party, paymentIntent.getId()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(GetPartyDto.ofStripe(party, paymentIntent.getId()));
+        }else {
+            if (user.getPaymentMethods().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EntityNotFoundException("No tienes ningún método de pago"));
+            }else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new EntityNotFoundException("No quedan entradas disponibles para esta fiesta"));
+            }
+        }
     }
 
     @PostMapping("/confirm/{id}")

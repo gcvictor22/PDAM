@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import '../config/locator.dart';
 import '../services/post_service.dart';
 import '../widgets/GradientSlide.dart';
+import '../widgets/Messages.dart';
 
 class NewPostPage extends StatefulWidget {
   const NewPostPage({super.key});
@@ -29,10 +30,13 @@ class _NewPostPageState extends State<NewPostPage> {
           final formBloc = context.read<NewPostFormBloc>();
           return FormBlocListener<NewPostFormBloc, String, String>(
             onSuccess: (context, state) {
-              showOk(context);
+              showOk(context, "Tu post se ha publicado correctamente");
               formBloc.clear();
               formBloc.files.clear();
               setState(() {});
+            },
+            onFailure: (context, state) {
+              showError(context, "No se ha podido publicar el post");
             },
             child: NewPostPageSF(formBloc: formBloc),
           );
@@ -367,52 +371,4 @@ class _NewPostPageSFState extends State<NewPostPageSF> {
       ),
     );
   }
-}
-
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showOk(
-    BuildContext context) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      backgroundColor: Colors.transparent,
-      content: Container(
-        padding: const EdgeInsets.all(8),
-        height: 80,
-        decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        child: Row(
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-              size: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "¡Todo bien!",
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                Spacer(),
-                Text(
-                  "Tu post se ha publicado con exito",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-    ),
-  );
 }

@@ -6,6 +6,7 @@ import 'package:pdam_app/pages/register_form_page.dart';
 import '../blocs/blocs.dart';
 import '../config/locator.dart';
 import '../services/services.dart';
+import '../widgets/Messages.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -108,7 +109,8 @@ class __SignInFormState extends State<_SignInForm> {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginFailure) {
-          _showError(state.error);
+          showError(
+              context, "El nombre de usuario o la contraseña no son correctas");
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -317,14 +319,5 @@ class __SignInFormState extends State<_SignInForm> {
         },
       ),
     );
-  }
-
-  void _showError(String error) {
-    /*Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text(error),
-      backgroundColor: Theme.of(context).errorColor,
-    ));*/
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
   }
 }

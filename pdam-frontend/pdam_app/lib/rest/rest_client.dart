@@ -253,9 +253,6 @@ class AuthorizationInterceptor implements InterceptorContract {
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
     if (data.statusCode == 401 || data.statusCode == 403) {
-      // Future.delayed(Duration(seconds: 1), () {
-      //   Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
-      // });
       var refreshToken = _localStorageService.getFromDisk("user_refresh_token");
       final response = await http.post(
           Uri.parse(ApiConstants.baseUrl + "/user/refreshtoken"),
