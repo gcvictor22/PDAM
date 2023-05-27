@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
 import 'package:pdam_app/models/login.dart';
 import 'package:pdam_app/services/localstorage_service.dart';
 import 'package:get_it/get_it.dart';
@@ -61,7 +62,7 @@ class RestClient {
     }
   }
 
-  Future<dynamic> post(String url, dynamic body) async {
+  Future<dynamic> post(String url, [dynamic body]) async {
     try {
       Uri uri = Uri.parse(ApiConstants.baseUrl + url);
 
@@ -72,6 +73,92 @@ class RestClient {
       /*} on SocketException catch(ex) {
       throw FetchDataException('No internet connection: ${ex.message}');
     }*/
+    } on Exception catch (ex) {
+      throw ex;
+    }
+  }
+
+  Future<dynamic> postMultipart(String url, List<XFile> files) async {
+    late LocalStorageService _localStorageService;
+    GetIt.I
+        .getAsync<LocalStorageService>()
+        .then((value) => _localStorageService = value);
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse(ApiConstants.baseUrl + url),
+    );
+
+    for (final file in files) {
+      final bytes = await file.readAsBytes();
+      request.files.add(http.MultipartFile.fromBytes(
+        'files',
+        bytes,
+        filename: file.name.substring(1, 10),
+      ));
+    }
+
+    final headers = {
+      'Authorization':
+          'Bearer ${_localStorageService.getFromDisk("user_token")}'
+    };
+    request.headers.addAll(headers);
+
+    try {
+      final response = await request.send();
+      return response;
+    } catch (error) {
+      throw new Exception("Error en el cliente");
+    }
+  }
+
+  Future<dynamic> postProfileImg(String url, XFile file) async {
+    late LocalStorageService _localStorageService;
+    GetIt.I
+        .getAsync<LocalStorageService>()
+        .then((value) => _localStorageService = value);
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse(ApiConstants.baseUrl + url),
+    );
+
+    final bytes = await file.readAsBytes();
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      bytes,
+      filename: file.name,
+    ));
+
+    final headers = {
+      'Authorization':
+          'Bearer ${_localStorageService.getFromDisk("user_token")}'
+    };
+    request.headers.addAll(headers);
+
+    try {
+      final response = await request.send();
+      return response;
+    } catch (error) {
+      throw new Exception("Error en el cliente");
+    }
+  }
+
+  Future<dynamic> put(String url, [dynamic body]) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+      final response = await _httpClient.put(uri, body: jsonEncode(body));
+      var responseJson = _response(response);
+      return responseJson;
+    } on Exception catch (ex) {
+      throw ex;
+    }
+  }
+
+  Future<dynamic> delete(String url) async {
+    try {
+      Uri uri = Uri.parse(ApiConstants.baseUrl + url);
+      final response = await _httpClient.delete(uri);
+      var responseJson = _response(response);
+      return responseJson;
     } on Exception catch (ex) {
       throw ex;
     }
@@ -98,7 +185,7 @@ class RestClient {
       case 403:
         throw UnauthorizedException(utf8.decode(response.bodyBytes));
       case 404:
-        throw NotFoundException(utf8.decode(response.bodyBytes));
+        return NotFoundException(utf8.decode(response.bodyBytes));
       case 500:
       default:
         throw FetchDataException(
@@ -166,9 +253,6 @@ class AuthorizationInterceptor implements InterceptorContract {
   @override
   Future<ResponseData> interceptResponse({required ResponseData data}) async {
     if (data.statusCode == 401 || data.statusCode == 403) {
-      // Future.delayed(Duration(seconds: 1), () {
-      //   Navigator.of(GlobalContext.ctx).push<void>(MyApp.route());
-      // });
       var refreshToken = _localStorageService.getFromDisk("user_refresh_token");
       final response = await http.post(
           Uri.parse(ApiConstants.baseUrl + "/user/refreshtoken"),

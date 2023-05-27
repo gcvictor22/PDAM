@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:pdam_app/models/verificationToken.dart';
 
 import '../models/login.dart';
+import '../models/user/EditModel.dart';
 import '../models/user/GetUserDto.dart';
 import '../models/user/user.dart';
 import '../rest/rest_client.dart';
@@ -55,7 +56,7 @@ class AuthenticationRepository {
 
   Future<dynamic> registerVerification(
       String userName, String verificationNumber) async {
-    String url = "http://localhost:8080/user/verification";
+    String url = ApiConstants.baseUrl + "/user/verification";
     String body = jsonEncode(
         {"userName": userName, "verificationNumber": verificationNumber});
     Map<String, String> headers = {'Content-Type': 'application/json'};
@@ -64,6 +65,39 @@ class AuthenticationRepository {
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       return VerificationToken.fromJson(jsonResponse);
+    }
+    throw Exception(response.body);
+  }
+
+  Future<dynamic> forgotPassword(String userName) async {
+    String url = ApiConstants.baseUrl + "/user/forgotPassword/";
+
+    String body = jsonEncode(EditModelUserName(userName: userName));
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    var response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 201) {
+      var jsonResponse = jsonDecode(response.body);
+      return GetUserDto.fromJson(jsonResponse);
+    }
+    throw Exception(response.body);
+  }
+
+  Future<dynamic> forgotPasswordChange(
+      String userName, String newPassword, String newPasswordVerify) async {
+    String url = ApiConstants.baseUrl + "/user/forgotPassword/$userName";
+
+    String body = jsonEncode(EditModelForgotPassword(
+        newPassword: newPassword, newPasswordVerify: newPasswordVerify));
+
+    Map<String, String> headers = {'Content-Type': 'application/json'};
+
+    var response = await http.put(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      return GetUserDto.fromJson(jsonResponse);
     }
     throw Exception(response.body);
   }

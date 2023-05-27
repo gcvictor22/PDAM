@@ -1,24 +1,24 @@
 class GetUserDto {
-  String? id;
-  String? userName;
-  String? fullName;
-  String? imgPath;
-  int? followers;
-  int? countOfPosts;
-  bool? verified;
-  bool? followedByUser;
-  String? createdAt;
+  late String id;
+  late String userName;
+  late String fullName;
+  late String imgPath;
+  late int followers;
+  late int countOfPosts;
+  late bool verified;
+  late bool followedByUser;
+  late String createdAt;
 
   GetUserDto(
-      {this.id,
-      this.userName,
-      this.fullName,
-      this.imgPath,
-      this.followers,
-      this.countOfPosts,
-      this.verified,
-      this.followedByUser,
-      this.createdAt});
+      {required this.id,
+      required this.userName,
+      required this.fullName,
+      required this.imgPath,
+      required this.followers,
+      required this.countOfPosts,
+      required this.verified,
+      required this.followedByUser,
+      required this.createdAt});
 
   GetUserDto.fromRegisterReqest(GetUserDto getUserDto) {
     this.id = getUserDto.id;

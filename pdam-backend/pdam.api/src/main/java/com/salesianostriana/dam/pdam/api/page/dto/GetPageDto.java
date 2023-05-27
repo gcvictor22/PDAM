@@ -23,7 +23,7 @@ public class GetPageDto<T> {
         this.currentPage = page.getNumber();
         this.last = page.isLast();
         this.first = page.isFirst();
-        this.totalPages = page.getTotalPages()-1;
+        this.totalPages = page.getTotalPages();
         this.totalElements = page.getTotalElements();
     }
 

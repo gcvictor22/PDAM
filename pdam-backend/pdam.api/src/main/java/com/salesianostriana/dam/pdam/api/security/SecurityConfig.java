@@ -75,7 +75,8 @@ public class SecurityConfig {
                                 .antMatchers("/user/**").hasRole("USER")
                                 .antMatchers("/post/**").hasRole("USER")
                                 .antMatchers("/discotheque/**").hasRole("USER")
-                                .antMatchers("/comment/**").hasRole("VERIFIED")
+                                .antMatchers("/comment/**").hasRole("USER")
+                                .antMatchers("/payment/**").hasRole("USER")
                                 .antMatchers("/party/create").hasRole("AUTH")
                                 .anyRequest().authenticated();
 
@@ -92,8 +93,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web -> web.ignoring().antMatchers("/h2-console/**", "/user/register", "/user/login",
-                "/file/{filename:.+}", "/user/verification", "/user/refreshtoken", "/user/forgotPassword/**",
-                "/city/**"));
+                "/user/userImg/{userName}", "/user/verification", "/user/refreshtoken", "/user/forgotPassword/",
+                "/user/forgotPassword/{userName}","/city/**", "/event/{id}/img", "/post/file/{filename:.+}"));
     }
 
 

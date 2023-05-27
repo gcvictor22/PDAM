@@ -8,12 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNullApi;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface    EventRepository extends JpaRepository<Event, Long> {
+public interface    EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
 
     @Query("""
             SELECT ROUND((COUNT(DISTINCT u) * 100.0) /
@@ -30,12 +33,6 @@ public interface    EventRepository extends JpaRepository<Event, Long> {
     int popularityCityEvent(Long cityId, Long eventId);
 
 
-    @Query("""
-            SELECT e
-            FROM Event e
-            ORDER BY e.popularity DESC
-            """)
-    Page<Event> findAll(Specification<Post> spec, Pageable pageable);
 
     @Query("""
             SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END

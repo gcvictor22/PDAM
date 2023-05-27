@@ -8,6 +8,7 @@ import com.salesianostriana.dam.pdam.api.exception.accesdenied.PostAccessDeniedE
 import com.salesianostriana.dam.pdam.api.exception.badrequest.*;
 import com.salesianostriana.dam.pdam.api.exception.file.NotAllowedCountFilesException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
+import com.salesianostriana.dam.pdam.api.exception.stripe.StripeBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.token.JwtTokenException;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpHeaders;
@@ -53,7 +54,8 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
             EqualOldNewPasswordException.class,
             NotAllowedCountFilesException.class,
             FileInPostBadRequestException.class,
-            VerificationTokenExpirationTimeBadRequestException.class})
+            VerificationTokenExpirationTimeBadRequestException.class,
+            StripeBadRequestException.class})
     public ResponseEntity<?> handleBadRequestException(EntityNotFoundException exception, WebRequest request) {
         return buildApiError(exception.getMessage(), request, HttpStatus.BAD_REQUEST);
     }

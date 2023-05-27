@@ -15,11 +15,9 @@ import 'localstorage_service.dart';
 //import '../exceptions/exceptions.dart';
 
 abstract class AuthenticationService {
-  late AuthenticationRepository _authenticationRepository;
   Future<User?> getCurrentUser();
   Future<User> signInWithEmailAndPassword(String email, String password);
   Future<void> signOut();
-
   Future<GetUserDto> register(
       String username,
       String password,
@@ -28,18 +26,7 @@ abstract class AuthenticationService {
       String phoneNumber,
       String fullName,
       int cityId,
-      int genderId) async {
-    GetUserDto response = await _authenticationRepository.create(
-        username,
-        password,
-        verifyPassword,
-        email,
-        phoneNumber,
-        fullName,
-        cityId,
-        genderId);
-    return GetUserDto.fromRegisterReqest(response);
-  }
+      int genderId);
 }
 
 @Order(2)
@@ -76,6 +63,18 @@ class JwtAuthenticationService extends AuthenticationService {
     return response;
   }
 
+  Future<dynamic> forgotPassword(String userName) async {
+    var response = await _authenticationRepository.forgotPassword(userName);
+    return response;
+  }
+
+  Future<dynamic> forgotPasswordChange(
+      String userName, String newPassword, String newPasswordVerify) async {
+    var response = await _authenticationRepository.forgotPasswordChange(
+        userName, newPassword, newPasswordVerify);
+    return response;
+  }
+
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
     LoginResponse response =
@@ -84,6 +83,7 @@ class JwtAuthenticationService extends AuthenticationService {
     await _localStorageService.saveToDisk('user_token', response.token);
     await _localStorageService.saveToDisk(
         'user_refresh_token', response.refreshToken);
+    await _localStorageService.saveToDisk("userName", response.userName);
     return User.fromLoginResponse(response);
   }
 
@@ -92,5 +92,27 @@ class JwtAuthenticationService extends AuthenticationService {
     print("borrando token");
     await _localStorageService.deleteFromDisk("user_token");
     await _localStorageService.deleteFromDisk("user_refresh_token");
+  }
+
+  @override
+  Future<GetUserDto> register(
+      String username,
+      String password,
+      String verifyPassword,
+      String email,
+      String phoneNumber,
+      String fullName,
+      int cityId,
+      int genderId) async {
+    GetUserDto response = await _authenticationRepository.create(
+        username,
+        password,
+        verifyPassword,
+        email,
+        phoneNumber,
+        fullName,
+        cityId,
+        genderId);
+    return GetUserDto.fromRegisterReqest(response);
   }
 }

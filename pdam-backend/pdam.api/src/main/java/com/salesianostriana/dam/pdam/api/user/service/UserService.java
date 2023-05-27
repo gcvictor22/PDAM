@@ -8,8 +8,11 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.GenderNotFoundExcept
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
+import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
-import com.salesianostriana.dam.pdam.api.user.dto.ForgotPasswordChangeDto;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
+import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRepository;
+import com.salesianostriana.dam.pdam.api.user.dto.*;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import com.salesianostriana.dam.pdam.api.user.repository.UserRepository;
@@ -17,11 +20,15 @@ import com.salesianostriana.dam.pdam.api.exception.empty.EmptyUserListException;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.specifications.user.USBuilder;
 import com.salesianostriana.dam.pdam.api.search.util.SearchCriteria;
-import com.salesianostriana.dam.pdam.api.user.dto.EditPasswordDto;
-import com.salesianostriana.dam.pdam.api.user.dto.GetUserDto;
-import com.salesianostriana.dam.pdam.api.user.dto.NewUserDto;
 import com.salesianostriana.dam.pdam.api.verificationtoken.dto.GetVerificationTokenDto;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.param.CustomerCreateParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,6 +41,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,10 +52,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CityRepository cityRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final GenderRepository genderRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
     private final JavaMailSender javaMailSender;
+
+    @Value("${secret.stripe.key}")
+    private String stripeSecret;
 
     public GetPageDto<GetUserDto> findAll(List<SearchCriteria> params, Pageable pageable, User user){
         if (userRepository.findAll().isEmpty())
@@ -60,55 +73,59 @@ public class UserService {
         return new GetPageDto<>(pageGetClientDto);
     }
 
-    public User save(NewUserDto createUser, EnumSet<UserRole> roles) {
+    public User save(NewUserDto createUser, EnumSet<UserRole> roles, String customer_id) {
+
         User user =  User.builder()
                 .userName(createUser.getUsername())
                 .password(passwordEncoder.encode(createUser.getPassword()))
                 .email(createUser.getEmail())
                 .phoneNumber(createUser.getPhoneNumber())
-                .imgPath("default.png")
+                .imgPath("default.jpeg")
                 .fullName(createUser.getFullName())
                 .roles(roles)
                 .city(cityRepository.findById(createUser.getCityId()).orElseThrow(() -> new CityNotFoundException(createUser.getCityId())))
                 .gender(genderRepository.findById(createUser.getGenderId()).orElseThrow(() -> new GenderNotFoundException(createUser.getGenderId())))
                 .createdAt(createUser.getCreatedAt())
                 .enabled(false)
+                .stripeCustomerId(customer_id)
                 .build();
 
         return userRepository.save(user);
     }
 
-    public User createUser(NewUserDto createUserRequest) {
-        return save(createUserRequest, EnumSet.of(UserRole.USER));
+    public User createUser(NewUserDto createUserRequest, String customer_id) {
+        return save(createUserRequest, EnumSet.of(UserRole.USER), customer_id);
     }
 
-    public void emailSender(String toEmail, User user) throws MessagingException {
+    public Customer stripeCustomer(NewUserDto createUser) {
+        try {
+            Stripe.apiKey = stripeSecret;
+
+            CustomerCreateParams.Builder customer = new CustomerCreateParams.Builder()
+                    .setEmail(createUser.getEmail());
+
+            return Customer.create(customer.build());
+
+        }catch (StripeException e){
+            System.out.println(e.toString());
+            throw new RuntimeException();
+        }
+    }
+
+    public void emailSender(String toEmail, User user) throws MessagingException, IOException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("dyscotkeo@gmail.com");
+        helper.setFrom("no.reply.dyscotkeo@gmail.com");
         helper.setTo(toEmail);
         message.setSubject("¡Bienvenido a DiscoTkeo "+user.getUsername()+"!");
-        message.setContent("<!DOCTYPE html>\n" +
-                "<html lang=\"es\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Código de verificación</title>\n" +
-                "</head>\n" +
-                "<body style=\"max-width: 700px;\">\n" +
-                "    <img src=\"https://i.pinimg.com/originals/ba/34/d4/ba34d4023f8263c2085e5d60706e7900.png\"\n" +
-                "        style=\"display: block; margin: auto; max-width: 700px;\">\n" +
-                "    <div style=\"width: 100%; text-align: center;\">\n" +
-                "        <h3>¡Ya casi hemos terminado!</h3>\n" +
-                "        <p>Utiliza el siguiente código para verificar tu cuenta</p>\n" +
-                "    </div>\n" +
-                "    <div style=\"width: 100%; background: #a300ff; text-align: center; color: white; padding: 10px 0;\">\n" +
-                "        <h3 style=\"font-family: Verdana, Geneva, Tahoma, sans-serif;\">"+user.getVerificationToken().getVerificationNumber()+"</h3>\n" +
-                "    </div>\n" +
-                "</body>\n" +
-                "</html>", "text/html");
+
+        Resource resource = new ClassPathResource("templates/welcome.html");
+        File file = resource.getFile();
+        String content = new String(Files.readAllBytes(file.toPath()));
+        content = content.replace("${verificationNumber}", String.valueOf(user.getVerificationToken().getVerificationNumber()));
+
+        message.setContent(content, "text/html");
 
         javaMailSender.send(message);
     }
@@ -132,8 +149,9 @@ public class UserService {
 
     public User follow(User loggedUser, String userToFollow) {
         User user = userRepository.userWithPostsByUserName(userToFollow).orElseThrow(() -> new UserNotFoundException(userToFollow));
+        User userWhoFollows = userRepository.userWithPostsByUserName(loggedUser.getUsername()).orElseThrow(() -> new UserNotFoundException(loggedUser.getUsername()));
 
-        user.giveAFollow(loggedUser, userRepository.checkFollower(loggedUser.getId(), user.getId()));
+        user.giveAFollow(userWhoFollows, userRepository.checkFollower(loggedUser.getId(), user.getId()));
 
         userRepository.save(loggedUser);
         userRepository.save(user);
@@ -145,7 +163,10 @@ public class UserService {
         return userRepository.userWithPostsByUserName(userName).orElseThrow(() -> new UserNotFoundException(userName));
     }
 
+    @Transactional
     public void deleteById(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        refreshTokenRepository.deleteByUser(user);
         userRepository.deleteById(id);
     }
 
@@ -256,5 +277,41 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(forgotPasswordChangeDto.getNewPassword()));
         return userRepository.save(user);
+    }
+
+    public GetPageDto<UserWhoLikeDto> getFollows(User user, Pageable pageable, User loggedUser) {
+
+        Page<UserWhoLikeDto> getFollowsDto = userRepository.findFollows(pageable, user.getId()).map(u -> UserWhoLikeDto.of(u, loggedUser));
+
+        return new GetPageDto<>(getFollowsDto);
+
+    }
+
+    public GetPageDto<UserWhoLikeDto> getFollowers(User user, Pageable pageable, User loggedUser) {
+
+        Page<UserWhoLikeDto> getFollowersDto = userRepository.findFollowers(pageable, user.getId()).map(u -> UserWhoLikeDto.of(u, loggedUser));
+
+        return new GetPageDto<>(getFollowersDto);
+
+    }
+
+    public GetPageDto<GetPostDto> getLikedPosts(User user, Pageable pageable, User loggedUser) {
+        Page<GetPostDto> getLikedPostsDto = userRepository.getLikedPosts(pageable, user.getId()).map(p -> GetPostDto.of(p, loggedUser));
+
+        return new GetPageDto<>(getLikedPostsDto);
+    }
+
+    public GetPageDto<GetPostDto> getPublishedPosts(User loggedUser, Pageable pageable) {
+
+        Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, loggedUser.getId()).map(p -> GetPostDto.of(p, loggedUser));
+
+        return new GetPageDto<>(getPublishedPosts);
+    }
+
+    public GetPageDto<GetPostDto> getPublishedPostsFromUser(User userToGet, User loggedUser, Pageable pageable) {
+
+        Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, userToGet.getId()).map(p -> GetPostDto.of(p, loggedUser));
+
+        return new GetPageDto<>(getPublishedPosts);
     }
 }

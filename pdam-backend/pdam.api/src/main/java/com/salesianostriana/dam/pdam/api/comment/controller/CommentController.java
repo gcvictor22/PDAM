@@ -6,6 +6,7 @@ import com.salesianostriana.dam.pdam.api.comment.service.CommentService;
 import com.salesianostriana.dam.pdam.api.post.dto.ViewPostDto;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.net.URI;
 public class CommentController {
 
     private final CommentService commentService;
+    private final UserService userService;
 
     @PostMapping("/{id}")
     public ResponseEntity<ViewPostDto> create(@Valid @RequestBody NewCommentDto newCommentDto, @PathVariable Long id, @AuthenticationPrincipal User user){
@@ -41,8 +43,9 @@ public class CommentController {
     public ViewPostDto edit(@Valid @RequestBody NewCommentDto newCommentDto, @PathVariable Long id, @AuthenticationPrincipal User user){
 
         Post post = commentService.edit(newCommentDto, id);
+        User loggedUser = userService.getProfileByUserName(user.getUsername());
 
-        return ViewPostDto.of(post);
+        return ViewPostDto.of(post, loggedUser);
     }
 
     @DeleteMapping("/{id}")

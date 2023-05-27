@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:pdam_app/config/locator.dart';
 
 import '../../services/authentication_service.dart';
 
@@ -26,9 +27,9 @@ class RegisterVerificationFormBloc extends FormBloc<String, String> {
 
   @override
   FutureOr<void> onSubmitting() {
-    late JwtAuthenticationService authService = JwtAuthenticationService();
+    final _authService = getIt<JwtAuthenticationService>();
     emitLoading();
-    authService
+    _authService
         .verifyToken(userName.value, verificationToken.value)
         .then((value) => {emitSuccess()})
         .catchError((error) => {print(error), emitFailure()});

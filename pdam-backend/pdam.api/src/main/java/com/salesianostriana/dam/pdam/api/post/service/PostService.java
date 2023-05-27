@@ -49,7 +49,7 @@ public class PostService {
     public GetPageDto<GetPostDto> findAllFollowsPosts(UUID id, Pageable pageable){
         User user = userRepository.userWithPostsById(id).orElseThrow(() -> new UserNotFoundException(id));
 
-        if (postRepository.findAllFollowsPosts(id, pageable).isEmpty())
+        if (postRepository.findAllFollowsPosts(id).isEmpty())
             throw new EmptyPostListException();
 
         Page<GetPostDto> pageGetPostsDto = postRepository.findAllFollowsPosts(id, pageable).map(p -> GetPostDto.of(p, user));
@@ -93,23 +93,15 @@ public class PostService {
 
     public GetPostDto likeAPost(Long id, User loggedUser) {
 
+        User user = userRepository.userWithPostsById(loggedUser.getId()).orElseThrow(() -> new UserNotFoundException(loggedUser.getId()));
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         boolean b = postRepository.existsLikeByUser(post.getId(), loggedUser.getId());
 
-        post.like(loggedUser, b);
+        post.like(user, b);
 
         postRepository.save(post);
-        userRepository.save(loggedUser);
+        userRepository.save(user);
 
-        GetPostDto dto = GetPostDto.of(post, loggedUser);
-        if (Objects.equals(dto.getUserWhoPost().getUserName(), loggedUser.getUsername())){
-            if (b){
-                dto.setUsersWhoLiked(dto.getUsersWhoLiked()-1);
-            }else {
-                dto.setUsersWhoLiked(dto.getUsersWhoLiked()+1);
-            }
-        }
-
-        return dto;
+        return GetPostDto.of(post, user);
     }
 }

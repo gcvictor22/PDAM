@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -46,5 +47,7 @@ public class Event {
 
     @Convert(converter = EnumTypeConverter.class)
     private EnumSet<EventType> type;
+
+    private LocalDateTime createdAt;
 
 }

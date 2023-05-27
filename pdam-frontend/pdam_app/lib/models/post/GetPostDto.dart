@@ -1,6 +1,8 @@
+import '../user/GetProfile.dart';
+
 class GetPostDto {
   late int id;
-  late String affair;
+  late String? affair;
   late String content;
   late List<String> imgPath;
   late UserWhoPost userWhoPost;
@@ -11,7 +13,7 @@ class GetPostDto {
 
   GetPostDto(
       {required this.id,
-      required this.affair,
+      this.affair,
       required this.content,
       required this.imgPath,
       required this.userWhoPost,
@@ -45,29 +47,6 @@ class GetPostDto {
     data['comments'] = this.comments;
     data['likedByUser'] = this.likedByUser;
     data['postDate'] = this.postDate;
-    return data;
-  }
-}
-
-class UserWhoPost {
-  late String userName;
-  late String imgPath;
-  late bool verified;
-
-  UserWhoPost(
-      {required this.userName, required this.imgPath, required this.verified});
-
-  UserWhoPost.fromJson(Map<String, dynamic> json) {
-    userName = json['userName'];
-    imgPath = json['imgPath'];
-    verified = json['verified'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userName'] = this.userName;
-    data['imgPath'] = this.imgPath;
-    data['verified'] = this.verified;
     return data;
   }
 }

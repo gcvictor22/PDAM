@@ -4,6 +4,7 @@ import com.salesianostriana.dam.pdam.api.city.model.City;
 import com.salesianostriana.dam.pdam.api.event.model.Event;
 import com.salesianostriana.dam.pdam.api.gender.model.Gender;
 import com.salesianostriana.dam.pdam.api.party.model.Party;
+import com.salesianostriana.dam.pdam.api.payment.model.PaymentMethod;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.verificationtoken.model.VerificationToken;
 import lombok.*;
@@ -69,6 +70,10 @@ public class User implements UserDetails {
     @Builder.Default
     private List<Post> publishedPosts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "userHolder", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(joinColumns = @JoinColumn(name = "user_id",
             foreignKey = @ForeignKey(name="FK_LIKEDPOSTS_USER")),
@@ -118,6 +123,8 @@ public class User implements UserDetails {
     )
     @Builder.Default
     private List<Party> parties = new ArrayList<>();
+
+    private String stripeCustomerId;
 
     @Builder.Default
     private boolean accountNonExpired = true;
@@ -184,8 +191,8 @@ public class User implements UserDetails {
         List<User> aux1 = this.getFollowers();
         List<User> aux2 = loggedUser.getFollows();
         if (b){
-            aux1.remove(this.getFollowers().indexOf(loggedUser)+1);
-            aux2.remove(loggedUser.getFollows().indexOf(this)+1);
+            aux1.remove(loggedUser);
+            aux2.remove(this);
             if (aux1.size()<1){
                 this.roles.remove(UserRole.VERIFIED);
                 this.setVerified(false);
@@ -220,5 +227,10 @@ public class User implements UserDetails {
             });
             p.getComments().clear();
         });
+    }
+
+    public void addPaymentMethod(PaymentMethod paymentMethod) {
+        paymentMethod.setUserHolder(this);
+        this.getPaymentMethods().add(paymentMethod);
     }
 }
