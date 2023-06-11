@@ -1,0 +1,34 @@
+.container{
+    width: 100%;
+    min-height: 100vh;
+    background: red;
+}
+
+header{
+    width: 100%;
+    height: 55px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #AD1DFE;
+}
+
+.link{
+    margin-right: 20px;
+    background-color: white;
+}
+
+.component{
+    width: 100%;
+    height: calc(100vh - 55px);
+    background-color: white;
+    position: static;
+    top: 0;
+}
+
+.insideContainer{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}

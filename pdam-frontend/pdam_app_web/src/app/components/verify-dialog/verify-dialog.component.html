@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Verifica tu cuenta {{verifyToken}}</h1>
+<div mat-dialog-content>
+  <p>Utiliza el código de verificaciín que te hemos mandado al email</p>
+  <div style="width: 100%; display: flex; justify-content: center; margin-top: 40px;">
+    <mat-form-field appearance="outline">
+        <mat-label>Código de verificación</mat-label>
+        <input matInput [(ngModel)]="verifyToken" pattern="[0-9]*" maxlength="6" minlength="6" required>
+      </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-button (click)="doVerify()">Verificar</button>
+</div>
