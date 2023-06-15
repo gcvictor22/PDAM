@@ -33,6 +33,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {ReactiveFormsModule} from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 
@@ -72,7 +73,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatNativeDateModule
   ],
   exports: [
     CommonModule,

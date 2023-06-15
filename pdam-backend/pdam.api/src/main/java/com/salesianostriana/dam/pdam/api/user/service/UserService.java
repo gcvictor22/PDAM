@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.pdam.api.user.service;
 
 import com.salesianostriana.dam.pdam.api.city.repository.CityRepository;
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerifiactionTokenBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.badrequest.VerificationTokenExpirationTimeBadRequestException;
 import com.salesianostriana.dam.pdam.api.exception.notfound.CityNotFoundException;
@@ -8,6 +9,7 @@ import com.salesianostriana.dam.pdam.api.exception.notfound.GenderNotFoundExcept
 import com.salesianostriana.dam.pdam.api.exception.notfound.UserNotFoundException;
 import com.salesianostriana.dam.pdam.api.exception.password.EqualOldNewPasswordException;
 import com.salesianostriana.dam.pdam.api.gender.repository.GenderRepository;
+import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.post.repository.PostRepository;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -313,5 +316,41 @@ public class UserService {
         Page<GetPostDto> getPublishedPosts = userRepository.getPublishedPosts(pageable, userToGet.getId()).map(p -> GetPostDto.of(p, loggedUser));
 
         return new GetPageDto<>(getPublishedPosts);
+    }
+
+    public GetPageDto<GetEventDto> getBuyedEvents(User user, Pageable pageable) {
+        Page<GetEventDto> getBuyedEvents = userRepository.getBuyedEvents(pageable, user.getId()).map(GetEventDto::of);
+
+        return new GetPageDto<>(getBuyedEvents);
+    }
+
+    public GetPageDto<GetPartyDto> getBuyedParties(User user, Pageable pageable) {
+        Page<GetPartyDto> getBuyedParties = userRepository.getBuyedParties(pageable, user.getId()).map(GetPartyDto::of);
+
+        return new GetPageDto<>(getBuyedParties);
+    }
+
+    public boolean isAdmin(User user) {
+        return user.getRoles().contains(UserRole.ADMIN);
+    }
+
+    public GetUserDto convertToAdmin(UUID userId) {
+        User user = userRepository.userWithPostsById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (user.getRoles().contains(UserRole.ADMIN)){
+            user.getRoles().remove(UserRole.ADMIN);
+        }else{
+            user.getRoles().add(UserRole.ADMIN);
+        }
+
+        return GetUserDto.of(userRepository.save(user));
+    }
+
+    public GetUserDto banUser(UUID userId){
+        User user = userRepository.userWithPostsById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        user.setEnabled(!user.isEnabled());
+
+        return GetUserDto.of(userRepository.save(user));
     }
 }

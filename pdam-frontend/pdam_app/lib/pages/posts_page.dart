@@ -208,7 +208,7 @@ class _PostsListState extends State<PostsList>
                             top: 200, bottom: 350, left: 40, right: 40),
                         child: EmptyListMessage(
                           message: widget.state.followedPosts is String
-                              ? widget.state.followedPosts
+                              ? "No se ha encontrado ningún post..."
                               : "",
                         ),
                       ),
@@ -254,7 +254,7 @@ class _PostsListState extends State<PostsList>
                             top: 200, bottom: 350, left: 40, right: 40),
                         child: EmptyListMessage(
                           message: widget.state.posts is String
-                              ? widget.state.posts
+                              ? "No se ha encontrado ningún post..."
                               : "",
                         ),
                       ),

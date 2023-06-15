@@ -12,6 +12,10 @@ import { RefreshToken } from '../interfaces/user/RefeshToken.interface';
 import { VerifyToken } from '../interfaces/user/VerifyToken.interface';
 import { PageUsers } from '../interfaces/page/Page.interface';
 import { GetProfileDto } from '../interfaces/user/GetProfileDto.interface';
+import { GetAttendedEventsDto } from '../interfaces/user/GetBuys.interface';
+
+const TOKEN_KEY = 'user_token';
+const REFRESHTOKEN_KEY = 'user_refresh_token';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -22,12 +26,9 @@ const httpOptions = {
 const httpAuthOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer' + window.sessionStorage.getItem("user_token"),
+    'Authorization': 'Bearer' + localStorage.getItem(TOKEN_KEY),
   })
 };
-
-const TOKEN_KEY = 'user_token';
-const REFRESHTOKEN_KEY = 'user_refresh_token';
 
 @Injectable({
   providedIn: 'root'
@@ -65,33 +66,53 @@ export class UserService {
     return this.http.get<GetCityDto[]>(`${environment.API_BASE_URL}/city/`, httpOptions);
   }
 
-  public getUsers():Observable<PageUsers> {
-    return this.http.get<PageUsers>(`${environment.API_BASE_URL}/user/`, httpAuthOptions);
+  public getUsers(page: number, name: string):Observable<PageUsers> {
+    return this.http.get<PageUsers>(`${environment.API_BASE_URL}/user/?page=${page}&s=userName:${name}`, httpAuthOptions);
   }
 
   public getProfile():Observable<GetProfileDto> {
-    return this.http.get<GetProfileDto>(`${environment.API_BASE_URL}/user/profile/?page=0`, httpAuthOptions)
+    return this.http.get<GetProfileDto>(`${environment.API_BASE_URL}/user/profile/?page=0`, httpAuthOptions);
+  }
+
+  public getAttendedEvents(page: number):Observable<GetAttendedEventsDto> {
+    return this.http.get<GetAttendedEventsDto>(`${environment.API_BASE_URL}/user/buys/event?page=${page}`, httpAuthOptions);
+  }
+
+  public isAuth():Observable<boolean>{
+    return this.http.get<boolean>(`${environment.API_BASE_URL}/user/isAuth`, httpAuthOptions);
+  }
+
+  public isAdmin():Observable<boolean>{
+    return this.http.get<boolean>(`${environment.API_BASE_URL}/user/isAdmin`, httpAuthOptions);
+  }
+
+  public convertToAdmin(id:string):Observable<GetUserDto>{
+    return this.http.put<GetUserDto>(`${environment.API_BASE_URL}/admin/convert/admin/${id}`, httpAuthOptions);
+  }
+
+  public banUser(id:string):Observable<GetUserDto>{
+    return this.http.put<GetUserDto>(`${environment.API_BASE_URL}/admin/convert/ban/${id}`, httpAuthOptions);
   }
 
   signOut(): void {
-    window.sessionStorage.clear();
+    localStorage.clear();
   }
 
   public saveToken(token: string): void {
-    window.sessionStorage.removeItem(TOKEN_KEY);
-    window.sessionStorage.setItem(TOKEN_KEY, token);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.setItem(TOKEN_KEY, token);
   }
 
   public getToken(): string | null {
-    return window.sessionStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY);
   }
 
   public saveRefreshToken(token: string): void {
-    window.sessionStorage.removeItem(REFRESHTOKEN_KEY);
-    window.sessionStorage.setItem(REFRESHTOKEN_KEY, token);
+    localStorage.removeItem(REFRESHTOKEN_KEY);
+    localStorage.setItem(REFRESHTOKEN_KEY, token);
   }
 
   public getRefreshToken(): string | null {
-    return window.sessionStorage.getItem(REFRESHTOKEN_KEY);
+    return localStorage.getItem(REFRESHTOKEN_KEY);
   }
 }

@@ -8,4 +8,7 @@ export interface GetUserDto {
     verified: boolean
     followedByUser: boolean
     createdAt: string
+    auth: boolean
+    admin: boolean
+    banned: boolean
 }

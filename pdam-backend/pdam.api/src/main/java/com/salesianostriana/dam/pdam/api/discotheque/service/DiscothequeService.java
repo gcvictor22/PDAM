@@ -47,7 +47,7 @@ public class DiscothequeService {
     public GetEventDto save(NewDiscothequeDto newDiscothequeDto){
         Discotheque discotheque = Discotheque.builder()
                 .name(newDiscothequeDto.getName())
-                .city(cityRepository.findById(newDiscothequeDto.getCityId()).orElseThrow(() -> new CityNotFoundException(newDiscothequeDto.getCityId())))
+                .city(newDiscothequeDto.getCityId() != null ? cityRepository.findById(newDiscothequeDto.getCityId()).orElseThrow(() -> new CityNotFoundException(newDiscothequeDto.getCityId())) : cityRepository.findById(1L).orElseThrow(() -> new CityNotFoundException(newDiscothequeDto.getCityId())))
                 .location(newDiscothequeDto.getLocation())
                 .capacity(newDiscothequeDto.getCapacity())
                 .type(EnumSet.of(EventType.DISCOTHEQUE))

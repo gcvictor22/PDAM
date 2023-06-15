@@ -1,0 +1,68 @@
+.container{
+    width: 100%;
+    margin-top: 750px;
+    display: flex;
+    justify-content: center;
+}
+
+#form {
+    width: 270px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: min-content;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid rgb(203, 202, 202);
+}
+
+#formR {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: min-content;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid rgb(203, 202, 202);
+}
+
+#tab-group{
+    width: 620px;
+    height: min-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid gray;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.tabs{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+    box-sizing: border-box;
+}
+
+#forgotPassword{
+    width: 100%;
+    text-align: center;
+    text-decoration: underline;
+    color: black;
+    margin-top: 20px;
+}
+
+.spacer{
+    width: 20px;
+    height: 20px;
+}
+
+.aligner{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}

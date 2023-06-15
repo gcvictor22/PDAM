@@ -1,0 +1,20 @@
+<h1>Eventos a los que has asistido (Discotecas y festivales)</h1>
+<mat-paginator [length]="attendedEvents.totalElements"
+              [pageSize]="20"
+              aria-label="Select page"
+              [showFirstLastButtons]="true" (page)="cambiarPagina($event)">
+</mat-paginator>
+<div class="eventsContainer">
+    <div *ngFor="let event of attendedEvents.content" class="event">
+        <h2>{{event.name}}</h2>
+        <img [src]=" baseUrl + '/post/file/' + event.imgPath" alt="">
+        <br>
+        <div style="display: flex; width: 100%; justify-content: space-between;">
+            <div style="display: flex;">
+                <mat-icon style="position: relative; top: -5px;">location_on</mat-icon>
+                {{event.city}}
+            </div>
+            <button style="background-color: #AD1DFE; border: 0; border-radius: 5px; color: white; cursor: pointer;" (click)="abrirGoogleMaps(event)">Abrir Google Maps</button>
+        </div>
+    </div>
+</div>

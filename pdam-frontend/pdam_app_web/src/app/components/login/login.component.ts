@@ -69,6 +69,7 @@ export class LoginComponent {
     return this.userService.login(newLoginDto).subscribe((resp) => {
       this.userService.saveToken(resp.token);
       this.userService.saveRefreshToken(resp.refreshToken);
+      localStorage.setItem("userId", resp.id);
       this.router.navigate(['landing']);
     }, (error) => {
       CaptureError.catchError(error);

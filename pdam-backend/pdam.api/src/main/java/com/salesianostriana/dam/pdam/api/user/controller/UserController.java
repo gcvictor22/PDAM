@@ -1,17 +1,20 @@
 package com.salesianostriana.dam.pdam.api.user.controller;
 
+import com.salesianostriana.dam.pdam.api.event.dto.GetEventDto;
 import com.salesianostriana.dam.pdam.api.exception.file.NotAllowedCountFilesException;
 import com.salesianostriana.dam.pdam.api.exception.token.RefreshTokenException;
 import com.salesianostriana.dam.pdam.api.files.dto.FileResponse;
 import com.salesianostriana.dam.pdam.api.files.service.FIleService;
 import com.salesianostriana.dam.pdam.api.files.service.StorageService;
 import com.salesianostriana.dam.pdam.api.files.utils.MediaTypeUrlResource;
+import com.salesianostriana.dam.pdam.api.party.dto.GetPartyDto;
 import com.salesianostriana.dam.pdam.api.post.dto.GetPostDto;
 import com.salesianostriana.dam.pdam.api.security.jwt.access.JwtProvider;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshToken;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenRequest;
 import com.salesianostriana.dam.pdam.api.security.jwt.refresh.RefreshTokenService;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import com.salesianostriana.dam.pdam.api.user.service.UserService;
 import com.salesianostriana.dam.pdam.api.page.dto.GetPageDto;
 import com.salesianostriana.dam.pdam.api.search.util.Extractor;
@@ -134,6 +137,29 @@ public class UserController {
         User user = userService.getProfile(id);
         loggedUser = userService.getProfile(loggedUser.getId());
         return userService.getLikedPosts(user, pageable, loggedUser);
+    }
+
+    @GetMapping("/buys/event")
+    public GetPageDto<GetEventDto> getBuyedEvents(@AuthenticationPrincipal User user, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        user = userService.getProfile(user.getId());
+        return userService.getBuyedEvents(user, pageable);
+    }
+
+    @GetMapping("/buys/parties")
+    public GetPageDto<GetPartyDto> getBuyedParties(@AuthenticationPrincipal User user, @PageableDefault(size = 20, page = 0) Pageable pageable){
+        user = userService.getProfile(user.getId());
+        return userService.getBuyedParties(user, pageable);
+    }
+
+    @GetMapping("/isAuth")
+    public boolean isAuth(@AuthenticationPrincipal User user){
+        return user.isAuthorized();
+    }
+
+
+    @GetMapping("/isAdmin")
+    public boolean isAdmin(@AuthenticationPrincipal User user){
+        return userService.isAdmin(user);
     }
 
     @PostMapping("/login")

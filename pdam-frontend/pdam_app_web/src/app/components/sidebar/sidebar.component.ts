@@ -8,18 +8,34 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  showSide = false;
+  showMyEvent !: boolean;
+  showCreateAndBan !: boolean;
 
   constructor (private router : Router, private userService : UserService) {}
+
+  ngOnInit():void {
+    this.userService.isAuth().subscribe((resp) => {
+      this.showMyEvent = resp;
+    });
+
+    this.userService.isAdmin().subscribe((resp) => {
+      this.showCreateAndBan = resp;
+    });
+  }
 
   isCurrentPage() {
     switch (this.router.url) {
       case "/landing/dashboard":
         return 1;
         break;
-    
-      default:
+      case "/landing/buys":
+        return 2;
+      case "/landing/users":
+        return 3;
+      case "/landing/create":
         return 4;
+      default:
+        return 5;
         break;
     }
   }
@@ -28,13 +44,20 @@ export class SidebarComponent {
     this.router.navigate(['/landing/dashboard']);
   }
 
+  navigateBuys(){
+    this.router.navigate(['/landing/buys']);
+  }
+
+  navigateUsers(){
+    this.router.navigate(['/landing/users']);
+  }
+
+  navigateCreate(){
+    this.router.navigate(['/landing/create']);
+  }
+
   logOut() {
     this.userService.signOut();
     this.router.navigate(['login']);
-  }
-
-  ngOnInit(): void {
-    console.log(this.isCurrentPage() == 1);
-    
   }
 }

@@ -12,7 +12,7 @@
         </div>        
         <div style="height: 20px;"></div>
         <div class="postContainer" id={{loggedUser.publishedPosts.content.indexOf(post)}}
-            *ngFor="let post of loggedUser.publishedPosts.content">
+            *ngFor="let post of postsPage.content">
             <div class="post">
                 <h3 style="text-decoration: underline;">{{post.affair}}</h3>
                 <p>{{post.content}}</p>
@@ -54,7 +54,7 @@
             <h2>Social</h2>
             <p><b>Siguiendo:</b> {{loggedUser.follows}}</p>
             <p><b>Seguidores:</b> {{loggedUser.followers}}</p>
-            <p><b>Número total de publicaciones:</b> {{loggedUser.publishedPosts.totalElements}}</p>
+            <p><b>Número total de publicaciones:</b> {{postsPage.totalElements}}</p>
         </div>
         <br>
         <div style="display: flex; flex-direction: column;">

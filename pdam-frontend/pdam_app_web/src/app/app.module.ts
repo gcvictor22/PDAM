@@ -13,6 +13,10 @@ import { LandingComponent } from './components/landing/landing.component';
 import { VerifyDialogComponent } from './components/verify-dialog/verify-dialog.component';
 import { TokenInterceptor } from './services/request.interceptor';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { BuysComponent } from './components/buys/buys.component';
+import { UsersComponent } from './components/users/users.component';
+import { CreateEventsComponent } from './components/create-events/create-events.component';
+import { FechaPipe } from './utils/fecha.pipe';
 
 @NgModule({
   declarations: [
@@ -22,6 +26,10 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     LandingComponent,
     VerifyDialogComponent,
     SidebarComponent,
+    BuysComponent,
+    UsersComponent,
+    CreateEventsComponent,
+    FechaPipe,
   ],
   imports: [
     BrowserModule,

@@ -2,6 +2,7 @@ package com.salesianostriana.dam.pdam.api.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.salesianostriana.dam.pdam.api.user.model.User;
+import com.salesianostriana.dam.pdam.api.user.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,10 @@ public class GetUserDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     protected LocalDateTime createdAt;
 
+    private boolean auth;
+    private boolean admin;
+    private boolean banned;
+
     public static GetUserDto of(User c){
         return GetUserDto.builder()
                 .id(c.getId())
@@ -39,6 +44,9 @@ public class GetUserDto {
                 .countOfPosts(c.getPublishedPosts() == null ? 0 : c.getPublishedPosts().size())
                 .verified(c.isVerified())
                 .createdAt(c.getCreatedAt())
+                .auth(c.isAuthorized())
+                .admin(c.getRoles().contains(UserRole.ADMIN))
+                .banned(!c.isEnabled())
                 .build();
     }
 
@@ -53,6 +61,9 @@ public class GetUserDto {
                 .verified(c.isVerified())
                 .followedByUser(c.getFollowers().stream().filter(u -> Objects.equals(u.getId(), loggedUser.getId())).toList().size() > 0)
                 .createdAt(c.getCreatedAt())
+                .auth(c.isAuthorized())
+                .admin(c.getRoles().contains(UserRole.ADMIN))
+                .banned(!c.isEnabled())
                 .build();
     }
 

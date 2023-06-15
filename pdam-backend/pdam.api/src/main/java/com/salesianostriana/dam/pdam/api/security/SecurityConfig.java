@@ -80,6 +80,8 @@ public class SecurityConfig {
                                 .antMatchers("/comment/**").hasRole("USER")
                                 .antMatchers("/payment/**").hasRole("USER")
                                 .antMatchers("/party/create").hasRole("AUTH")
+                                .antMatchers("/{id}/addAuthUsers").hasAnyRole("AUTH", "ADMIN")
+                                .antMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated();
 
 

@@ -55,7 +55,9 @@ class _FollowsAndFollowersState extends State<FollowsAndFollowers> {
                   ),
                 ),
                 Text(
-                  widget.user.userName!,
+                  widget.user.userName!.length > 7
+                      ? widget.user.userName!.substring(0, 5) + "..."
+                      : widget.user.userName!,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 widget.user.verified!

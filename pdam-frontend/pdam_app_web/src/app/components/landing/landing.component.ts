@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatSnackBar, MatSnackBarDismiss, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { PageUsers } from 'src/app/interfaces/page/Page.interface';
-import { GetProfileDto, Post } from 'src/app/interfaces/user/GetProfileDto.interface';
+import { GetProfileDto, Post, PublishedPosts } from 'src/app/interfaces/user/GetProfileDto.interface';
 import { PostService } from 'src/app/services/post.service';
 import { UserService } from 'src/app/services/user.service';
 import { environment } from 'src/environments/environment.prod';
@@ -18,10 +18,14 @@ export class LandingComponent {
 
   loggedUser: GetProfileDto = {} as GetProfileDto;
   baseUrl = environment.API_BASE_URL;
+  loading: boolean = true;
+  postsPage: PublishedPosts = {} as PublishedPosts;
 
   ngOnInit(): void {
     this.userService.getProfile().subscribe((resp) => {
       this.loggedUser = resp;
+      this.postsPage = resp.publishedPosts;
+      this.loading = false;
     })
   }
 
