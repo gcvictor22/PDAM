@@ -1,10 +1,23 @@
+<p align="center">
+  <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html"><img src="https://img.shields.io/badge/jdk-v17.0.4.1-blue" alt="Versión java" /></a>
+  <a href="https://maven.apache.org/download.cgi"><img src="https://img.shields.io/badge/apache--maven-v3.8.6-blue" alt="Versión maven" /></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/spring--boot-v2.7.8-green" alt="Versión spring-boot" /></a>
+  <a href="https://dart.dev/"><img src="https://img.shields.io/badge/dart-v3.0.0-blue" alt="Versión dart" /></a>
+  <a href="https://flutter.dev/"><img src="https://img.shields.io/badge/flutter-3.8.0--13.0.pre.95-blue" alt="Versión flutter" /></a>
+  <a href="https://angular.io/"><img src="https://img.shields.io/badge/angular-v14.2-red" alt="Versión angular"></a>
+  <a href="https://nodejs.org/es"><img src="https://img.shields.io/badge/node-v16.17.1-yellowgreen" alt="Versión node"></a>
+  <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-v8.15.0-red" alt="Versión npm"></a>
+  <img src="https://img.shields.io/badge/release%20date-february-yellowgreen" alt="Lanzamiento del proyecto" />
+  <img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="Licencia" />
+</p>
+
 # Proyecto Full Stack - Red Social
 
 Este es un proyecto Full Stack que incluye un backend desarrollado con Java y Spring, una aplicación móvil para el público desarrollada con Flutter, y una aplicación de administración desarrollada con Angular. Tanto la API como la aplicación Angular están dockerizadas para facilitar la implementación. Al ejecutar el comando `docker-compose up -d`, el usuario podrá acceder directamente a los siguientes puertos:
 
 - Puerto 8080: API backend.
 - Puerto 4200: Aplicación Angular.
-- Puerto 5050: Aplicación de administración.
+- Puerto 5050: PgAdmin
 
 ## Pasos de configuración
 
@@ -42,7 +55,7 @@ open -a Simulator
 flutter run
 ```
 
-    - Aplicación de administración: Abre tu navegador y ve a http://localhost:5050 para acceder a la aplicación de administración.
+- Aplicación de administración: Abre tu navegador y ve a http://localhost:5050 para acceder a la aplicación de administración.
 
 
 ## Funcionalidades de usuario
