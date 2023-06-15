@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,6 @@ import java.util.List;
 public class FestivalController {
 
     private final FestivalService festivalService;
-    private final EventService eventService;
     private final UserService userService;
 
     @GetMapping("/")
@@ -52,7 +52,8 @@ public class FestivalController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<GetEventDto> create(@RequestBody NewFestivalDto newFestivalDto){
+    @PreAuthorize("@userService.isAdmin(#loggedUser)")
+    public ResponseEntity<GetEventDto> create(@RequestBody NewFestivalDto newFestivalDto, @AuthenticationPrincipal User loggedUser){
         return ResponseEntity.status(HttpStatus.CREATED).body(festivalService.save(newFestivalDto));
     }
 

@@ -1,0 +1,27 @@
+.eventsContainer {
+    width: 100%;
+    display: grid;
+    margin: auto;
+    border: 1px solid rgb(211, 211, 211);
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    grid-template-columns: auto auto auto auto auto;
+    align-items: center;
+    grid-row-gap: 20px;
+}
+
+.event {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #AD1DFE;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.event img {
+    border-radius: 10px;
+}

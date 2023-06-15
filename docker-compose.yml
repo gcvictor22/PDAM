@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  db:
+    image: 'postgres:14-alpine'
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_DB=pdam
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin1234
+    ports:
+      - "5432:5432"
+
+  client:
+    container_name: client
+    image: 'dpage/pgadmin4'
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+
+  backend:
+    container_name: pdam.api
+    build: ./pdam-backend/pdam.api # Path to your Spring backend Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/pdam
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin1234
+
+  frontend:
+    container_name: pdam_app_web
+    build: ./pdam-frontend/pdam_app_web  # Path to your Angular frontend Dockerfile
+    restart: always
+    ports:
+      - "4200:80"
+    environment:
+      - API_BASE_URL=http://localhost:8080

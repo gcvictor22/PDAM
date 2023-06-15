@@ -1,0 +1,117 @@
+<div class="container">
+    <mat-tab-group id="tab-group" dynamicHeight>
+        <mat-tab label="Crear discoteca">
+            <div class="tabs">
+                <form action="" id="form" [formGroup]="newDiscotheque">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nombre de la discoteca</mat-label>
+                        <input matInput formControlName="name" name="name">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Provincia</mat-label>
+                        <input type="text" aria-label="Provincia" matInput [matAutocomplete]="autoD"
+                            formControlName="cityD">
+                        <mat-autocomplete autoActiveFirstOption #autoD="matAutocomplete">
+                            <mat-option *ngFor="let city of filteredOptionsD | async" [value]="city.name"
+                                (onSelectionChange)="updateCityValueD()">
+                                {{city.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Localización (latitud, longitud)</mat-label>
+                        <input matInput formControlName="location" name="location">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Capacidad</mat-label>
+                        <input matInput type="number" min="1" formControlName="capacity" name="capacity">
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" type="submit" (click)="createDiscotheque()"
+                        disabled="{{!newDiscotheque.valid}}">Continuar</button>
+                    <mat-progress-bar *ngIf="submitingFestival" style="margin-top: 10px;"
+                        mode="indeterminate"></mat-progress-bar>
+                </form>
+            </div>
+        </mat-tab>
+        <mat-tab label="Crear festival" class="tabs">
+            <div class="tabs">
+                <form action="" id="formR" [formGroup]="newFestival">
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre del festival</mat-label>
+                            <input matInput formControlName="name" name="name">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Capacidad</mat-label>
+                            <input matInput formControlName="capacity" type="number" min="1" name="description">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Descripcion</mat-label>
+                        <input matInput formControlName="description" name="description">
+                        <mat-icon matSuffix></mat-icon>
+                    </mat-form-field>
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Localización (latitud, longitud)</mat-label>
+                            <input matInput formControlName="location" name="location">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Provincia</mat-label>
+                            <input type="text" aria-label="Provincia" matInput [matAutocomplete]="autoF"
+                                formControlName="cityF">
+                            <mat-autocomplete autoActiveFirstOption #autoF="matAutocomplete">
+                                <mat-option *ngFor="let city of filteredOptionsF | async" [value]="city.name"
+                                    (onSelectionChange)="updateCityValueF()">
+                                    {{city.name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="aligner">
+                        <mat-form-field class="example-full-width" appearance="outline">
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput formControlName="dateTime" [matDatepicker]="picker">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #picker></mat-datepicker>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Duración</mat-label>
+                            <input matInput type="number" min="1"  formControlName="duration" name="duration">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Precio por entrada</mat-label>
+                            <input matInput min="0" formControlName="price" type="number" name="price">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-slide-toggle style="position: relative; right: 45px; top: 15px;" formControlName="adult">Acceso solo +18</mat-slide-toggle>
+                    </div>
+                    <div class="aligner">
+                        <mat-slide-toggle style="position: relative; left: 35px; top: 15px;" formControlName="drinkIncluded">Consumición incluida</mat-slide-toggle>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Número de bebidas</mat-label>
+                            <input matInput min="0" formControlName="price" type="number" name="price" formControlName="numberOfDrinks">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <button mat-raised-button color="primary" type="submit" (click)="createFestival()"
+                        disabled="{{!newFestival.valid}}">Continuar</button>
+                    <mat-progress-bar *ngIf="submitingFestival" style="margin-top: 10px;"
+                        mode="indeterminate"></mat-progress-bar>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

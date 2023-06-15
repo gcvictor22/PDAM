@@ -10,7 +10,8 @@ import 'package:injectable/injectable.dart';
 import 'package:http/http.dart' as http;
 
 class ApiConstants {
-  static String baseUrl = "http://localhost:8080";
+  //static String baseUrl = "http://localhost:8080";
+  static String baseUrl = "http://192.168.1.50:8080";
 }
 
 class HeadersApiInterceptor implements InterceptorContract {

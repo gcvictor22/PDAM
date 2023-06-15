@@ -1,0 +1,40 @@
+<div style="width: 100%; display: flex; justify-content: space-between;">
+    <mat-form-field appearance="outline">
+        <mat-label>Nombre de usuario</mat-label>
+        <input matInput placeholder="" name="buscador" [(ngModel)]="userName" (ngModelChange)="buscarNombre(userName)">
+    </mat-form-field>
+    <mat-paginator [length]="fetchedUsers.totalElements" [pageSize]="20" aria-label="Select page"
+        [showFirstLastButtons]="true" (page)="cambiarPagina($event)">
+    </mat-paginator>
+</div>
+<br>
+<table mat-table [dataSource]="fetchedUsers.content" class="mat-elevation-z8">
+    <ng-container matColumnDef="usuario">
+        <th mat-header-cell *matHeaderCellDef> Usuario </th>
+        <td mat-cell *matCellDef="let element"> <img [src]="baseUrl+'/post/file/'+element.imgPath"
+                style="width: 40px; height: 40px; border-radius: 50%;" alt=""> <span
+                style="position: relative; top: -12px; left: 10px; font-size: 18px;">{{
+                element.userName}}</span><mat-icon *ngIf="element.verified"
+                style="color: rgb(22, 114, 235); position: relative; left: 15px; top: -5px;">check_circle</mat-icon>
+        </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="nombreCompleto">
+        <th mat-header-cell *matHeaderCellDef> Nombre completo </th>
+        <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="social">
+        <th mat-header-cell *matHeaderCellDef> Social </th>
+        <td mat-cell *matCellDef="let element"> Seguidores: {{element.followers}} | Publicaciones:
+            {{element.countOfPosts}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let element"><button mat-raised-button color="warn" style="margin-right: 10px;" *ngIf="element.id != loggedUser" [id]="'ban'+element.id" (click)="openBanSwal(element.userName, element.id)">{{element.banned ? "Desbanear" : "Banear"}}</button> <button mat-stroked-button color="primary" (click)="openAdminSwal(element.userName, element.id)" [id]="'admin'+element.id" *ngIf="element.id != loggedUser">{{element.admin ? "Deshacer administrador" : "Hacer administrador"}}</button></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

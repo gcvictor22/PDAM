@@ -1,0 +1,99 @@
+<div class="container">
+    <mat-tab-group id="tab-group" dynamicHeight>
+        <mat-tab label="Iniciar sesión">
+            <div class="tabs">
+                <form action="" id="form">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nombre de usuario</mat-label>
+                        <input matInput [(ngModel)]="userName" name="userName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput type="{{textObscured ? 'password' : 'text'}}" [(ngModel)]="password"
+                            name="password">
+                        <button mat-icon-button matSuffix (click)="textObscured = !textObscured"
+                            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="textObscured">
+                            <mat-icon>{{textObscured ? 'visibility_off' : 'visibility'}}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="doLogin()">Iniciar sesión</button>
+                    <a href="" id="forgotPassword">¿Has olvidado tu contraseña?</a>
+                </form>
+            </div>
+        </mat-tab>
+        <mat-tab label="Crear cuenta" class="tabs">
+            <div class="tabs">
+                <form action="" id="formR" [formGroup]="registerForm">
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre completo</mat-label>
+                            <input matInput formControlName="fullNameR" name="fullNameR">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre de usuario</mat-label>
+                            <input matInput formControlName="userNameR" name="fullNameR">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <mat-radio-group aria-label="Select an option" [color]="'primary'" formControlName="genderR"
+                        name="genderR" class="aligner" style="margin-bottom: 20px;">
+                        <mat-radio-button value="63" [checked]="true">Hombre</mat-radio-button>
+                        <mat-radio-button value="64">Mujer</mat-radio-button>
+                        <mat-radio-button value="65">Otro</mat-radio-button>
+                    </mat-radio-group>
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contraseña</mat-label>
+                            <input matInput type="{{textObscuredR ? 'password' : 'text'}}" formControlName="passwordR"
+                                name="passwordR">
+                            <button mat-icon-button matSuffix (click)="textObscuredR = !textObscuredR"
+                                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="textObscuredR">
+                                <mat-icon>{{textObscuredR ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Validar contraseña</mat-label>
+                            <input matInput type="{{textObscuredConfirmR ? 'password' : 'text'}}"
+                                formControlName="confirmPasswordR" name="password">
+                            <button mat-icon-button matSuffix (click)="textObscuredConfirmR = !textObscuredConfirmR"
+                                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="textObscuredConfirmR">
+                                <mat-icon>{{textObscuredConfirmR ? 'visibility_off' : 'visibility'}}</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="emailR" name="fullNameR" type="email">
+                        <mat-icon matSuffix></mat-icon>
+                    </mat-form-field>
+                    <div class="aligner">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Teléfono</mat-label>
+                            <input matInput formControlName="phoneNumberR" name="fullNameR" minlength="9" maxlength="9">
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                        <div class="spacer"></div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Provincia</mat-label>
+                            <input type="text" aria-label="Provincia" matInput [matAutocomplete]="auto"
+                                formControlName="cityR">
+                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                <mat-option *ngFor="let city of filteredOptions | async" [value]="city.name"
+                                    (onSelectionChange)="updateCityValue()">
+                                    {{city.name}}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-icon matSuffix></mat-icon>
+                        </mat-form-field>
+                    </div>
+                    <button mat-raised-button color="primary" type="submit" (click)="doRegister()" disabled="{{!registerForm.valid}}">Crear
+                        cuenta</button>
+                    <mat-progress-bar *ngIf="submiting" style="margin-top: 10px;" mode="indeterminate"></mat-progress-bar>
+                </form>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

@@ -1,0 +1,27 @@
+<mat-drawer-container class="container" autosize>
+    <mat-drawer #drawer class="sidenav" mode="over" style="padding: 10px; box-sizing: border-box;">
+        <br>
+        <br>
+        <div style="display: flex; flex-direction: column;">
+            <button mat-button [color]="isCurrentPage() == 1 ? 'primary' : ''" (click)="navigateProfile()">Mi perfil</button>
+            <button mat-button [color]="isCurrentPage() == 2 ? 'primary' : ''" (click)="navigateBuys()">Mis compras</button>
+            <button mat-button *ngIf="showMyEvent">Mi evento</button>
+            <button mat-button [color]="isCurrentPage() == 3 ? 'primary' : ''" (click)="navigateUsers()" *ngIf="showCreateAndBan">Usuarios</button>
+            <button mat-button [color]="isCurrentPage() == 4 ? 'primary' : ''" (click)="navigateCreate()" *ngIf="showCreateAndBan" >Crear eventos</button>
+        </div>
+        <button mat-button style="position: absolute; bottom: 20px; background-color: rgb(227, 46, 46); color: white;" (click)="logOut()">Cerrar sesión</button>
+    </mat-drawer>
+
+    <div class="component">
+        <header class="example-sidenav-content">
+            <button type="button" style="background-color: white;" mat-raised-button (click)="drawer.toggle()">
+                Opciones
+            </button>
+            <h1 style="margin: 0 7.5% 0 0; color: white;">DISCOTKEO</h1>
+            <div></div>
+        </header>
+        <div class="insideContainer">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</mat-drawer-container>

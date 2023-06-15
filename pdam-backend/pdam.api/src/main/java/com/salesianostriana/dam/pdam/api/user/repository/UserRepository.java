@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.pdam.api.user.repository;
 
+import com.salesianostriana.dam.pdam.api.event.model.Event;
+import com.salesianostriana.dam.pdam.api.party.model.Party;
 import com.salesianostriana.dam.pdam.api.post.model.Post;
 import com.salesianostriana.dam.pdam.api.user.model.User;
 import org.springframework.data.domain.Page;
@@ -85,4 +87,18 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
             ORDER BY p.postDate DESC
             """)
     Page<Post> getPublishedPosts(@Nullable Pageable pageable, UUID id);
+
+    @Query("""
+            SELECT e
+            FROM User u JOIN u.events e
+            WHERE u.id = :id
+            """)
+    Page<Event> getBuyedEvents(Pageable pageable, UUID id);
+
+    @Query("""
+            SELECT p
+            FROM User u JOIN u.parties p
+            WHERE u.id = :id
+            """)
+    Page<Party> getBuyedParties(Pageable pageable, UUID id);
 }

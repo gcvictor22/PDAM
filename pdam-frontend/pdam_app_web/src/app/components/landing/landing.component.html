@@ -1,0 +1,66 @@
+<div class="centerUser">
+    <img src="{{baseUrl}}/post/file/{{loggedUser.imgPath}}" class="userImg" alt="">
+    <h1 class="userName">{{loggedUser.userName}} <mat-icon *ngIf="loggedUser.verified"
+            style="color: rgb(22, 114, 235); position: relative; bottom: -5px;">check_circle</mat-icon><span
+            style="font-weight: 100;"> |
+            {{loggedUser.fullName}}</span></h1>
+</div>
+<div class="userActivity">
+    <div class="posts">
+        <div style="width: 43%; background-color: rgba(141, 141, 141, 0.3); position: absolute; top: 0; text-align: center; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(3px); border-radius: 5px;">
+            <h2 style="margin: 0;">Tus últimos posts</h2>
+        </div>        
+        <div style="height: 20px;"></div>
+        <div class="postContainer" id={{loggedUser.publishedPosts.content.indexOf(post)}}
+            *ngFor="let post of postsPage.content">
+            <div class="post">
+                <h3 style="text-decoration: underline;">{{post.affair}}</h3>
+                <p>{{post.content}}</p>
+                <div style="width: 100%; display: flex; justify-content: space-between;">
+                    <div style="width: 100%;">
+                        <button style="background-color: transparent; border: 0;" (click)="like('like' + loggedUser.publishedPosts.content.indexOf(post), post, 'number'+post.id)"><mat-icon [id]="'like' + loggedUser.publishedPosts.content.indexOf(post)"
+                                [style]="post.likedByUser ? 'color: red;' : 'color: black;'"
+                                class="heart">favorite</mat-icon>
+                        </button><span style="font-size: 17px;" [id]="'number'+post.id">{{post.usersWhoLiked}}</span>
+                    </div>
+                    <div style="width: 100%;">
+                        <mat-icon style="position: relative; bottom: -5px;">comment</mat-icon><span
+                            style="font-size: 17px;">
+                            {{post.comments}}</span>
+                    </div>
+                    <span style="font-size: 10px; color: rgb(131, 131, 131);">{{post.postDate.split("
+                        ")[0]}}<br>{{post.postDate.split(" ")[1]}}</span>
+                </div>
+            </div>
+            <div style="width: 20px;"></div>
+            <button style="margin-bottom: 20px; background-color: transparent; border: 0;"
+                (click)="openAlert(loggedUser.publishedPosts.content.indexOf(post), post.id)"><mat-icon
+                    class="deleteButton">delete</mat-icon></button>
+        </div>
+    </div>
+    <div class="separator"></div>
+    <div class="userInfo">
+        <br>
+        <div style="width: 43%; background-color: rgba(141, 141, 141, 0.3); position: absolute; top: 0; text-align: center; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(3px); border-radius: 5px;">
+            <h2 style="margin: 0;">Acerca de tí</h2>
+        </div>   
+        <div style="display: flex; flex-direction: column;">
+            <h2>Contacto</h2>
+            <p><b>Email:</b> {{loggedUser.email}}</p>
+            <p><b>Teléfono: </b>{{loggedUser.phoneNumber}}</p>
+        </div>
+        <br>
+        <div style="display: flex; flex-direction: column;">
+            <h2>Social</h2>
+            <p><b>Siguiendo:</b> {{loggedUser.follows}}</p>
+            <p><b>Seguidores:</b> {{loggedUser.followers}}</p>
+            <p><b>Número total de publicaciones:</b> {{postsPage.totalElements}}</p>
+        </div>
+        <br>
+        <div style="display: flex; flex-direction: column;">
+            <h2>Ubicación y creación de cuenta</h2>
+            <p><b>Ciudad:</b> {{loggedUser.city}}</p>
+            <p><b>Cuenta creada el:</b> {{loggedUser.createdAt}}</p>
+        </div>
+    </div>
+</div>
