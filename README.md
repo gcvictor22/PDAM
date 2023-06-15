@@ -4,7 +4,7 @@
   <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/spring--boot-v2.7.8-green" alt="Versión spring-boot" /></a>
   <a href="https://dart.dev/"><img src="https://img.shields.io/badge/dart-v3.0.0-blue" alt="Versión dart" /></a>
   <a href="https://flutter.dev/"><img src="https://img.shields.io/badge/flutter-3.8.0--13.0.pre.95-blue" alt="Versión flutter" /></a>
-  <a href="https://angular.io/"><img src="https://img.shields.io/badge/angular-v14.2-red" alt="Versión angular"></a>
+  <a href="https://angular.io/"><img src="https://img.shields.io/badge/angular-v16.2-red" alt="Versión angular"></a>
   <a href="https://nodejs.org/es"><img src="https://img.shields.io/badge/node-v16.17.1-yellowgreen" alt="Versión node"></a>
   <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/npm-v8.15.0-red" alt="Versión npm"></a>
   <img src="https://img.shields.io/badge/release%20date-february-yellowgreen" alt="Lanzamiento del proyecto" />
